@@ -1,10 +1,10 @@
 ﻿namespace RoslynPad.Build;
 
-internal record LibraryRef(LibraryRef.RefKind Kind, string Value, string Version) : IComparable<LibraryRef>
+internal record LibraryRef(LibraryRef.RefKind Kind, string Value, string Version, bool embedInteropTypes=false) : IComparable<LibraryRef>
 {
-    public static LibraryRef Reference(string path) => new(RefKind.Reference, path, string.Empty);
+    public static LibraryRef Reference(string path, bool embedInteropTypes = false) => new(RefKind.Reference, path, string.Empty, embedInteropTypes);
     public static LibraryRef FrameworkReference(string id) => new(RefKind.FrameworkReference, id.ToLowerInvariant(), string.Empty);
-    public static LibraryRef PackageReference(string id, string versionRange) => new(RefKind.PackageReference, id.ToLowerInvariant(), versionRange);
+    public static LibraryRef PackageReference(string id, string versionRange, bool embedInteropTypes = false) => new(RefKind.PackageReference, id.ToLowerInvariant(), versionRange, embedInteropTypes);
     
     public int CompareTo(LibraryRef? other)
     {

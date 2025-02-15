@@ -44,6 +44,11 @@ internal static class MSBuildHelper
             element.Add(new XAttribute("Version", reference.Version));
         }
 
+        if (reference.embedInteropTypes)
+        {
+            element.Add(new XElement("EmbedInteropTypes", "True"));
+        }
+
         return element;
     }
 

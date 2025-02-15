@@ -637,7 +637,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             return;
         }
 
-        var libraries = ParseReferences(syntaxRoot).Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef);
+        var libraries = ParseReferences(Platform.IsDotNet, syntaxRoot).Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef);
         if (UpdateLibraries(libraries))
         {
             await RestoreAsync().ConfigureAwait(false);
@@ -673,7 +673,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             return false;
         }
 
-        static List<LibraryRef> ParseReferences(SyntaxNode syntaxRoot)
+        static List<LibraryRef> ParseReferences(bool isDotNet, SyntaxNode syntaxRoot)
         {
             const string LegacyNuGetPrefix = "$NuGet\\";
             const string FxPrefix = "framework:";
@@ -689,6 +689,13 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             {
                 var value = directive.File.ValueText;
                 string? id, version;
+                
+                bool embedInteropTypes = false;
+                if(value.EndsWith('@'))
+                {
+                    value = value.Substring(0, value.Length - 1);
+                    embedInteropTypes = isDotNet;
+                }
 
                 if (HasPrefix(FxPrefix, value))
                 {
@@ -711,7 +718,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                 }
                 else
                 {
-                    libraries.Add(LibraryRef.Reference(value));
+                    libraries.Add(LibraryRef.Reference(value, embedInteropTypes));
 
                     continue;
                 }
@@ -721,7 +728,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                     continue;
                 }
 
-                libraries.Add(LibraryRef.PackageReference(id, version ?? string.Empty));
+                libraries.Add(LibraryRef.PackageReference(id, version ?? string.Empty, embedInteropTypes));
             }
 
             return libraries;
@@ -871,7 +878,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             MetadataReferences = [.. output.Items.ReferencePathWithRefAssemblies
                 .Select(r => r.FullPath)
                 .Where(r => !string.IsNullOrWhiteSpace(r))
-                .Select(_roslynHost.CreateMetadataReference)];
+                .Select(r => _roslynHost.CreateMetadataReference(r))];
 
             Analyzers = [.. output.Items.Analyzer
                 .Select(r => r.FullPath)
