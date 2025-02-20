@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -694,6 +695,21 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                 if(value.EndsWith('@'))
                 {
                     value = value.Substring(0, value.Length - 1);
+                    var asmFiles = GACAsmSearch.SearchAssemblyInGacDirectory(value);
+                    if (asmFiles.Count == 1)
+                    {
+                        value = asmFiles[0];
+                    }
+                    else if (asmFiles.Count > 1)
+                    {
+                        var ret = string.Join('\n', asmFiles);
+                        Console.WriteLine("There are more than one assembly in different directory, please specify a full name one.");
+                        value = asmFiles[0];
+                    }
+                    else
+                    {
+                        Console.WriteLine("Assembly not found in GAC directory, please check.");
+                    }
                     embedInteropTypes = isDotNet;
                 }
 
