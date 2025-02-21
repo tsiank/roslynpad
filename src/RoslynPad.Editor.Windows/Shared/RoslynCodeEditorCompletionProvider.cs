@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Text;
 using RoslynPad.Roslyn;
@@ -95,8 +97,11 @@ public sealed class RoslynCodeEditorCompletionProvider : ICodeEditorCompletionPr
 
                 completionData = data.ItemsList
                     .Where(item => MatchesFilterText(completionService, document, item, text, textSpanToText))
+                    .OrderBy(item => item.DisplayText.StartsWith(textSpanToText[item.Span], StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                    .ThenByDescending(item => item.Rules.MatchPriority)
+                    .ThenBy(item => item.SortText)
                     .Select(item => new RoslynCompletionData(document, item, _snippetService.SnippetManager))
-                        .ToArray<ICompletionDataEx>();
+                    .ToArray<ICompletionDataEx>();
             }
             else
             {
