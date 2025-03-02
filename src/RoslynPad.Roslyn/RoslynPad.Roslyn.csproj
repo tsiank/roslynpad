@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>$(LtsTargetFramework)</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Exposes many Roslyn editor services that are currently internal. The version of this package corresponds to the Roslyn packages.</Description>
     <IsPackable>true</IsPackable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);USE_PUBLIC_LATEST_CSHARP_FEATURES</DefineConstants>
   </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="../RestoreHelper/RestoreHelper.csproj" Targets="GetLibReferences" PrivateAssets="All" />
   </ItemGroup>
@@ -39,5 +41,10 @@
     <IgnoresAccessChecksTo Include="Microsoft.CodeAnalysis.Workspaces" />
     <IgnoresAccessChecksTo Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <IgnoresAccessChecksTo Include="Microsoft.CodeAnalysis.LanguageServer.Protocol" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis.LanguageServer.Protocol">
+      <HintPath>C:\Users\tsiank\.nuget\packages\microsoft.codeanalysis.languageserver.protocol\4.12.0-3.24574.8\lib\netstandard2.0\Microsoft.CodeAnalysis.LanguageServer.Protocol.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
     <RootNamespace>RoslynPad.Editor</RootNamespace>
     <Description>Provides a Roslyn-based code editor using AvalonEdit (WPF platform) with completion, diagnostics, and quick actions</Description>
     <IsPackable>true</IsPackable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj" />
@@ -12,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" />
     <PackageReference Include="System.Reactive.Linq" />
+    <PackageReference Include="System.Reflection.Metadata" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="..\RoslynPad.Editor.Shared\Resources\tokens.json" />
@@ -22,7 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis.Features">
-      <HintPath>..\RoslynPad.Roslyn\obj\Debug\net8.0\IgnoresAccessChecksToGenerator\Microsoft.CodeAnalysis.Features.dll</HintPath>
+      <HintPath>C:\Users\tsiank\.nuget\packages\microsoft.codeanalysis.features\4.12.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Features.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -103,7 +103,7 @@ public class RoslynHost : IRoslynHost
 
     public void CloseWorkspace(RoslynWorkspace workspace)
     {
-        ArgumentNullException.ThrowIfNull(workspace);
+        ArgumentNullExceptionE.ThrowIfNull(workspace);
 
         foreach (var documentId in workspace.CurrentSolution.Projects.SelectMany(p => p.DocumentIds))
         {
@@ -124,7 +124,7 @@ public class RoslynHost : IRoslynHost
 
     public void CloseDocument(DocumentId documentId)
     {
-        ArgumentNullException.ThrowIfNull(documentId);
+        ArgumentNullExceptionE.ThrowIfNull(documentId);
 
         if (_workspaces.TryGetValue(documentId, out var workspace))
         {
@@ -153,7 +153,7 @@ public class RoslynHost : IRoslynHost
 
     public Document? GetDocument(DocumentId documentId)
     {
-        ArgumentNullException.ThrowIfNull(documentId);
+        ArgumentNullExceptionE.ThrowIfNull(documentId);
 
         return _workspaces.TryGetValue(documentId, out var workspace)
             ? workspace.CurrentSolution.GetDocument(documentId)
@@ -162,14 +162,14 @@ public class RoslynHost : IRoslynHost
 
     public DocumentId AddDocument(DocumentCreationArgs args)
     {
-        ArgumentNullException.ThrowIfNull(args);
+        ArgumentNullExceptionE.ThrowIfNull(args);
 
         return AddDocument(CreateWorkspace(), args);
     }
 
     public DocumentId AddRelatedDocument(DocumentId relatedDocumentId, DocumentCreationArgs args, bool addProjectReference = true)
     {
-        ArgumentNullException.ThrowIfNull(args);
+        ArgumentNullExceptionE.ThrowIfNull(args);
 
         if (!_workspaces.TryGetValue(relatedDocumentId, out var workspace))
         {
@@ -229,7 +229,7 @@ public class RoslynHost : IRoslynHost
 
     public void UpdateDocument(Document document)
     {
-        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullExceptionE.ThrowIfNull(document);
 
         if (!_workspaces.TryGetValue(document.Id, out var workspace))
         {

@@ -163,10 +163,10 @@ public partial class MainWindow
             FontSize = _viewModel.Settings.WindowFontSize.Value;
         }
 
-        Width = Math.Clamp(Width, 0, SystemParameters.VirtualScreenWidth);
-        Height = Math.Clamp(Height, 0, SystemParameters.VirtualScreenHeight);
-        Left = Math.Clamp(Left, SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenWidth - Width);
-        Top = Math.Clamp(Top, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenHeight - Height);
+        Width = MathExtensions.Clamp(Width, 0, SystemParameters.VirtualScreenWidth);
+        Height = MathExtensions.Clamp(Height, 0, SystemParameters.VirtualScreenHeight);
+        Left = MathExtensions.Clamp(Left, SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenWidth - Width);
+        Top = MathExtensions.Clamp(Top, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenHeight - Height);
     }
 
     private void SaveWindowLayout()

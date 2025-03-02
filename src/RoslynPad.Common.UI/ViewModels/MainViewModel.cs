@@ -629,7 +629,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
 
         bool SearchDocumentName(DocumentViewModel document)
         {
-            return document.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
+            return document.Name.Contains(SearchText!, StringComparison.OrdinalIgnoreCase);
         }
 
         Regex? CreateSearchRegex()
@@ -674,7 +674,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
                 {
                     var lines = IOUtilities.ReadLines(document.Path);
                     document.IsSearchMatch = lines.Any(line =>
-                        line.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                        line.Contains(SearchText!, StringComparison.OrdinalIgnoreCase));
                 }).ConfigureAwait(false);
             }
         }

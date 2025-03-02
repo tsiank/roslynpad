@@ -102,6 +102,11 @@ public partial class RenameSymbolDialog : INotifyPropertyChanged, IRenameSymbolD
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    [GeneratedRegex(@"^(?:((?!\d)\w+(?:\.(?!\d)\w+)*)\.)?((?!\d)\w+)$")]
-    private static partial Regex IdentifierRegex();
+    //[GeneratedRegex(@"^(?:((?!\d)\w+(?:\.(?!\d)\w+)*)\.)?((?!\d)\w+)$")]
+    //private static partial Regex IdentifierRegex();
+
+    private static Regex IdentifierRegex()
+    {
+        return new Regex(@"^(?:((?!\d)\w+(?:\.(?!\d)\w+)*)\.)?((?!\d)\w+)$", RegexOptions.Compiled);
+    }
 }

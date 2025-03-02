@@ -36,7 +36,7 @@ public abstract class NotificationObject : INotifyPropertyChanged, INotifyDataEr
             LazyInitializer.EnsureInitialized(ref _propertyErrors, () => new ConcurrentDictionary<string, List<ErrorInfo>>());
         }
 
-        var errors = _propertyErrors.GetOrAdd(propertyName, _ => []);
+        var errors = _propertyErrors!.GetOrAdd(propertyName, _ => []);
         errors.RemoveAll(e => e.Id == id);
         errors.Add(new ErrorInfo(id, message));
 

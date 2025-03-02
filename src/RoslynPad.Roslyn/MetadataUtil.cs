@@ -14,7 +14,7 @@ internal class MetadataUtil
 
     public static unsafe IReadOnlyList<Type> LoadTypesBy(Assembly assembly, Func<TypeInfo, bool> predicate)
     {
-        if (!assembly.TryGetRawMetadata(out var metadata, out var length))
+        if (!MetadataHelper.TryGetRawMetadata(assembly, out var metadata, out var length))
         {
             return [];
         }

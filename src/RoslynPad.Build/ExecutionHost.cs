@@ -95,7 +95,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
     public string DotNetExecutable
     {
-        get => HasDotNetExecutable ? _dotNetExecutable : throw new InvalidOperationException("Missing dotnet");
+        get => HasDotNetExecutable ? _dotNetExecutable! : throw new InvalidOperationException("Missing dotnet");
         set => _dotNetExecutable = value;
     }
 
@@ -262,12 +262,12 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         }
 
         var targetPath = Path.Combine(BuildPath, "Program.cs");
-        var code = await File.ReadAllTextAsync(path, cancellationToken).ConfigureAwait(false);
+        var code = await FileHelper.ReadAllTextAsync(path, cancellationToken).ConfigureAwait(false);
         var syntaxTree = ParseAndTransformCode(code, path, (CSharpParseOptions)_roslynHost.ParseOptions, cancellationToken: cancellationToken);
         var finalCode = syntaxTree.ToString();
-        if (!File.Exists(targetPath) || !string.Equals(await File.ReadAllTextAsync(targetPath, cancellationToken).ConfigureAwait(false), finalCode, StringComparison.Ordinal))
+        if (!File.Exists(targetPath) || !string.Equals(await FileHelper.ReadAllTextAsync(targetPath, cancellationToken).ConfigureAwait(false), finalCode, StringComparison.Ordinal))
         {
-            await File.WriteAllTextAsync(targetPath, finalCode, cancellationToken).ConfigureAwait(false);
+            await FileHelper.WriteAllTextAsync(targetPath, finalCode, cancellationToken).ConfigureAwait(false);
         }
 
         var csprojPath = Path.Combine(BuildPath, UseCache ? "program.csproj" : $"{Name}.csproj");
@@ -276,14 +276,14 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             var moduleInitAttributeFile = Path.Combine(BuildPath, BuildCode.ModuleInitAttributeFileName);
             if (!File.Exists(moduleInitAttributeFile))
             {
-                await File.WriteAllTextAsync(moduleInitAttributeFile, BuildCode.ModuleInitAttribute, cancellationToken).ConfigureAwait(false);
+                await FileHelper.WriteAllTextAsync(moduleInitAttributeFile, BuildCode.ModuleInitAttribute, cancellationToken).ConfigureAwait(false);
             }
         }
 
         var moduleInitFile = Path.Combine(BuildPath, BuildCode.ModuleInitFileName);
         if (!File.Exists(moduleInitFile))
         {
-            await File.WriteAllTextAsync(moduleInitFile, BuildCode.ModuleInit, cancellationToken).ConfigureAwait(false);
+            await FileHelper.WriteAllTextAsync(moduleInitFile, BuildCode.ModuleInit, cancellationToken).ConfigureAwait(false);
         }
 
         var buildWarningsPath = Path.Combine(BuildPath, "build-warnings.log");
@@ -318,7 +318,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             yield break;
         }
 
-        await foreach (var line in File.ReadLinesAsync(path).ConfigureAwait(false))
+        await foreach (var line in FileHelper.ReadLinesAsync(path).ConfigureAwait(false))
         {
             var match = MsbuildLogRegex().Match(line);
             if (!match.Success)
@@ -341,8 +341,8 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
             if (match.Groups["file"].Value.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
             {
-                error.LineNumber = int.Parse(match.Groups["line"].ValueSpan, CultureInfo.InvariantCulture);
-                error.Column = int.Parse(match.Groups["column"].ValueSpan, CultureInfo.InvariantCulture);
+                error.LineNumber = Int32Extensions.Parse(match.Groups["line"].ValueSpan(), CultureInfo.InvariantCulture);
+                error.Column = Int32Extensions.Parse(match.Groups["column"].ValueSpan(), CultureInfo.InvariantCulture);
             }
 
             yield return error;
@@ -458,7 +458,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         ProcessStartInfo GetProcessStartInfo(string assemblyPath) => new()
         {
             FileName = Platform.IsDotNet ? DotNetExecutable : assemblyPath,
-            Arguments = $"\"{assemblyPath}\" --pid {Environment.ProcessId}",
+            Arguments = $"\"{assemblyPath}\" --pid {Process.GetCurrentProcess().Id}",
             WorkingDirectory = _parameters.WorkingDirectory,
             CreateNoWindow = true,
             UseShellExecute = false,
@@ -496,6 +496,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
     {
         const int prefixLength = 2;
         using var sequence = new Sequence<byte>(ArrayPool<byte>.Shared) { AutoIncreaseMinimumSpanLength = false };
+
         while (true)
         {
             var eolPosition = await ReadLineAsync().ConfigureAwait(false);
@@ -505,9 +506,9 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             }
 
             var readOnlySequence = sequence.AsReadOnlySequence;
-            if (readOnlySequence.FirstSpan.Length > 1 && readOnlySequence.FirstSpan[1] == ':')
+            if (readOnlySequence.First.Span.Length > 1 && readOnlySequence.First.Span[1] == ':')
             {
-                switch (readOnlySequence.FirstSpan[0])
+                switch (readOnlySequence.First.Span[0])
                 {
                     case (byte)'i':
                         ReadInput?.Invoke();
@@ -544,6 +545,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             {
                 var memory = sequence.GetMemory(0);
                 var read = await reader.BaseStream.ReadAsync(memory).ConfigureAwait(false);
+
                 if (read == 0)
                 {
                     return null;
@@ -559,6 +561,8 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                 }
 
                 sequence.Advance(read);
+                Console.WriteLine(sequence.ToString());
+
             }
         }
 
@@ -692,7 +696,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                 string? id, version;
                 
                 bool embedInteropTypes = false;
-                if(value.EndsWith('@'))
+                if (!string.IsNullOrEmpty(value) && value[value.Length - 1] == '@')
                 {
                     value = value.Substring(0, value.Length - 1);
                     var asmFiles = GACAsmSearch.SearchAssemblyInGacDirectory(value);
@@ -702,7 +706,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                     }
                     else if (asmFiles.Count > 1)
                     {
-                        var ret = string.Join('\n', asmFiles);
+                        var ret = string.Join("\n", asmFiles);
                         Console.WriteLine("There are more than one assembly in different directory, please specify a full name one.");
                         value = asmFiles[0];
                     }
@@ -739,7 +743,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                     continue;
                 }
 
-                if (!string.IsNullOrEmpty(version) && !VersionRange.TryParse(version, out _))
+                if (!string.IsNullOrEmpty(version) && !VersionRange.TryParse(version!, out _))
                 {
                     continue;
                 }
@@ -755,7 +759,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
             static (string? id, string? version) ParseLegacyNuGetReference(string value)
             {
-                var split = value.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+                var split = value.Split('\\', (char)StringSplitOptions.RemoveEmptyEntries);
                 return split.Length >= 3 ? (split[1], split[2]) : (null, null);
             }
         }
@@ -836,7 +840,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
                     if (projBuildResult.UsesCache)
                     {
-                        await File.WriteAllTextAsync(projBuildResult.MarkerPath, string.Empty, cancellationToken).ConfigureAwait(false);
+                        await FileHelper.WriteAllTextAsync(projBuildResult.MarkerPath!, string.Empty, cancellationToken).ConfigureAwait(false);
                     }
                 }
 
@@ -852,7 +856,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                         File.Delete(Path.Combine(BuildPath, "Program.cs"));
                     }
 
-                    await File.WriteAllTextAsync(Path.Combine(BuildPath, Path.GetFileName(projBuildResult.RestorePath)), string.Empty, cancellationToken).ConfigureAwait(false);
+                    await FileHelper.WriteAllTextAsync(Path.Combine(BuildPath, Path.GetFileName(projBuildResult.RestorePath)), string.Empty, cancellationToken).ConfigureAwait(false);
 
                     if (IsScript)
                     {
@@ -862,7 +866,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                             var newFile = Path.Combine(BuildPath, string.Format(CultureInfo.InvariantCulture, fileToRename, Name));
                             if (File.Exists(originalFile))
                             {
-                                File.Move(originalFile, newFile, overwrite: true);
+                                FileHelper.Move(originalFile, newFile, overwrite: true);
                             }
                         }
                     }
@@ -910,7 +914,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             }
 
             var globalJson = $@"{{ ""sdk"": {{ ""version"": ""{Platform.FrameworkVersion}"" }} }}";
-            await File.WriteAllTextAsync(Path.Combine(restorePath, "global.json"), globalJson, cancellationToken).ConfigureAwait(false);
+            await FileHelper.WriteAllTextAsync(Path.Combine(restorePath, "global.json"), globalJson, cancellationToken).ConfigureAwait(false);
         }
 
         async Task<CsprojBuildResult> BuildCsproj()
@@ -956,7 +960,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             string[] errors;
             try
             {
-                errors = await File.ReadAllLinesAsync(errorsPath, cancellationToken).ConfigureAwait(false);
+                errors = await FileHelper.ReadAllLinesAsync(errorsPath, cancellationToken).ConfigureAwait(false);
                 if (errors.Length == 0)
                 {
                     errors = GetErrorsFromResult(result);
@@ -1009,7 +1013,11 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         hash.AppendData(MemoryMarshal.AsBytes(b.AsSpan()));
         hash.AppendData(MemoryMarshal.AsBytes(c.AsSpan()));
         hash.TryGetHashAndReset(hashBuffer, out _);
+#if NET472_OR_GREATER
+        return HexConverter.ToHexString(hashBuffer, hashBuffer.Length);
+#else
         return Convert.ToHexString(hashBuffer);
+#endif
     }
 
     private class BooleanConverter : JsonConverter<bool>
@@ -1023,11 +1031,23 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) => throw new NotSupportedException();
     }
 
-    [GeneratedRegex(@"(?<=\: error )[^\]]+")]
-    private static partial Regex RestoreErrorRegex();
+    //[GeneratedRegex(@"(?<=\: error )[^\]]+")]
+    //private static partial Regex RestoreErrorRegex();
 
-    [GeneratedRegex(@"(?<file>[\\/][^\\/(]+)?\((?<line>\d+),(?<column>\d+)\): (warning|error) (?<code>\w+): ((?<message>.+)\s*\[.+\]|(?<message>.+))", RegexOptions.ExplicitCapture)]
-    private static partial Regex MsbuildLogRegex();
+    private static Regex RestoreErrorRegex()
+    {
+        return new Regex(@"(?<=\: error )[^\]]+", RegexOptions.Compiled);
+    }
+
+    //[GeneratedRegex(@"(?<file>[\\/][^\\/(]+)?\((?<line>\d+),(?<column>\d+)\): (warning|error) (?<code>\w+): ((?<message>.+)\s*\[.+\]|(?<message>.+))", RegexOptions.ExplicitCapture)]
+    //private static partial Regex MsbuildLogRegex();
+    private static Regex MsbuildLogRegex()
+    {
+        return new Regex(
+            pattern: @"(?<file>[\\/][^\\/(]+)?\((?<line>\d+),(?<column>\d+)\): (warning|error) (?<code>\w+): ((?<message>.+)\s*\[.+\]|(?<message>.+))",
+            options: RegexOptions.ExplicitCapture | RegexOptions.Compiled
+        );
+    }
 
     private record BuildOutput(BuildOutputItems Items);
     private record BuildOutputItems(BuildOutputReferenceItem[] ReferencePathWithRefAssemblies, BuildOutputReferenceItem[] Analyzer);

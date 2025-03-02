@@ -10,21 +10,21 @@ public static class CodeActionExtensions
 {
     public static bool HasCodeActions(this CodeAction codeAction)
     {
-        ArgumentNullException.ThrowIfNull(codeAction);
+        ArgumentNullExceptionE.ThrowIfNull(codeAction);
 
         return !codeAction.NestedCodeActions.IsDefaultOrEmpty;
     }
 
     public static ImmutableArray<CodeAction> GetCodeActions(this CodeAction codeAction)
     {
-        ArgumentNullException.ThrowIfNull(codeAction);
+        ArgumentNullExceptionE.ThrowIfNull(codeAction);
 
         return codeAction.NestedCodeActions;
     }
 
     public static Glyph GetGlyph(this CodeAction codeAction)
     {
-        ArgumentNullException.ThrowIfNull(codeAction);
+        ArgumentNullExceptionE.ThrowIfNull(codeAction);
 
         return GetGlyph(codeAction.Tags);
     }

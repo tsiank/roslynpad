@@ -732,7 +732,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
     {
         if (!string.IsNullOrWhiteSpace(SelectedText))
         {
-            return SelectedText;
+            return SelectedText!;
         }
 
         var document = MainViewModel.RoslynHost.GetDocument(DocumentId);

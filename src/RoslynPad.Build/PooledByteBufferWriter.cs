@@ -23,7 +23,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
         get
         {
             Debug.Assert(_rentedBuffer != null);
-            Debug.Assert(_index <= _rentedBuffer.Length);
+            Debug.Assert(_index <= _rentedBuffer!.Length);
             return _rentedBuffer.AsMemory(0, _index);
         }
     }
@@ -42,7 +42,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
         get
         {
             Debug.Assert(_rentedBuffer != null);
-            return _rentedBuffer.Length;
+            return _rentedBuffer!.Length;
         }
     }
 
@@ -51,7 +51,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
         get
         {
             Debug.Assert(_rentedBuffer != null);
-            return _rentedBuffer.Length - _index;
+            return _rentedBuffer!.Length - _index;
         }
     }
 
@@ -62,7 +62,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
     private void ClearHelper()
     {
         Debug.Assert(_rentedBuffer != null);
-        Debug.Assert(_index <= _rentedBuffer.Length);
+        Debug.Assert(_index <= _rentedBuffer!.Length);
 
         _rentedBuffer.AsSpan(0, _index).Clear();
         _index = 0;
@@ -86,7 +86,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
     {
         Debug.Assert(_rentedBuffer != null);
         Debug.Assert(count >= 0);
-        Debug.Assert(_index <= _rentedBuffer.Length - count);
+        Debug.Assert(_index <= _rentedBuffer!.Length - count);
 
         _index += count;
     }
@@ -103,10 +103,10 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
         return _rentedBuffer.AsSpan(_index);
     }
 
-    internal ValueTask WriteToStreamAsync(Stream destination, CancellationToken cancellationToken) =>
+    internal ValueTask WriteToStreamAsync(CustomStream destination, CancellationToken cancellationToken) =>
         destination.WriteAsync(WrittenMemory, cancellationToken);
 
-    internal void WriteToStream(Stream destination) => destination.Write(WrittenMemory.Span);
+    internal void WriteToStream(CustomStream destination) => destination.Write(WrittenMemory.Span);
 
     private void CheckAndResizeBuffer(int sizeHint)
     {
@@ -118,7 +118,7 @@ internal sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
             sizeHint = MinimumBufferSize;
         }
 
-        int availableSpace = _rentedBuffer.Length - _index;
+        int availableSpace = _rentedBuffer!.Length - _index;
 
         if (sizeHint > availableSpace)
         {

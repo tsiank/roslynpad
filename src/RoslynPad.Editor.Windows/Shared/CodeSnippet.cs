@@ -44,11 +44,15 @@ internal sealed partial class CodeSnippet(string name, string description, strin
         return CreateAvalonEditSnippet(Text);
     }
 
-    private static readonly Regex s_pattern = Pattern();
+    private static readonly Regex s_pattern = new(@"\$\{([^\}]*)\}", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
     public static Snippet CreateAvalonEditSnippet(string snippetText)
     {
+#if NET472_OR_GREATER
+        if(snippetText is null) throw new ArgumentNullException(nameof(snippetText));
+#else
         ArgumentNullException.ThrowIfNull(snippetText);
+#endif
         var replaceableElements = new Dictionary<string, SnippetReplaceableTextElement>(StringComparer.OrdinalIgnoreCase);
         foreach (var match in s_pattern.Matches(snippetText).OfType<Match>())
         {
@@ -85,7 +89,7 @@ internal sealed partial class CodeSnippet(string name, string description, strin
         return snippet;
     }
 
-    private static readonly Regex s_functionPattern = FunctionPattern();
+    private static readonly Regex s_functionPattern = new(@"^([a-zA-Z]+)\(([^\)]*)\)$", RegexOptions.CultureInvariant);
 
     private static SnippetElement CreateElementForValue(Dictionary<string, SnippetReplaceableTextElement> replaceableElements, string val, int offset, string snippetText)
     {
@@ -192,7 +196,7 @@ internal sealed partial class CodeSnippet(string name, string description, strin
     {
         if (string.IsNullOrEmpty(fieldName))
             return fieldName;
-        if (fieldName.StartsWith('_') && fieldName.Length > 1)
+        if (fieldName.StartsWith("_", StringComparison.OrdinalIgnoreCase) && fieldName.Length > 1)
             return char.ToUpperInvariant(fieldName[1]) + fieldName.Substring(2);
         if (fieldName.StartsWith("m_", StringComparison.Ordinal) && fieldName.Length > 2)
             return char.ToUpperInvariant(fieldName[2]) + fieldName.Substring(3);
@@ -203,7 +207,7 @@ internal sealed partial class CodeSnippet(string name, string description, strin
     {
         if (string.IsNullOrEmpty(fieldName))
             return fieldName;
-        if (fieldName.StartsWith('_') && fieldName.Length > 1)
+        if (fieldName.StartsWith("_", StringComparison.OrdinalIgnoreCase) && fieldName.Length > 1)
             return char.ToLowerInvariant(fieldName[1]) + fieldName.Substring(2);
         if (fieldName.StartsWith("m_", StringComparison.Ordinal) && fieldName.Length > 2)
             return char.ToLowerInvariant(fieldName[2]) + fieldName.Substring(3);
@@ -230,8 +234,8 @@ internal sealed partial class CodeSnippet(string name, string description, strin
         }
     }
 
-    [GeneratedRegex(@"\$\{([^\}]*)\}", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
-    private static partial Regex Pattern();
-    [GeneratedRegex(@"^([a-zA-Z]+)\(([^\)]*)\)$", RegexOptions.CultureInvariant)]
-    private static partial Regex FunctionPattern();
+    //[GeneratedRegex(@"\$\{([^\}]*)\}", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+    //private static partial Regex Pattern();
+    //[GeneratedRegex(@"^([a-zA-Z]+)\(([^\)]*)\)$", RegexOptions.CultureInvariant)]
+    //private static partial Regex FunctionPattern();
 }

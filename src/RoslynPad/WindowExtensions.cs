@@ -13,7 +13,7 @@ public static partial class WindowExtensions
         var error = DwmSetWindowAttribute(
             hwnd,
             DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
-            value,
+            ref value,
             Marshal.SizeOf<bool>());
 
         if (error != 0)
@@ -22,12 +22,31 @@ public static partial class WindowExtensions
         }
     }
 
-    [LibraryImport("dwmapi")]
-    private static partial int DwmSetWindowAttribute(
+    //[LibraryImport("dwmapi")]
+    //private static partial int DwmSetWindowAttribute(
+    //    IntPtr hwnd,
+    //    DwmWindowAttribute attribute,
+    //    [MarshalAs(UnmanagedType.Bool)] in bool pvAttribute,
+    //    int cbAttribute);
+
+    // 替换LibraryImport为DllImport，并移除分部方法声明
+    [DllImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]
+    private static extern int DwmSetWindowAttribute(
         IntPtr hwnd,
         DwmWindowAttribute attribute,
-        [MarshalAs(UnmanagedType.Bool)] in bool pvAttribute,
+        [MarshalAs(UnmanagedType.Bool)] ref bool pvAttribute, // 移除'in'修饰符，改为ref
         int cbAttribute);
+
+    // 添加一个公共包装方法以简化调用
+    public static bool SetDarkMode(IntPtr hwnd, bool enable)
+    {
+        bool attributeValue = enable;
+        return DwmSetWindowAttribute(
+            hwnd,
+            DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
+            ref attributeValue,
+            Marshal.SizeOf(attributeValue)) == 0;
+    }
 
     private enum DwmWindowAttribute
     {

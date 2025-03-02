@@ -101,7 +101,7 @@ public sealed class NuGetDocumentViewModel : NotificationObject
         var cancellationToken = searchCts.Token;
         _searchCts = searchCts;
 
-        _ = Task.Run(() => PerformSearch(SearchTerm, cancellationToken), cancellationToken);
+        _ = Task.Run(() => PerformSearch(SearchTerm!, cancellationToken), cancellationToken);
     }
 
     private async Task PerformSearch(string searchTerm, CancellationToken cancellationToken)

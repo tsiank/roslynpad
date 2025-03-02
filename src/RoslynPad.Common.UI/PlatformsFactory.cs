@@ -14,7 +14,7 @@ internal class PlatformsFactory : IPlatformsFactory
     private (string dotnetExe, string sdkPath) _dotnetPaths;
 
     public IReadOnlyList<ExecutionPlatform> GetExecutionPlatforms() =>
-        _executionPlatforms ??= GetNetVersions().Concat(GetNetFrameworkVersions()).ToArray().AsReadOnly();
+        _executionPlatforms ??= GetNetVersions().Concat(GetNetFrameworkVersions()).ToArray();
 
     public string DotNetExecutable => FindNetSdk().dotnetExe;
 

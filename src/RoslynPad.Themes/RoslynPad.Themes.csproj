@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>$(LtsTargetFramework)</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
@@ -8,7 +9,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Themes\*.json" />
-    <Content Include="Themes\*.json" Exclude="Themes\vs2019*.json"
-             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Themes\*.json" Exclude="Themes\vs2019*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="dotnetCampus.LatestCSharpFeatures" />
+    <PackageReference Include="IndexRange" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 </Project>

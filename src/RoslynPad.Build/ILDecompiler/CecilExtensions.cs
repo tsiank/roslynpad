@@ -167,7 +167,7 @@ internal static class CecilExtensions
     /// </summary>
     public static int GetEndOffset(this Instruction inst)
     {
-        ArgumentNullException.ThrowIfNull(inst);
+        if(inst is null) throw new ArgumentNullException(nameof(inst));
         return inst.Offset + inst.GetSize();
     }
 
@@ -283,7 +283,7 @@ internal static class CecilExtensions
 
     public static bool HasGeneratedName(this MemberReference member)
     {
-        return member.Name.StartsWith('<');
+        return member.Name.StartsWith("<");
     }
 
     public static bool ContainsAnonymousType(this TypeReference type)

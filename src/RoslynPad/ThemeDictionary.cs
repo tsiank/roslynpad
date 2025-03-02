@@ -7,7 +7,7 @@ namespace RoslynPad;
 
 public class ThemeDictionary : ThemeDictionaryBase
 {
-    private static readonly IReadOnlySet<string> s_colors = typeof(ThemeDictionary).GetFields()
+    private static readonly HashSet<string> s_colors = typeof(ThemeDictionary).GetFields()
         .Where(t => t.IsStatic && t.Attributes.HasFlag(System.Reflection.FieldAttributes.Literal))
         .Select(t => (string)t.GetValue(null)!).ToHashSet();
 

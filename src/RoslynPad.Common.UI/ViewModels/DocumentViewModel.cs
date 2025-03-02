@@ -2,8 +2,10 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.RegularExpressions;
 using RoslynPad.Build;
+using MemberNotNullWhenAttribute = System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute;
 
 namespace RoslynPad.UI;
 
@@ -30,7 +32,8 @@ public partial class DocumentViewModel : NotificationObject
         IsAutoSave = nameWithoutExtension.EndsWith(AutoSaveSuffix, StringComparison.OrdinalIgnoreCase);
         if (IsAutoSave)
         {
-            Name = string.Concat(nameWithoutExtension.AsSpan(0, nameWithoutExtension.Length - AutoSaveSuffix.Length), System.IO.Path.GetExtension(Name));
+            //Name = string.Concat(nameWithoutExtension.AsSpan(0, nameWithoutExtension.Length - AutoSaveSuffix.Length), System.IO.Path.GetExtension(Name));
+            Name = nameWithoutExtension.Substring(0, nameWithoutExtension.Length - AutoSaveSuffix.Length) + System.IO.Path.GetExtension(Name);
         }
 
         IsSearchMatch = true;
@@ -223,6 +226,11 @@ public partial class DocumentViewModel : NotificationObject
         children.Insert(insertIndex, documentViewModel);
     }
 
-    [GeneratedRegex("[0-9]+")]
-    private static partial Regex NumberRegex();
+    //[GeneratedRegex("[0-9]+")]
+    //private static partial Regex NumberRegex();
+
+    private static Regex NumberRegex()
+    {
+        return new Regex(@"[0-9]+", RegexOptions.Compiled);
+    }
 }

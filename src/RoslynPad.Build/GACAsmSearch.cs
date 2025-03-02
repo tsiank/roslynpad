@@ -58,7 +58,7 @@ namespace RoslynPad.Build
 
             if (asmName.GetPublicKeyToken() != null)
             {
-                string publicKeyToken = Convert.ToHexStringLower(asmName.GetPublicKeyToken()!);
+                string publicKeyToken = ConvertHelper.ToHexStringLower(asmName.GetPublicKeyToken()!);
                 Console.WriteLine($"PublicKeyToken: {publicKeyToken}");
             }
 

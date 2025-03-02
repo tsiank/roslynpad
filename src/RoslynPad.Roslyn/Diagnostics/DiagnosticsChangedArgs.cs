@@ -2,4 +2,4 @@
 
 namespace RoslynPad.Roslyn.Diagnostics;
 
-public record DiagnosticsChangedArgs(DocumentId DocumentId, IReadOnlySet<DiagnosticData> AddedDiagnostics, IReadOnlySet<DiagnosticData> RemovedDiagnostics);
+public record DiagnosticsChangedArgs(DocumentId DocumentId, ISet<DiagnosticData> AddedDiagnostics, ISet<DiagnosticData> RemovedDiagnostics);

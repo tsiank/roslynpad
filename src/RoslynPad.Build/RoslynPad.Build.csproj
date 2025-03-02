@@ -1,11 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>RoslynPad.UI</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="IndexRange" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
     <PackageReference Include="Mono.Cecil" />
     <PackageReference Include="NuGet.Versioning" />
     <PackageReference Include="Nerdbank.Streams" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="System.Memory" />
   </ItemGroup>
 </Project>

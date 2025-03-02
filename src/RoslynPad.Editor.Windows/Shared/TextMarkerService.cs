@@ -16,7 +16,9 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.Differencing;
 
 namespace RoslynPad.Editor;
 
@@ -34,7 +36,11 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
 
     public TextMarkerService(CodeTextEditor editor)
     {
+#if NET472_OR_GREATER
+        if (editor is null) throw new ArgumentNullException(nameof(editor));    
+#else
         ArgumentNullException.ThrowIfNull(editor);
+#endif
         _document = editor.Document;
         _markers = new TextSegmentCollection<TextMarker>(_document);
         _textViews = [];
@@ -65,7 +71,7 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
         }
     }
 
-    #endregion
+#endregion
 
     #region TextMarkerService
 
@@ -96,7 +102,11 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
 
     public void RemoveAll(Predicate<TextMarker> predicate)
     {
+#if NET472_OR_GREATER
+        if (predicate is null) throw new ArgumentNullException(nameof(predicate));    
+#else
         ArgumentNullException.ThrowIfNull(predicate);
+#endif
         if (_markers != null)
         {
             foreach (var m in _markers.ToArray())
@@ -109,7 +119,11 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
 
     public void Remove(TextMarker marker)
     {
+#if NET472_OR_GREATER
+        if (marker is null) throw new ArgumentNullException(nameof(marker));    
+#else
         ArgumentNullException.ThrowIfNull(marker);
+#endif
         var m = marker;
         if (_markers != null && _markers.Remove(m))
         {
@@ -175,8 +189,14 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
 
     public void Draw(TextView textView, DrawingContext drawingContext)
     {
+#if NET472_OR_GREATER
+        if (textView is null) throw new ArgumentNullException(nameof(textView)); 
+        if (drawingContext is null) throw new ArgumentNullException(nameof(drawingContext));   
+#else
         ArgumentNullException.ThrowIfNull(textView);
         ArgumentNullException.ThrowIfNull(drawingContext);
+#endif
+
         if (_markers == null || !textView.VisualLinesValid)
             return;
         var visualLines = textView.VisualLines;

@@ -143,7 +143,7 @@ internal partial class SaveDocumentDialog : ISaveDocumentDialog, INotifyProperty
     {
         if (AllowNameEdit && !string.IsNullOrEmpty(DocumentName))
         {
-            FilePath = FilePathFactory?.Invoke(DocumentName) ?? throw new InvalidOperationException();
+            FilePath = FilePathFactory?.Invoke(DocumentName!) ?? throw new InvalidOperationException();
             if (File.Exists(FilePath))
             {
                 SaveButton.Visibility = Visibility.Collapsed;

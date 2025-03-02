@@ -6,6 +6,7 @@
     <Description>Provides a Roslyn-based code editor using AvaloniaEdit (Avalonia platform) with completion, diagnostics, and quick actions</Description>
     <NoWarn>NU5104</NoWarn>
     <IsPackable>true</IsPackable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" NoWarn="NU5104" />

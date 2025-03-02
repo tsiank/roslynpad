@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System;
 
 namespace RoslynPad.Themes;
 
@@ -21,7 +22,7 @@ internal readonly struct Color
     public static Color White => new(new RGBA(255, 255, 255, 1.0));
     public static Color Black => new(new RGBA(0, 0, 0, 1.0));
 
-    private static int ParseHex(string color, Range range) => int.Parse(color.AsSpan(range), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+    private static int ParseHex(string color, Range range) => SpanParser.Parse(color.AsSpan(range.Start.Value, range.End.Value - range.Start.Value), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
     public override string ToString() => ToRGBA(_hsla).ToString();
 

@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
     <RootNamespace>RoslynPad.UI</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
@@ -12,6 +13,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Commands" />
+    <PackageReference Include="PolyfillsForOldDotNet.System.Buffers" />
+    <PackageReference Include="System.Memory" />
     <PackageReference Include="System.Reactive.Core" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
