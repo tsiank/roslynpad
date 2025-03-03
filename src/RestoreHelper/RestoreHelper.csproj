@@ -21,13 +21,8 @@
   </ItemGroup>
   <Target Name="GetLibReferences" Outputs="@(Reference)">
     <ItemGroup>
-      <Reference Include="C:\Users\tsiank\.nuget\packages\microsoft.codeanalysis.languageserver.protocol\4.12.0-3.24574.8\lib\netstandard2.0\Microsoft.CodeAnalysis.LanguageServer.Protocol.dll" />
-
+      <Reference Include="$(PkgMicrosoft_CodeAnalysis_LanguageServer_Protocol)/lib/$(LtsTargetFramework)/*.dll" />
     </ItemGroup>
   </Target>
-  <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis.LanguageServer.Protocol">
-      <HintPath>C:\Users\tsiank\.nuget\packages\microsoft.codeanalysis.languageserver.protocol\4.12.0-3.24574.8\lib\netstandard2.0\Microsoft.CodeAnalysis.LanguageServer.Protocol.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
+
