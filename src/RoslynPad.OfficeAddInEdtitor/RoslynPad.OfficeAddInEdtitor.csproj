@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <OutputType>Library</OutputType>
+    <ApplicationIcon>Resources\RoslynPad.ico</ApplicationIcon>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <NoWarn>1701;1702</NoWarn>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>$(RoslynPadVersion)</Version>
+    <CopyRoslynPadRuntimeAssemblies>true</CopyRoslynPadRuntimeAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="**\*.xshd" />
+    <EmbeddedResource Include="**\*.xshd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RoslynPad.Common.UI\RoslynPad.Common.UI.csproj" />
+    <ProjectReference Include="..\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Dirkster.AvalonDock" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" />
+    <PackageReference Include="ExcelDna.AddIn" />
+    <PackageReference Include="ExcelDna.Integration" />
+    <PackageReference Include="Mono.Cecil" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="AvalonLibrary">
+      <HintPath>..\..\..\WPFContrib\src\WpfContrib\bin\Release\net48\publish\AvalonLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces">
+      <HintPath>..\RoslynPad.Roslyn\obj\Debug\netstandard2.0\IgnoresAccessChecksToGenerator\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel">
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RibbonResources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RibbonResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RibbonResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RibbonResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RibbonResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Buffers">
+      <VersionOverride>4.6.0.0</VersionOverride>
+    </PackageReference>
+  </ItemGroup>
+  <Target Name="CopyAppConfig" AfterTargets="ExcelDnaBuild">
+    <Message Importance="High" Text="Copy $(TargetPath).config to $(TargetDir)RoslynPad.OfficeAddInEdtitor-AddIn[64][-packed].xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad.OfficeAddInEdtitor-AddIn.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad.OfficeAddInEdtitor-AddIn-packed.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad.OfficeAddInEdtitor-AddIn64.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad.OfficeAddInEdtitor-AddIn64-packed.xll.config" />
+  </Target>
+</Project>

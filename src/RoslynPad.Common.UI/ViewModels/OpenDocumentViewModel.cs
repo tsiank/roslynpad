@@ -594,7 +594,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
         await writer.WriteAsync(text.Lines[text.Lines.Count - 1].ToString()).ConfigureAwait(false);
     }
 
-    internal void Initialize(DocumentId documentId,
+    public void Initialize(DocumentId documentId,
         Action<ExceptionResultObject?> onError,
         Func<TextSpan> getSelection, IDisposable viewDisposable)
     {

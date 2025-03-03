@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' loadImage='LoadImage' onLoad='onload'>
+	<ribbon>
+		<tabs>
+			<tab id='tab1' label='ExcelDnaWpfDemo'>
+				<group id='group1' label='My Group'>
+					<button id='button1' label='UI多线程' onAction='OnButtonPressed' image='Image1'/>
+					<button id='button2' label='Ui单线程' onAction='OnButtonPressedSingle' image='Image1'/>
+					<button id='button3' label='任务窗格' onAction='OnButtonPressedCTP' image='Image1'/>
+				</group>
+			</tab>
+		</tabs>
+	</ribbon>
+</customUI>

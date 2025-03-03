@@ -23,10 +23,12 @@
     <PackageVersion Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.72.1" />
     <PackageVersion Include="Dock.Avalonia" Version="11.2.0" />
     <PackageVersion Include="Dock.Model.Avalonia" Version="11.2.0" />
+    <PackageVersion Include="ExcelDna.AddIn" Version="1.9.0-beta1" />
     <PackageVersion Include="dotnetCampus.LatestCSharpFeatures" Version="12.0.1" />
+    <PackageVersion Include="ExcelDna.Integration" Version="1.9.0-beta1" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.8.0" />
     <PackageVersion Include="IndexRange" Version="1.0.3" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0-preview.1.25080.5" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="$(DotNetExtensionsVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="$(RoslynVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
@@ -49,6 +51,7 @@
     <PackageVersion Include="System.Buffers" Version="4.6.0" />
     <PackageVersion Include="System.Linq.Async" Version="6.0.1" />
     <PackageVersion Include="System.Memory" Version="4.6.0" />
+    <PackageVersion Include="System.Numerics.Vectors" Version="4.6.0" />
     <PackageVersion Include="System.Reactive.Core" Version="6.0.1" />
     <PackageVersion Include="System.Reactive.Linq" Version="6.0.1" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="$(DotNetExtensionsVersion)" />
