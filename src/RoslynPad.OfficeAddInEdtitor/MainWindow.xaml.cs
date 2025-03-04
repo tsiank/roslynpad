@@ -119,7 +119,8 @@ public partial class MainWindow : System.Windows.Window
     {
         Loaded -= OnLoaded;
 
-        await _viewModel.Initialize().ConfigureAwait(t);
+        await _viewModel.Initialize().ConfigureAwait(false);
+
     }
 
     protected override async void OnClosing(CancelEventArgs e)
