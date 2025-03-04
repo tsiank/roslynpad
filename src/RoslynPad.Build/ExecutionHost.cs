@@ -120,7 +120,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
     private string ExecutableExtension => Platform.IsDotNet ? "dll" : "exe";
 
-    public ImmutableArray<MetadataReference> MetadataReferences { get; private set; } = [];
+    public ImmutableArray<MetadataReference> MetadataReferences { get; set; } = [];
     public ImmutableArray<AnalyzerFileReference> Analyzers { get; private set; } = [];
 
     public ExecutionHost(ExecutionHostParameters parameters, IRoslynHost roslynHost, ILogger logger)
@@ -427,6 +427,34 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
     }
 
     private async Task ExecuteAssemblyAsync(string assemblyPath, CancellationToken cancellationToken)
+    {
+        await Task.Run(() =>
+         {
+             var fi = new FileInfo(assemblyPath);
+             var dn = fi.DirectoryName;
+             var asm = fi.Name;
+
+             var rasm = Path.Combine(new FileInfo(assemblyPath).DirectoryName, "bin", asm);
+             var runtimeAsm = Path.Combine(new FileInfo(assemblyPath).DirectoryName, "bin", "RoslynPad.Runtime.dll");
+             Assembly.LoadFrom(runtimeAsm);
+             Assembly assembly = Assembly.LoadFrom(rasm);
+
+                 MethodInfo mainMethod = assembly.EntryPoint;
+                 // 检查 Main 的签名，通常是 static void Main() 或 static void Main(string[] args)
+                 object[]? parameters = mainMethod.GetParameters().Length == 0 ? null : new object[] { new string[0] };
+                 var ret = mainMethod.Invoke(null, parameters);
+
+                 //var runMethods = targetType.GetMethods();
+                 //runMethod.Invoke(null, null); // 调用静态方法
+                 return;
+   
+         });
+
+
+
+    }
+
+    private async Task ExecuteAssemblyAsync0(string assemblyPath, CancellationToken cancellationToken)
     {
         using var process = new Process { StartInfo = GetProcessStartInfo(assemblyPath) };
         using var _ = cancellationToken.Register(() =>

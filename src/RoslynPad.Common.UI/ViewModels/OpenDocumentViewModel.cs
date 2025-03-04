@@ -236,11 +236,13 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
             }
 
             var project = document.Project;
-
+            
             project = project
                 .WithMetadataReferences(_executionHost.MetadataReferences)
-                .WithAnalyzerReferences(_executionHost.Analyzers);
-
+                .WithAnalyzerReferences(_executionHost.Analyzers)
+                .AddMetadataReference(AsmUtil.ExcelDNAsm)
+                .AddMetadataReference(AsmUtil.ExcelApplicationAsm);
+            //_executionHost.MetadataReferences = _executionHost.MetadataReferences.AddRange(AsmUtil.ExcelDNAsm, AsmUtil.ExcelApplicationAsm);
             document = project.GetDocument(DocumentId);
 
             host.UpdateDocument(document!);

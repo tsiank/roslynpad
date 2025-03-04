@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis;
 
 namespace RoslynPad.UI;
     public class SearchValues<T> where T : IEquatable<T>
@@ -170,3 +172,37 @@ public static class StringExtensions
         return source.IndexOf(value, comparisonType) >= 0;
     }
 }
+
+
+public static class AsmUtil
+{
+    private static string _officePath = @"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll";
+
+    public static MetadataReference ExcelDNAsm
+    {
+        get
+        {
+
+            return MetadataReference.CreateFromImage(AsmUtil.GetAssemblyBytesInMemeoryFw("ExcelDna.Integration"));
+        }
+    }
+    public static MetadataReference ExcelApplicationAsm => MetadataReference.CreateFromFile(_officePath, new MetadataReferenceProperties(embedInteropTypes: true));
+
+    public static Assembly MainAssembly => Assembly.Load("RoslynPad.OfficeAddInEdtitor");
+    public static Type ScriptGlobalsType => MainAssembly.GetType("RoslynPad.OfficeAddInEdtitor.GlobalMethods");
+
+
+    public static byte[] GetAssemblyBytesInMemeoryFw(string asmName)
+    {
+        var dnaAsm = Assembly.Load(asmName);
+        Type type = dnaAsm.GetType();
+        var pi = type.GetMethod("GetRawBytes", BindingFlags.Instance | BindingFlags.NonPublic);
+        byte[] assemblyBytes = (byte[])pi.Invoke(dnaAsm, null);
+        return assemblyBytes;
+    }
+
+}
+
+
+
+

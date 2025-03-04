@@ -63,25 +63,6 @@ public partial class MainWindow : System.Windows.Window
     }
 
     private bool IsDark => _viewModel.ThemeType == ThemeType.Dark;
-
-    private void AddAdditionalMetareferences()
-    {
-        var host = _viewModel.RoslynHost;
-        var duc = _viewModel.CurrentOpenDocument;
-        var documentId = duc!.DocumentId;
-        var document = host.GetDocument(documentId);
-        if (document == null)
-        {
-            return;
-        }
-
-        var project = document.Project;
-
-        project = project
-            .WithMetadataReferences([ExcelAsyncExtensions.ExcelApplicationAsm]);
-
-    }
-
     private void OnViewModelThemeChanged(object? sender, EventArgs e)
     {
         var app = Application.Current;
