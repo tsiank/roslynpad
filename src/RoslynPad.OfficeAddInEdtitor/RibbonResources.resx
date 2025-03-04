@@ -131,6 +131,7 @@
      &lt;button id='button1' label='UI多线程' onAction='OnButtonPressed' image='Image1'/&gt;
      &lt;button id='button2' label='Ui单线程' onAction='OnButtonPressedSingle' image='Image1'/&gt;
      &lt;button id='button3' label='任务窗格' onAction='OnButtonPressedCTP' image='Image1'/&gt;
+                    &lt;button id='button4' label='运行宏' onAction='OnButtonRunScript' image='Image1'/&gt;
     &lt;/group&gt;
    &lt;/tab&gt;
   &lt;/tabs&gt;

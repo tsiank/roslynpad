@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Composition.Hosting;
 using System.Diagnostics;
 using System.Globalization;
@@ -10,8 +11,12 @@ using Avalon.Windows.Controls;
 using AvalonDock;
 using AvalonDock.Controls;
 using AvalonDock.Layout.Serialization;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+using RoslynPad.OfficeAddInEdtitor;
 using RoslynPad.Themes;
 using RoslynPad.UI;
 
@@ -59,6 +64,24 @@ public partial class MainWindow : System.Windows.Window
 
     private bool IsDark => _viewModel.ThemeType == ThemeType.Dark;
 
+    private void AddAdditionalMetareferences()
+    {
+        var host = _viewModel.RoslynHost;
+        var duc = _viewModel.CurrentOpenDocument;
+        var documentId = duc!.DocumentId;
+        var document = host.GetDocument(documentId);
+        if (document == null)
+        {
+            return;
+        }
+
+        var project = document.Project;
+
+        project = project
+            .WithMetadataReferences([ExcelAsyncExtensions.ExcelApplicationAsm]);
+
+    }
+
     private void OnViewModelThemeChanged(object? sender, EventArgs e)
     {
         var app = Application.Current;
@@ -96,7 +119,7 @@ public partial class MainWindow : System.Windows.Window
     {
         Loaded -= OnLoaded;
 
-        await _viewModel.Initialize().ConfigureAwait(false);
+        await _viewModel.Initialize().ConfigureAwait(t);
     }
 
     protected override async void OnClosing(CancelEventArgs e)

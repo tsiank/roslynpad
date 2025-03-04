@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RoslynPad {
+namespace RoslynPad.OfficeAddInEdtitor {
     using System;
     
     
