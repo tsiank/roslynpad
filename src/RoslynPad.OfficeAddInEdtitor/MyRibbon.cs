@@ -51,13 +51,16 @@ public class MyRibbon : ExcelRibbon
         {
             app = new App();
             app.InitializeComponent();
+            var mainWindow = new MainWindow();
+            app.MainWindow = mainWindow;
+            app.MainWindow.Show();
             app.MainWindow.Closed += (a, b) => { app.MainWindow.Dispatcher.InvokeShutdown(); };
             Dispatcher.Run();
         })
         { IsBackground = true };
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
-        
+
     }
 
     [STAThread]

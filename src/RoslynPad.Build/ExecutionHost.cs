@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿
+using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Nerdbank.Streams;
 using NuGet.Versioning;
+using OfficeExtention;
 using RoslynPad.Build.ILDecompiler;
 using RoslynPad.Roslyn;
 
@@ -224,21 +226,49 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             var binPath = IsScript ? BuildPath : Path.Combine(BuildPath, "bin");
             _assemblyPath = Path.Combine(binPath, $"{Name}.{ExecutableExtension}");
 
-            var success = IsScript
-                ? CompileInProcess(path, optimizationLevel, _assemblyPath, cancellationToken)
-                : await CompileWithMsbuild(path, optimizationLevel, cancellationToken).ConfigureAwait(false);
-
-            if (!success)
+            if(IsScript)
             {
-                return;
-            }
+                var code = File.ReadAllText(path);
 
-            if (disassemble)
+                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code).ConfigureAwait(true);
+
+                //using (standardResult)
+                {
+                    if (!standardResult.Success)
+                    {
+                        return;
+                    }
+
+                    if (disassemble)
+                    {
+                        Disassemble();
+                    }
+
+                    //_processInputStream = new StreamWriter(process.StandardInput.BaseStream, Encoding.UTF8);
+
+                    await Task.WhenAll(
+                        Task.Run(() => ReadObjectProcessStreamAsync(standardResult.StandardOutput!), cancellationToken),
+                        Task.Run(() => ReadProcessStreamAsync(standardResult.StandardError!), cancellationToken)).ConfigureAwait(false);
+                }
+
+                //await ExecuteAssemblyAsync(_assemblyPath, cancellationToken).ConfigureAwait(false);
+            }
+            else
             {
-                Disassemble();
-            }
+                var success = await CompileWithMsbuild(path, optimizationLevel, cancellationToken).ConfigureAwait(false);
 
-            await ExecuteAssemblyAsync(_assemblyPath, cancellationToken).ConfigureAwait(false);
+                if (!success)
+                {
+                    return;
+                }
+
+                if (disassemble)
+                {
+                    Disassemble();
+                }
+
+                await ExecuteAssemblyAsync(_assemblyPath, cancellationToken).ConfigureAwait(false);
+            }
         }
         finally
         {
@@ -428,35 +458,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
     private async Task ExecuteAssemblyAsync(string assemblyPath, CancellationToken cancellationToken)
     {
-        await Task.Run(() =>
-         {
-             var fi = new FileInfo(assemblyPath);
-             var dn = fi.DirectoryName;
-             var asm = fi.Name;
-
-             var rasm = Path.Combine(new FileInfo(assemblyPath).DirectoryName, "bin", asm);
-             var runtimeAsm = Path.Combine(new FileInfo(assemblyPath).DirectoryName, "bin", "RoslynPad.Runtime.dll");
-             Assembly.LoadFrom(runtimeAsm);
-             Assembly assembly = Assembly.LoadFrom(rasm);
-
-                 MethodInfo mainMethod = assembly.EntryPoint;
-                 // 检查 Main 的签名，通常是 static void Main() 或 static void Main(string[] args)
-                 object[]? parameters = mainMethod.GetParameters().Length == 0 ? null : new object[] { new string[0] };
-                 var ret = mainMethod.Invoke(null, parameters);
-
-                 //var runMethods = targetType.GetMethods();
-                 //runMethod.Invoke(null, null); // 调用静态方法
-                 return;
-   
-         });
-
-
-
-    }
-
-    private async Task ExecuteAssemblyAsync0(string assemblyPath, CancellationToken cancellationToken)
-    {
-        using var process = new Process { StartInfo = GetProcessStartInfo(assemblyPath) };
+        using var process = new Process { StartInfo = GetProcessStartInfo(assemblyPath) }; 
         using var _ = cancellationToken.Register(() =>
         {
             try
@@ -553,11 +555,10 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                         var progressResult = Deserialize<ProgressResultObject>(readOnlySequence);
                         ProgressChanged?.Invoke(progressResult);
                         break;
-
                 }
             }
 
-            sequence.AdvanceTo(eolPosition.Value);
+                sequence.AdvanceTo(eolPosition.Value);
         }
 
         async ValueTask<SequencePosition?> ReadLineAsync()
@@ -670,7 +671,15 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             return;
         }
 
-        var libraries = ParseReferences(Platform.IsDotNet, syntaxRoot).Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef);
+        var officeExtentionAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "OfficeExtention.dll"));
+        var excelDnaAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "ExcelDna.Integration.dll"));
+        var indexRangeAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "IndexRange.dll"));
+
+        var libraries = ParseReferences(Platform.IsDotNet, syntaxRoot)
+            .Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef)
+            .Append(officeExtentionAssemblyLibraryRef)
+            .Append(excelDnaAssemblyLibraryRef);
+
         if (UpdateLibraries(libraries))
         {
             await RestoreAsync().ConfigureAwait(false);

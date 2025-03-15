@@ -1,4 +1,8 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35806.99 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestoreHelper", "RestoreHelper\RestoreHelper.csproj", "{A00977C6-5C07-4B08-9524-FD4F9DE94BD7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Avalonia", "RoslynPad.Avalonia\RoslynPad.Avalonia.csproj", "{76D87CB7-F6D8-4230-A526-1AEFEE6E3C40}"
@@ -16,6 +20,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Runtime", "RoslynPad.Runtime\RoslynPad.Runtime.csproj", "{FAE8AF1B-5004-42B6-8B42-EFF1DB5B677F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Themes", "RoslynPad.Themes\RoslynPad.Themes.csproj", "{5404C741-111E-46F2-9394-B59A97B1309F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPad.OfficeAddInEdtitor", "RoslynPad.OfficeAddInEdtitor\RoslynPad.OfficeAddInEdtitor.csproj", "{BDD8CD14-38E0-65F3-0AF8-7D0854E6EAFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPad.Editor.Windows", "RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj", "{2FB38F26-05C0-3977-2C37-6939B786949D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPadOfficeAddIn", "RoslynPadOfficeAddIn\RoslynPadOfficeAddIn.csproj", "{ACE5EF3B-917D-56DB-3938-30065ABD0532}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +69,18 @@ Global
 		{5404C741-111E-46F2-9394-B59A97B1309F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5404C741-111E-46F2-9394-B59A97B1309F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5404C741-111E-46F2-9394-B59A97B1309F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDD8CD14-38E0-65F3-0AF8-7D0854E6EAFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDD8CD14-38E0-65F3-0AF8-7D0854E6EAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDD8CD14-38E0-65F3-0AF8-7D0854E6EAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDD8CD14-38E0-65F3-0AF8-7D0854E6EAFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FB38F26-05C0-3977-2C37-6939B786949D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FB38F26-05C0-3977-2C37-6939B786949D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FB38F26-05C0-3977-2C37-6939B786949D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FB38F26-05C0-3977-2C37-6939B786949D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACE5EF3B-917D-56DB-3938-30065ABD0532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACE5EF3B-917D-56DB-3938-30065ABD0532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACE5EF3B-917D-56DB-3938-30065ABD0532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACE5EF3B-917D-56DB-3938-30065ABD0532}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

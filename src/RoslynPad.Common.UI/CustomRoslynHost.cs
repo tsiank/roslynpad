@@ -9,8 +9,10 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using RoslynPad.Roslyn;
 using RoslynPad.Build;
+using System.Windows.Forms;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace RoslynPad.UI;
+namespace RoslynPad;
 
 public class CustomRoslynHost : RoslynHost
 {
@@ -51,7 +53,7 @@ public class CustomRoslynHost : RoslynHost
             filePath: path,
             isSubmission: isScript,
             parseOptions: parseOptions,
-            hostObjectType: null,
+            hostObjectType: typeof(OfficeExtention.GlobalMethods),
             compilationOptions: compilationOptions,
             metadataReferences: previousProject != null ? [] : DefaultReferences,
             projectReferences: previousProject != null ? new[] { new ProjectReference(previousProject.Id) } : null)
@@ -61,7 +63,7 @@ public class CustomRoslynHost : RoslynHost
 
         if (!isScript && GetUsings(project) is { Length: > 0 } usings)
         {
-            usings += "global using Microsoft.Office.Interop.Excel; global using  ExcelDna.Integration";
+            usings += "global using Microsoft.Office.Interop.Excel; global using ExcelDna.Integration";
             project = project.AddDocument("RoslynPadGeneratedUsings", usings).Project;
         }
 

@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
+using OfficeExtention;
 using RoslynPad.Build;
 using RoslynPad.Roslyn.Rename;
 using RoslynPad.Utilities;
@@ -236,13 +237,17 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
             }
 
             var project = document.Project;
-            
+
+            var asm = typeof(OfficeExtention.GlobalMethods).Assembly.Location;
+            var asmref = MetadataReference.CreateFromFile(asm);
+
             project = project
                 .WithMetadataReferences(_executionHost.MetadataReferences)
                 .WithAnalyzerReferences(_executionHost.Analyzers)
-                .AddMetadataReference(AsmUtil.ExcelDNAsm)
-                .AddMetadataReference(AsmUtil.ExcelApplicationAsm);
-            //_executionHost.MetadataReferences = _executionHost.MetadataReferences.AddRange(AsmUtil.ExcelDNAsm, AsmUtil.ExcelApplicationAsm);
+                .AddMetadataReference(CSharpScriptingRunHelper.ExcelDNAsm)
+                .AddMetadataReference(CSharpScriptingRunHelper.ExcelAppAsm)
+                .AddMetadataReference(asmref);
+                
             document = project.GetDocument(DocumentId);
 
             host.UpdateDocument(document!);
@@ -354,6 +359,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
         var dialog = _serviceProvider.GetRequiredService<IRenameSymbolDialog>();
         dialog.Initialize(symbol.Name);
         await dialog.ShowAsync().ConfigureAwait(true);
+        
         if (dialog.ShouldRename)
         {
             var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, symbol, new SymbolRenameOptions(), dialog.SymbolName ?? string.Empty).ConfigureAwait(true);
