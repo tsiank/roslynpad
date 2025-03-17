@@ -18,12 +18,17 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <AssemblyName>RoslynPad</AssemblyName>
     <RootNamespace>RoslynPad</RootNamespace>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.xshd" />
     <EmbeddedResource Include="**\*.xshd" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\OfficeExtention\OfficeExtention.csproj" />
     <ProjectReference Include="..\RoslynPad.Common.UI\RoslynPad.Common.UI.csproj" />
     <ProjectReference Include="..\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
   </ItemGroup>
@@ -35,6 +40,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="System.Data.SQLite" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AvalonLibrary">

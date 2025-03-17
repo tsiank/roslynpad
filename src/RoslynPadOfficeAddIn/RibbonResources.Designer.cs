@@ -75,7 +75,7 @@ namespace RoslynPad {
         ///&lt;customUI xmlns=&apos;http://schemas.microsoft.com/office/2009/07/customui&apos; loadImage=&apos;LoadImage&apos; onLoad=&apos;onload&apos;&gt;
         /// &lt;ribbon&gt;
         ///  &lt;tabs&gt;
-        ///   &lt;tab id=&apos;tab1&apos; label=&apos;ExcelDnaRoslynPadEditor&apos;&gt;
+        ///   &lt;tab id=&apos;tab1&apos; label=&apos;OfficeMacroEditor&apos;&gt;
         ///    &lt;group id=&apos;group1&apos; label=&apos;My Group&apos;&gt;
         ///     &lt;button id=&apos;button1&apos; label=&apos;独立窗口&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;Image1&apos;/&gt;
         ///     &lt;button id=&apos;button3&apos; label=&apos;任务窗格&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;Image1&apos;/&gt;

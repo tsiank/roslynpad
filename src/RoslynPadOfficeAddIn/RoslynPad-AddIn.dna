@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DnaLibrary Name="RoslynPad Add-In" RuntimeVersion="v4.0" xmlns="http://schemas.excel-dna.net/addin/2020/07/dnalibrary">
-  <ExternalLibrary Path="RoslynPad.dll" ExplicitExports="false" LoadFromBytes="true" Pack="true" IncludePdb="false" />
-
+  <ExternalLibrary Path="RoslynPad.dll" ExplicitExports="false" ExplicitRegistration="true" LoadFromBytes="true" Pack="true" IncludePdb="false" />
+    <Reference Path="System.Data.SQLite.dll" Pack="true" />
+    
   <!--
        The RuntimeVersion attribute above allows only the following setting:
        * RuntimeVersion="v4.0" - for .NET 4.5 or higher

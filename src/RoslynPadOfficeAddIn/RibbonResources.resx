@@ -126,7 +126,7 @@
 &lt;customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' loadImage='LoadImage' onLoad='onload'&gt;
  &lt;ribbon&gt;
   &lt;tabs&gt;
-   &lt;tab id='tab1' label='ExcelDnaRoslynPadEditor'&gt;
+   &lt;tab id='tab1' label='OfficeMacroEditor'&gt;
     &lt;group id='group1' label='My Group'&gt;
      &lt;button id='button1' label='独立窗口' onAction='OnButtonPressed' image='Image1'/&gt;
      &lt;button id='button3' label='任务窗格' onAction='OnButtonPressedCTP' image='Image1'/&gt;

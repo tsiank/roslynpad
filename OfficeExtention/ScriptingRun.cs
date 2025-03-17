@@ -110,7 +110,7 @@ public static class CSharpScriptingRunHelper
             }, _jsonOptions);
 
             MessageBox.Show(ex.Message, "错误提示");
-            await Console.Error.WriteLineAsync($"e:{{{errorJson}}}"); // 注意这里不加 "e" 前缀，因为 FormattedTextWriter 已处理
+            await Console.Error.WriteLineAsync($"{{{errorJson}}}"); // 注意这里不加 "e" 前缀，因为 FormattedTextWriter 已处理
             success = false;
         }
         finally
@@ -136,7 +136,7 @@ public static class CSharpScriptingRunHelper
         };
     }
 
-    private static byte[] GetAssemblyBytesInMemeory(string asmName)
+    public static byte[] GetAssemblyBytesInMemeory(string asmName)
     {
         var dnaAsm = Assembly.Load(asmName);
         Type type = dnaAsm.GetType();
