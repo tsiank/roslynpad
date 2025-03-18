@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Nerdbank.Streams;
 using NuGet.Versioning;
-using OfficeExtention;
+using OfficeMacroExt;
 using RoslynPad.Build.ILDecompiler;
 using RoslynPad.Roslyn;
 
@@ -671,7 +671,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             return;
         }
 
-        var officeExtentionAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "OfficeExtention.dll"));
+        var officeExtentionAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "OfficeMacroExt.dll"));
         var excelDnaAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "ExcelDna.Integration.dll"));
         var indexRangeAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "IndexRange.dll"));
 

@@ -53,7 +53,6 @@ public class CustomRoslynHost : RoslynHost
             filePath: path,
             isSubmission: isScript,
             parseOptions: parseOptions,
-            hostObjectType: typeof(OfficeExtention.GlobalMethods),
             compilationOptions: compilationOptions,
             metadataReferences: previousProject != null ? [] : DefaultReferences,
             projectReferences: previousProject != null ? new[] { new ProjectReference(previousProject.Id) } : null)
@@ -63,7 +62,7 @@ public class CustomRoslynHost : RoslynHost
 
         if (!isScript && GetUsings(project) is { Length: > 0 } usings)
         {
-            usings += "global using Microsoft.Office.Interop.Excel; global using ExcelDna.Integration";
+            usings += "global using Microsoft.Office.Interop.Excel; global using ExcelDna.Integration; using static OfficeMacroExt.XlApp";
             project = project.AddDocument("RoslynPadGeneratedUsings", usings).Project;
         }
 

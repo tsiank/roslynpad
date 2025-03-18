@@ -54,7 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fw48Utilities", "Fw48Utilit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPadOfficeAddIn", "src\RoslynPadOfficeAddIn\RoslynPadOfficeAddIn.csproj", "{72ECD844-6814-A3C2-912E-AFE65247CC26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeExtention", "OfficeExtention\OfficeExtention.csproj", "{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeMacroExt", "src\OfficeMacroExt\OfficeMacroExt.csproj", "{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

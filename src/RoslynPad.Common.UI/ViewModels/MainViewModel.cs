@@ -188,7 +188,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     {
         RoslynHost = await Task.Run(() => new CustomRoslynHost(CompositionAssemblies,
             RoslynHostReferences.NamespaceDefault.With(
-                imports: ["RoslynPad.Runtime", "OfficeExtention", "ExcelDna.Integration"]),
+                imports: ["RoslynPad.Runtime", "OfficeMacroExt", "ExcelDna.Integration"]),
             disabledDiagnostics: ["CS1701", "CS1702", "CS7011", "CS8097"],
             analyzerConfigFiles: [_editorConfigPath]))
             .ConfigureAwait(true);

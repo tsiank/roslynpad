@@ -7,7 +7,7 @@ using ExcelDna.Integration;
 using System.Data;
 using System.Data.SQLite;
 
-namespace OfficeExtention;
+namespace OfficeMacroExt;
 
 public static class SqliteHelper
 {

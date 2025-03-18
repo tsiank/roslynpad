@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
 
-namespace OfficeExtention;
+namespace OfficeMacroExt;
 #nullable enable
 public class StandardResult
 {
@@ -30,10 +30,23 @@ public static class CSharpScriptingRunHelper
 {
     private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { WriteIndented = false };
 
-    private static string _officePath = @"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll";
+    private static string _vbeAsmPath = @"C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll";
+
+    private static string _officeAsmPath = @"C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL";
+
+    private static string _excelAsmPath = @"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll";
+
+    public static MetadataReference VBEAsm =>
+        MetadataReference.CreateFromFile(_vbeAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+
+    public static MetadataReference OfficepAsm =>
+    MetadataReference.CreateFromFile(_officeAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+
     public static MetadataReference ExcelDNAsm => MetadataReference.CreateFromImage(GetAssemblyBytesInMemeory("ExcelDna.Integration"));
     public static MetadataReference ExcelAppAsm =>
-        MetadataReference.CreateFromFile(_officePath, new MetadataReferenceProperties(embedInteropTypes: true));
+        MetadataReference.CreateFromFile(_excelAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+
+
     public static async Task<StandardResult> RunInMemory(string code)
     {
         var originalConsoleOut = Console.Out;
@@ -63,18 +76,16 @@ public static class CSharpScriptingRunHelper
         {
             await RunMacroAsync(async () =>
             {
-                var globals = new OfficeExtention.GlobalMethods();
-
                 var options = ScriptOptions.Default
                     .AddReferences(
-                        typeof(MethodInfo).Assembly, 
-                        typeof(Index).Assembly, 
+                        typeof(MethodInfo).Assembly,
+                        typeof(Index).Assembly,
                         typeof(System.Console).Assembly,
                         typeof(System.Dynamic.DynamicObject).Assembly,
                         typeof(Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly,
                         typeof(System.Windows.MessageBox).Assembly,
                         typeof(System.Collections.Generic.List<>).Assembly,
-                        typeof(OfficeExtention.GlobalMethods).Assembly
+                        typeof(OfficeMacroExt.XlApp).Assembly
                         )
                     .AddReferences(
                         ExcelDNAsm,
@@ -88,10 +99,39 @@ public static class CSharpScriptingRunHelper
                     "System.Reflection",
                     "System.Collections.Generic",
                     "System.Windows",
-                    "OfficeExtention"
+                    "OfficeMacroExt"
                 );
 
-                await CSharpScript.RunAsync(code, options, globals:globals);
+                //var funcRegsCode = @"Assembly assembly = Assembly.Load(""RoslynPad"");
+                //                    var types = assembly.GetTypes();
+                //var methodsList = new List<MethodInfo>();
+                //foreach (var type in types)
+                //{
+                //    MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                //    methodsList.AddRange(methods.ToList());
+                //}
+
+                //ExcelIntegration.RegisterMethods(methodsList); ";
+
+                //暂用UDF类表示自定义函数和命令
+
+                //var funcRegsCode = @"if(Type.GetType(""UDF"") != null)
+                //                     {
+                //                        Type type = typeof(UDF);
+                //                        MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                //                        ExcelIntegration.RegisterMethods(methods.ToList()); 
+                //                    }";
+
+
+                if (code.Contains("class UDF"))
+                {
+                    var funcRegsCode = @" var type = typeof(UDF);
+                                            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                                            ExcelIntegration.RegisterMethods(methods.ToList());";
+                    code += funcRegsCode;
+                }
+
+                await CSharpScript.RunAsync(code, options);
             });
             success = true;
         }

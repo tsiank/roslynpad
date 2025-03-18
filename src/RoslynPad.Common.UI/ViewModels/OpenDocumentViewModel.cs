@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging;
-using OfficeExtention;
+using OfficeMacroExt;
 using RoslynPad.Build;
 using RoslynPad.Roslyn.Rename;
 using RoslynPad.Utilities;
@@ -238,7 +238,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
 
             var project = document.Project;
 
-            var asm = typeof(OfficeExtention.GlobalMethods).Assembly.Location;
+            var asm = typeof(OfficeMacroExt.XlApp).Assembly.Location;
             var asmref = MetadataReference.CreateFromFile(asm);
 
             project = project
@@ -246,6 +246,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
                 .WithAnalyzerReferences(_executionHost.Analyzers)
                 .AddMetadataReference(CSharpScriptingRunHelper.ExcelDNAsm)
                 .AddMetadataReference(CSharpScriptingRunHelper.ExcelAppAsm)
+                .AddMetadataReference(CSharpScriptingRunHelper.OfficepAsm)
                 .AddMetadataReference(asmref);
                 
             document = project.GetDocument(DocumentId);

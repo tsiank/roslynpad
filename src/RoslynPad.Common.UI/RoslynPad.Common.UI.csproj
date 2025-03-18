@@ -7,7 +7,7 @@
     <None Remove="RoslynPad.Common.UI.csproj.DotSettings" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\OfficeExtention\OfficeExtention.csproj" />
+    <ProjectReference Include="..\OfficeMacroExt\OfficeMacroExt.csproj" />
     <ProjectReference Include="..\RoslynPad.Build\RoslynPad.Build.csproj" />
     <ProjectReference Include="..\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj" />
     <ProjectReference Include="..\RoslynPad.Themes\RoslynPad.Themes.csproj" />
