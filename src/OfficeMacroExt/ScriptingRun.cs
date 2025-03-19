@@ -37,14 +37,14 @@ public static class CSharpScriptingRunHelper
     private static string _excelAsmPath = @"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll";
 
     public static MetadataReference VBEAsm =>
-        MetadataReference.CreateFromFile(_vbeAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+        MetadataReference.CreateFromFile(_vbeAsmPath, new MetadataReferenceProperties(embedInteropTypes: false));
 
     public static MetadataReference OfficepAsm =>
-    MetadataReference.CreateFromFile(_officeAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+    MetadataReference.CreateFromFile(_officeAsmPath, new MetadataReferenceProperties(embedInteropTypes: false));
 
     public static MetadataReference ExcelDNAsm => MetadataReference.CreateFromImage(GetAssemblyBytesInMemeory("ExcelDna.Integration"));
     public static MetadataReference ExcelAppAsm =>
-        MetadataReference.CreateFromFile(_excelAsmPath, new MetadataReferenceProperties(embedInteropTypes: true));
+        MetadataReference.CreateFromFile(_excelAsmPath, new MetadataReferenceProperties(embedInteropTypes: false));
 
 
     public static async Task<StandardResult> RunInMemory(string code)

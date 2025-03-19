@@ -74,19 +74,3 @@ public static class Debug
 {
     public static void Print(string message) => Console.WriteLine(message);
 }
-
-public static class RangeExtensions
-{
-    public static IEnumerable<T> Format<T>(this IEnumerable<T> source, Action<object> rangeAction) where T : class
-    {
-        if(source != null)
-        {
-            foreach (var item in source)
-            {
-                //var rowRange = range.Rows[relativeRow];
-                rangeAction(123);
-                yield return item;
-            }
-        }
-    }
-}

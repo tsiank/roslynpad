@@ -31,6 +31,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExcelExtention\**" />
+    <EmbeddedResource Remove="ExcelExtention\**" />
+    <None Remove="ExcelExtention\**" />
+    <Page Remove="ExcelExtention\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" />
     <PackageReference Include="ExcelDna.Integration" />
     <PackageReference Include="IndexRange" />
@@ -42,8 +49,8 @@
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel">
       <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll</HintPath>
-      <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
 

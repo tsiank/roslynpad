@@ -98,7 +98,7 @@ namespace RoslynPad
                 GetWindowRect(excelHwnd, out RECT excelRect);
                 int excelWindowWidthPixels = excelRect.Width;
 
-                var desiredWidth = (int)(excelWindowWidthPixels / 2.5);
+                var desiredWidth = (int)(excelWindowWidthPixels / 2.5 + 80);
                 taskPane.Width = desiredWidth;
             }
 

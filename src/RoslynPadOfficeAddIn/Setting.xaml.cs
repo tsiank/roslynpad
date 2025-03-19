@@ -12,7 +12,7 @@ namespace RoslynPad.SettingsUI;
 public partial class SettingsWindow : Window
 {
     private readonly IApplicationSettingsValues _appSettings;
-    private readonly List<string> _fontSizes = new List<string> { "8", "9", "10", "11", "12", "14", "15", "16", "18", "20", "22", "24" };
+    private readonly List<string> _fontSizes = new List<string> { "8", "9", "10", "11", "12",  "13", "14", "15", "16", "18", "20", "22", "24" };
     private readonly List<string> _platforms = new List<string> { ".NET Framework x64 ", ".NET Framework x86 ", ".NET 6 ", ".NET 9 " };
 
     internal SettingsWindow(IApplicationSettingsValues appSettings)
@@ -21,8 +21,8 @@ public partial class SettingsWindow : Window
 
         _appSettings = appSettings;
 
-        Width = 400;
-        Height = 350;
+        Width = 500;
+        Height = 400;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
         InitializeComponent();
