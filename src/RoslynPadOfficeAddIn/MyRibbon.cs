@@ -23,6 +23,8 @@ using AvalonDock.Layout;
 using AvalonDock;
 using System.Windows.Media;
 using System.Windows;
+using RoslynPad.SettingsUI;
+using System.IO;
 
 
 namespace RoslynPad;
@@ -177,6 +179,36 @@ public class MyRibbon : ExcelRibbon
 
         CTPManager.ShowCTP(_ctpMainWindow);
     }
-}
 
+    public void OnButtonSetting(IRibbonControl control)
+    {
+        var mainViewMd = (MainViewModel)_ctpMainWindow!.DataContext;
+        var appSettings = mainViewMd.Settings;
+        var settingsWindow = new SettingsWindow(appSettings);
+        settingsWindow.ShowDialog();
+    }
+
+    private string GetDefaultDocumentPath()
+    {
+        string? documentsPath;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        }
+        else // Unix or Mac
+        {
+            documentsPath = Environment.GetEnvironmentVariable("HOME");
+        }
+
+        if (string.IsNullOrEmpty(documentsPath))
+        {
+            documentsPath = "/";
+        }
+
+        return Path.Combine(documentsPath, "RoslynPad");
+    }
+
+
+}
 

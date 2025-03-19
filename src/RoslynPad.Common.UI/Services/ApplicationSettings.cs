@@ -124,6 +124,7 @@ internal class ApplicationSettings : IApplicationSettings
         private string? _latestVersion;
         private string? _windowBounds;
         private string? _dockLayout;
+        private string? _ctpdockLayout;
         private string? _windowState;
         private string _editorFontFamily = GetDefaultPlatformFontFamily();
         private double _editorFontSize = DefaultFontSize;
@@ -197,6 +198,13 @@ internal class ApplicationSettings : IApplicationSettings
         {
             get => _dockLayout;
             set => SetProperty(ref _dockLayout, value);
+        }
+
+        [JsonPropertyName("ctpdockLayoutV2")]
+        public string? CTPDockLayout
+        {
+            get => _ctpdockLayout;
+            set => SetProperty(ref _ctpdockLayout, value);
         }
 
         public string? WindowState

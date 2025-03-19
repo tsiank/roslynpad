@@ -77,13 +77,9 @@ namespace RoslynPad {
         ///  &lt;tabs&gt;
         ///   &lt;tab id=&apos;tab1&apos; label=&apos;OfficeMacroEditor&apos;&gt;
         ///    &lt;group id=&apos;group1&apos; label=&apos;My Group&apos;&gt;
-        ///     &lt;button id=&apos;button1&apos; label=&apos;独立窗口&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;Image1&apos;/&gt;
-        ///     &lt;button id=&apos;button3&apos; label=&apos;任务窗格&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;Image1&apos;/&gt;
-        ///    &lt;/group&gt;
-        ///   &lt;/tab&gt;
-        ///  &lt;/tabs&gt;
-        /// &lt;/ribbon&gt;
-        ///&lt;/customUI&gt; 的本地化字符串。
+        ///     &lt;button id=&apos;button1&apos; label=&apos;打开IDE&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;Image1&apos;/&gt;
+        ///     &lt;button id=&apos;button2&apos; label=&apos;打开CTP&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;Image1&apos;/&gt;
+        ///                    &lt;button id=&apos;button3&apos; label=&apos;设置&apos; onAction=&apos;OnButtonSetting&apos; [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Ribbon {
             get {

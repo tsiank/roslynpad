@@ -63,11 +63,11 @@
                 </DockPanel>
             </Border>
             <Grid IsEnabled="{Binding IsInitialized}">
-                <dock:DockingManager Name="DockingManager"
+                <dock:DockingManager Name="CTPDockingManager"
                                      DocumentsSource="{Binding OpenDocuments, Mode=OneTime}"
                                      ActiveContent="{Binding ActiveContent, Mode=TwoWay}"
-                                     ActiveContentChanged="DockingManager_ActiveContentChanged"
-                                     DocumentClosing="DockingManager_OnDocumentClosing"
+                                     ActiveContentChanged="CTPDockingManager_ActiveContentChanged"
+                                     DocumentClosing="CTPDockingManager_OnDocumentClosing"
                                      AnchorableContextMenu="{x:Null}">
                     <dock:DockingManager.DocumentHeaderTemplate>
                         <DataTemplate>
@@ -99,7 +99,7 @@
                     <dock:LayoutRoot>
                         <dock:LayoutPanel Orientation="Horizontal">
                             <dock:LayoutAnchorablePane Name="Documents"
-                                                       DockWidth="200">
+                                                       DockWidth="150">
                                 <dock:LayoutAnchorable x:Name="DocumentsPane"
                                                        CanHide="False"
                                                        CanClose="False"

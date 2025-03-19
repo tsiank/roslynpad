@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Runtime.InteropServices;
+using RoslynPad.UI;
 
 namespace RoslynPad
 {
@@ -44,7 +45,7 @@ namespace RoslynPad
 
                 if (_ctp == null)
                 {
-                    _ctp = GetCTP(wpfControl, "C#脚本编辑器");
+                    _ctp = GetCTP(wpfControl, "Excel宏编辑器");
                     _ctp.Visible = true;
 
                     SetTaskPaneWidthToThirdOfExcelWindow(_ctp);
@@ -70,11 +71,12 @@ namespace RoslynPad
 
             }
 
-            static void Ctp_VisibleStateChange(CustomTaskPane CustomTaskPaneInst)
+            static async void Ctp_VisibleStateChange(CustomTaskPane CustomTaskPaneInst)
             {
                 if (_ctp != null && _ctp.Visible == false)
                 {
-                    DeleteCTP();
+                var ctpWindow =(CTPMainWindow) _wpfControl!;
+                await ctpWindow.RequestClose();
                 }
             }
 
@@ -98,8 +100,6 @@ namespace RoslynPad
 
                 var desiredWidth = (int)(excelWindowWidthPixels / 2.5);
                 taskPane.Width = desiredWidth;
-
-                //_wpfControl.CodeEditor.Height = taskPane.Height / 1.75 - 80;
             }
 
             [DllImport("user32.dll")]

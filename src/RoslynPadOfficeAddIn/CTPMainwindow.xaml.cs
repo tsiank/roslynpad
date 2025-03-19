@@ -58,7 +58,7 @@ public partial class CTPMainWindow : UserControl
         DocumentsPane.ToggleAutoHide();
         SetDockTheme(_viewModel.Theme);
         //LoadWindowLayout();
-        LoadDockLayout();
+        LoadCTPDockLayout();
     }
 
     private bool IsDark => _viewModel.ThemeType == ThemeType.Dark;
@@ -78,18 +78,18 @@ public partial class CTPMainWindow : UserControl
 
     private void SetDockTheme(Theme theme)
     {
-        if (DockingManager is null)
+        if (CTPDockingManager is null)
         {
             return;
         }
 
-        DockingManager.Theme = IsDark ? new AvalonDock.Themes.Vs2013DarkTheme() : new AvalonDock.Themes.Vs2013LightTheme();
-        DockingManager.Resources.MergedDictionaries.Add(new DockThemeDictionary(theme));
-        DockingManager.DocumentPaneControlStyle = new Style(typeof(LayoutDocumentPaneControl), DockingManager.DocumentPaneControlStyle)
+        CTPDockingManager.Theme = IsDark ? new AvalonDock.Themes.Vs2013DarkTheme() : new AvalonDock.Themes.Vs2013LightTheme();
+        CTPDockingManager.Resources.MergedDictionaries.Add(new DockThemeDictionary(theme));
+        CTPDockingManager.DocumentPaneControlStyle = new Style(typeof(LayoutDocumentPaneControl), CTPDockingManager.DocumentPaneControlStyle)
         {
             Setters =
             {
-                new Setter(ItemsControl.ItemContainerStyleProperty, DockingManager.TryFindResource("DocumentPaneControlTabStyle"))
+                new Setter(ItemsControl.ItemContainerStyleProperty, CTPDockingManager.TryFindResource("DocumentPaneControlTabStyle"))
             }
         };
     }
@@ -106,7 +106,7 @@ public partial class CTPMainWindow : UserControl
     {
         if (!_isClosing)
         {
-            SaveDockLayout();
+            SaveCTPDockLayout();
             //SaveWindowLayout();
 
             _isClosing = true;
@@ -181,13 +181,14 @@ public partial class CTPMainWindow : UserControl
         //_viewModel.Settings.WindowState = WindowState.ToString();
     }
 
-    private void LoadDockLayout()
+    private void LoadCTPDockLayout()
     {
-        var layout = _viewModel.Settings.DockLayout;
-        if (string.IsNullOrEmpty(layout)) return;
+        var ctplayout = _viewModel.Settings.CTPDockLayout;
+        
+        if (string.IsNullOrEmpty(ctplayout)) return;
 
-        var serializer = new XmlLayoutSerializer(DockingManager);
-        var reader = new StringReader(layout);
+        var serializer = new XmlLayoutSerializer(CTPDockingManager);
+        var reader = new StringReader(ctplayout);
         try
         {
             serializer.Deserialize(reader);
@@ -198,19 +199,19 @@ public partial class CTPMainWindow : UserControl
         }
     }
 
-    private void SaveDockLayout()
+    private void SaveCTPDockLayout()
     {
-        var serializer = new XmlLayoutSerializer(DockingManager);
+        var serializer = new XmlLayoutSerializer(CTPDockingManager);
         var document = new XDocument();
         using (var writer = document.CreateWriter())
         {
             serializer.Serialize(writer);
         }
         document.Root?.Element("FloatingWindows")?.Remove();
-        _viewModel.Settings.DockLayout = document.ToString();
+        _viewModel.Settings.CTPDockLayout = document.ToString();
     }
 
-    private async void DockingManager_OnDocumentClosing(object? sender, DocumentClosingEventArgs e)
+    private async void CTPDockingManager_OnDocumentClosing(object? sender, DocumentClosingEventArgs e)
     {
         e.Cancel = true;
         var document = (OpenDocumentViewModel)e.Document.Content;
@@ -245,7 +246,7 @@ public partial class CTPMainWindow : UserControl
         SetShowIL();
     }
 
-    private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
+    private void CTPDockingManager_ActiveContentChanged(object sender, EventArgs e)
     {
         SetShowIL();
     }

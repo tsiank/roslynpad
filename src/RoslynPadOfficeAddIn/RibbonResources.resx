@@ -128,8 +128,9 @@
   &lt;tabs&gt;
    &lt;tab id='tab1' label='OfficeMacroEditor'&gt;
     &lt;group id='group1' label='My Group'&gt;
-     &lt;button id='button1' label='独立窗口' onAction='OnButtonPressed' image='Image1'/&gt;
-     &lt;button id='button3' label='任务窗格' onAction='OnButtonPressedCTP' image='Image1'/&gt;
+     &lt;button id='button1' label='打开IDE' onAction='OnButtonPressed' image='Image1'/&gt;
+     &lt;button id='button2' label='打开CTP' onAction='OnButtonPressedCTP' image='Image1'/&gt;
+                    &lt;button id='button3' label='设置' onAction='OnButtonSetting' image='Image1'/&gt;
     &lt;/group&gt;
    &lt;/tab&gt;
   &lt;/tabs&gt;

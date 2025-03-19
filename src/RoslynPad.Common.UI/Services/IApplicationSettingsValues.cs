@@ -10,6 +10,7 @@ public interface IApplicationSettingsValues : INotifyPropertyChanged
     string? LatestVersion { get; set; }
     string? WindowBounds { get; set; }
     string? DockLayout { get; set; }
+    string? CTPDockLayout { get; set; }
     string? WindowState { get; set; }
     double EditorFontSize { get; set; }
     string EditorFontFamily { get; set; }
