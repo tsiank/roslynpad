@@ -11,7 +11,7 @@ namespace OfficeMacroExt;
 
 public static class SqliteHelper
 {
-    public static void InsertDataToSqlite(SQLiteConnection m_dbConnection, bool useColumnName, params object[] tables)
+    public static void InsertDataToSqlite(SQLiteConnection m_dbConnection, bool hasHeader, params object[] tables)
     {
         //var m_dbConnection = new SQLiteConnection("Data Source = :memory:");
         //m_dbConnection.Open();
@@ -23,12 +23,9 @@ public static class SqliteHelper
         string header;
         string type;
 
-        DataTable dt = new DataTable();
-
         foreach (object[,] table in tables)
         {
-            int rowsCount = GetLastRow(table);
-            //int rowsCount = table.GetLength(0);
+            int rowsCount = table.GetLength(0);
             int colsCount = table.GetLength(1);
 
             string[] headersTypes = new string[colsCount];
@@ -36,9 +33,9 @@ public static class SqliteHelper
 
             for (var j = 1; j <= colsCount; j++)
             {
-                if (!useColumnName)
+                if (!hasHeader)
                 {
-                    header = NumToColName(j + 1);
+                    header = XlApp.NumToColName(j + 1);
                 }
                 else
                 {
@@ -70,7 +67,7 @@ public static class SqliteHelper
             cmd.ExecuteNonQuery();
 
             StringBuilder values = new StringBuilder();
-            for (var k = useColumnName ? 2 : 1; k <= rowsCount; k++)
+            for (var k = hasHeader ? 2 : 1; k <= rowsCount; k++)
             {
                 string[] tempBrr = new string[colsCount];
                 for (var j = 1; j <= colsCount; j++)
@@ -98,192 +95,20 @@ public static class SqliteHelper
             i++;
 
         }
-
-        //m_dbConnection.Close();
     }
 
-    public static int GetLastRow(object[,] arr)
+    internal static string[] InsertDataToSqlite(SQLiteConnection connection, object[,] table, int rowCount, int colCount, bool hasHeader, Type entityType)
     {
-        int lastRow = arr.GetLength(0);
-        int lastColumn = arr.GetLength(1);
-
-        if (lastRow < 1048576)
-        {
-            return lastRow;
-        }
-        /*
-            for (var i = lastRow - 1; i > 0; i--)
-            {
-                var j = 0;
-                while (j < lastColumn)
-                {
-                    if (arr[i, j].GetType() == typeof(ExcelEmpty))
-                    {
-                        j++;
-                    }
-                    else
-                    {
-                        return i+1;
-                    }
-                }
-            }
-        */
-
-        Func<int, int, int> getRow = (m, n) =>
-        {
-            int ret = 0;
-            for (var i = m; i > n; i--)
-            {
-                int j = 0;
-                while (j < lastColumn)
-                {
-                    if (arr[i, j].GetType() == typeof(ExcelEmpty))
-                    {
-                        j++;
-                    }
-                    else
-                    {
-                        ret = i + 1;
-                        goto end;
-                    }
-                }
-            }
-        end:
-            return ret;
-        };
-
-        int[] rett = new int[8];
-
-        Parallel.Invoke(
-            () => rett[0] = getRow(lastRow - 1, 917504),
-            () => rett[1] = getRow(917504, 786432),
-            () => rett[2] = getRow(786432, 655360),
-            () => rett[3] = getRow(655360, 524288),
-            () => rett[4] = getRow(524288, 393216),
-            () => rett[5] = getRow(393216, 262144),
-            () => rett[6] = getRow(262144, 131072),
-            () => rett[7] = getRow(131072, 0)
-        );
-
-        return rett.Max();
-    }
-
-    //数字转excel列名
-    public static string NumToColName(int num)
-    {
-        if (num <= 0)
-        {
-            return "数字是必须大于0的正整数";
-        }
-
-        var asciiEncoding = new ASCIIEncoding();
-        string colName = "";
-        while (num > 0)
-        {
-            var btNumber = new byte[] { (byte)((num - 1) % 26 + 65) };
-            colName = asciiEncoding.GetString(btNumber) + colName;
-            num = (int)(num - 1) / 26;
-        }
-        return colName;
-    }
-
-    //excel列名转数字
-    public static int ColNameToNum(string colName)
-    {
-        int num = 0;
-
-        colName = colName.ToUpper();
-        int firstChar = Convert.ToInt32(colName[0]);
-        if (firstChar < 91 && firstChar > 64)
-        {
-            for (var i = colName.Length - 1; i >= 0; i--)
-            {
-                var power = (int)Math.Pow(26, colName.Length - 1 - i);
-                var asc = Convert.ToInt32(colName[i] - 64);
-                num += power * asc;
-            }
-        }
-        return num;
-    }
-
-    private static string NumToColName2(int num)
-    {
-        string columnName = "";
-        while (num > 0)
-        {
-            int remainder = (num - 1) % 26;
-            columnName = (char)('A' + remainder) + columnName;
-            num = (num - 1) / 26;
-        }
-        return columnName;
-    }
-
-
-    internal static string[] InsertDataToSqliteRowMap(SQLiteConnection connection, object[,] table, int rowCount, int colCount, bool useColumnName, Type entityType)
-    {
-        int startRow = useColumnName ? 2 : 1;
-        var properties = entityType.GetProperties().Where(p => p.Name != "Id").ToArray();
-
-        var _headers = useColumnName && rowCount >= 1
-            ? Enumerable.Range(1, colCount)
-                .Select(col => table[1, col]?.ToString()?.Replace(" ", "_").Replace(".", "_") ?? $"Column{col}")
-                .ToArray()
-            : Enumerable.Range(1, colCount)
-                .Select(col => SqliteHelper.NumToColName(col))
-                .ToArray();
-
-        if (_headers.Length < properties.Length)
-        {
-            throw new ArgumentException($"Range has fewer columns ({_headers.Length}) than properties in {entityType.Name} ({properties.Length}).");
-        }
-
-        var sqliteTypes = properties.Select(p => MapToSqliteType(p.PropertyType)).ToArray();
-        string createTableSql = $"CREATE TABLE {entityType.Name} (Id INTEGER PRIMARY KEY, {string.Join(", ", properties.Zip(sqliteTypes, (p, t) => $"[{p.Name}] {t}"))})";
-        using (var cmd = new SQLiteCommand(createTableSql, connection))
-        {
-            cmd.ExecuteNonQuery();
-        }
-
-        using (var transaction = connection.BeginTransaction())
-        {
-            for (int row = startRow; row <= rowCount; row++)
-            {
-                using (var cmd = new SQLiteCommand(connection))
-                {
-                    cmd.Parameters.Clear();
-                    var columnNames = properties.Select(p => $"[{p.Name}]").ToList();
-                    var paramNames = new List<string>();
-                    for (int col = 1; col <= properties.Length; col++)
-                    {
-                        string paramName = $"@p{col}";
-                        paramNames.Add(paramName);
-                        var value = col <= colCount ? table[row, col] : null;
-                        cmd.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
-                    }
-
-                    cmd.CommandText = $"INSERT INTO {entityType.Name} ({string.Join(", ", columnNames)}) VALUES ({string.Join(", ", paramNames)})";
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            transaction.Commit();
-        }
-
-        return _headers;
-    }
-
-
-    internal static string[] InsertDataToSqlite(SQLiteConnection connection, object[,] table, int rowCount, int colCount, bool useColumnName, Type entityType)
-    {
-        int startRow = useColumnName ? 2 : 1; // 从 1 开始，useColumnName = true 时列名在第 1 行，数据从第 2 行
+        int startRow = hasHeader ? 2 : 1; // 从 1 开始，hasHeader = true 时列名在第 1 行，数据从第 2 行
         var properties = entityType.GetProperties().Where(p => p.Name != "Id").ToArray();
 
         // 列名来源
-        var _headers = useColumnName && rowCount >= 1
+        var _headers = hasHeader && rowCount >= 1
             ? Enumerable.Range(1, colCount)
                 .Select(col => table[1, col]?.ToString()?.Replace(" ", "_").Replace(".", "_") ?? $"Column{col}")
                 .ToArray()
             : Enumerable.Range(1, colCount)
-                .Select(col => SqliteHelper.NumToColName(col))
+                .Select(col => XlApp.NumToColName(col))
                 .ToArray();
 
         if (_headers.Length < properties.Length)

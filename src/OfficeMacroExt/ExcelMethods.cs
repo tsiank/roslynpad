@@ -18,6 +18,7 @@ using System.Data.Entity.Infrastructure;
 using Dapper;
 using Microsoft.Office.Interop.Excel;
 using System.Data.Common;
+using System.Net;
 
 namespace OfficeMacroExt;
 
@@ -35,14 +36,58 @@ public static class XlApp
     public static void WriteToSelection<T>(T input) => XlCall.Excel(XlCall.xlSet, Selection, input);
     public static void MsgBox(string message, string caption="Microsoft Excel") => MessageBox.Show(message, caption);
 
-    public static IEnumerable<dynamic> Query(Excel.Range range, bool useColumnName = true)
+    //excel列名转数字
+    public static int ColNameToNum(string colName)
     {
-        object[,] values = (object[,])range.Value;
+        int num = 0;
+
+        colName = colName.ToUpper();
+        int firstChar = Convert.ToInt32(colName[0]);
+        if (firstChar < 91 && firstChar > 64)
+        {
+            for (var i = colName.Length - 1; i >= 0; i--)
+            {
+                var power = (int)Math.Pow(26, colName.Length - 1 - i);
+                var asc = Convert.ToInt32(colName[i] - 64);
+                num += power * asc;
+            }
+        }
+        return num;
+    }
+
+    //数字转excel列名
+    public static string NumToColName(int num)
+    {
+        string columnName = "";
+        while (num > 0)
+        {
+            int remainder = (num - 1) % 26;
+            columnName = (char)('A' + remainder) + columnName;
+            num = (num - 1) / 26;
+        }
+        return columnName;
+    }
+
+    public static IEnumerable<dynamic> Query(string address, bool hasHeader = true)
+    {
+        var range = XlApp.ActiveSheet.Range[address];
+
+        var results = Query(range, hasHeader);
+  
+        return results;
+    }
+
+
+    public static IEnumerable<dynamic> Query(Excel.Range range, bool hasHeader = true)
+    {
+        var validRange = RangeProcessor.RangeCheck(range);
+
+        object[,] values = (object[,])validRange.Value;
 
         var connection = new SQLiteConnection("Data Source = :memory:");
         connection.Open();
 
-        SqliteHelper.InsertDataToSqlite(connection, useColumnName, values);
+        SqliteHelper.InsertDataToSqlite(connection, hasHeader, values);
 
         var results = connection.Query<dynamic>("SELECT * FROM a");
         connection.Close();
@@ -50,9 +95,21 @@ public static class XlApp
         return results;
     }
 
-    public static IEnumerable<T> Query<T>(Excel.Range range, bool useColumnName = true) where T : class, new()
+    public static IEnumerable<T> Query<T>(string address, bool hasHeader = true) where T : class, new()
     {
-        object[,] values = (object[,])range.Value;
+        var range = XlApp.ActiveSheet.Range[address];
+
+        var results = Query<T>(range, hasHeader);
+
+        return results;
+    }
+
+    public static IEnumerable<T> Query<T>(Excel.Range range, bool hasHeader = true) where T : class, new()
+    {
+        var validRange = RangeProcessor.RangeCheck(range);
+
+        object[,] values = (object[,])validRange.Value;
+
         int rowCount = values.GetLength(0);
         int colCount = values.GetLength(1);
 
@@ -61,7 +118,7 @@ public static class XlApp
 
         var entityType = typeof(T);
 
-        SqliteHelper.InsertDataToSqliteRowMap(connection, values, rowCount, colCount, useColumnName, entityType);
+        SqliteHelper.InsertDataToSqlite(connection, values, rowCount, colCount, hasHeader, entityType);
 
         var results = connection.Query<T>($"SELECT * FROM {typeof(T).Name}");
         connection.Close();

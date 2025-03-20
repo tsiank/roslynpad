@@ -42,7 +42,9 @@ public static class LinqExtensions
     //以下操作对象必须有ID属性
 
     //对Excel Range对象的操作
-    public static IEnumerable<T> Format<T>(this IEnumerable<T> source, Excel.Range range, Action<Excel.Range> formatAction) where T : class, IHasId
+    public static IEnumerable<T> Format<T>(this IEnumerable<T> source, 
+                                            Excel.Range range, 
+                                            Action<Excel.Range> formatAction) where T : class, IHasId
     {
         var items = source.ToList();
         if (!items.Any())
@@ -61,12 +63,13 @@ public static class LinqExtensions
 
     public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
                                             Excel.Range range,
-                                            bool useColumnName,
-                                            Action<Excel.Range> formatAction) where T : class, IHasId
+                                            Action<Excel.Range> formatAction,
+                                            bool hasHeader=true
+                                            ) where T : class, IHasId
     {
         foreach (var item in source)
         {
-            int offset = useColumnName ? 1 : 0;
+            int offset = hasHeader ? 1 : 0;
             int relativeRow = item.Id + offset;
             if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
             {
@@ -81,8 +84,9 @@ public static class LinqExtensions
     //更新Range数据
     public static IEnumerable<T> Update<T>(this IEnumerable<T> source,
                                              Excel.Range range,
-                                             bool useColumnName,
-                                             Action<T> updateAction) where T : class, IHasId
+                                             Action<T> updateAction,
+                                             bool hasHeader = true
+                                             ) where T : class, IHasId
     {
         var items = source.ToList();
         if (!items.Any())
@@ -92,10 +96,10 @@ public static class LinqExtensions
 
         Worksheet worksheet = range.Worksheet;
         Excel.Range usedRange = worksheet.Application.Intersect(range, worksheet.UsedRange) ?? range; // 限制到实际数据范围
-        int offset = useColumnName ? 1 : 0;
+        int offset = hasHeader ? 1 : 0;
 
         // 获取列名映射
-        Dictionary<string, int> columnMap = GetColumnMap<T>(usedRange, useColumnName);
+        Dictionary<string, int> columnMap = GetColumnMap<T>(usedRange, hasHeader);
 
         // 初始化 updatedValues 为实际数据范围的大小
         object[,] originalValues = usedRange.Value as object[,] ?? new object[usedRange.Rows.Count, usedRange.Columns.Count];
@@ -169,10 +173,10 @@ public static class LinqExtensions
     }
 
     // 辅助方法：获取列映射
-    private static Dictionary<string, int> GetColumnMap<T>(Excel.Range range, bool useColumnName)
+    private static Dictionary<string, int> GetColumnMap<T>(Excel.Range range, bool hasHeader)
     {
         var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        if (useColumnName)
+        if (hasHeader)
         {
             object[,] headers = ((Excel.Range)range.Rows[1]).Value as object[,] ?? new object[1, range.Columns.Count];
             for (int j = 1; j <= range.Columns.Count; j++)
@@ -258,11 +262,6 @@ public static class LinqExtensions
             yield return item;
         }
     }
-
-
-
-
-
 }
 
 public interface IHasId
