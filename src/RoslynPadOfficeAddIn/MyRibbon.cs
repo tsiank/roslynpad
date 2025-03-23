@@ -134,7 +134,6 @@ public class MyRibbon : ExcelRibbon
     {
         lock (_lock)
         {
-            // 清理旧线程（如果存在）
             if (_windowThread != null && _windowThread.IsAlive)
             {
                 _mainWindow?.Dispatcher.Invoke(() =>
@@ -171,13 +170,7 @@ public class MyRibbon : ExcelRibbon
 
     public void OnButtonPressedCTP(IRibbonControl control)
     {
-
-        if (_ctpMainWindow == null)
-        {
-            _ctpMainWindow = new CTPMainWindow();
-        }
-
-        CTPManager.ShowCTP(_ctpMainWindow);
+        _ctpMainWindow = CTPManager.ShowCTP();
     }
 
     public void OnButtonSetting(IRibbonControl control)
@@ -186,27 +179,6 @@ public class MyRibbon : ExcelRibbon
         var appSettings = mainViewMd.Settings;
         var settingsWindow = new SettingsWindow(appSettings);
         settingsWindow.ShowDialog();
-    }
-
-    private string GetDefaultDocumentPath()
-    {
-        string? documentsPath;
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        }
-        else // Unix or Mac
-        {
-            documentsPath = Environment.GetEnvironmentVariable("HOME");
-        }
-
-        if (string.IsNullOrEmpty(documentsPath))
-        {
-            documentsPath = "/";
-        }
-
-        return Path.Combine(documentsPath, "RoslynPad");
     }
 
 

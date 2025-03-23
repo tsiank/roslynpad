@@ -94,8 +94,9 @@ public static class LinqExtensions
             return items;
         }
 
-        Worksheet worksheet = range.Worksheet;
-        Excel.Range usedRange = worksheet.Application.Intersect(range, worksheet.UsedRange) ?? range; // 限制到实际数据范围
+        //Worksheet worksheet = range.Worksheet;
+        //Excel.Range usedRange = worksheet.Application.Intersect(range, worksheet.UsedRange) ?? range; // 限制到实际数据范围
+        Excel.Range usedRange = range.CurrentRegion;
         int offset = hasHeader ? 1 : 0;
 
         // 获取列名映射

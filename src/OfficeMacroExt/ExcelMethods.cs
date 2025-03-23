@@ -19,6 +19,7 @@ using Dapper;
 using Microsoft.Office.Interop.Excel;
 using System.Data.Common;
 using System.Net;
+using System.Data;
 
 namespace OfficeMacroExt;
 
@@ -87,7 +88,7 @@ public static class XlApp
         var connection = new SQLiteConnection("Data Source = :memory:");
         connection.Open();
 
-        SqliteHelper.InsertDataToSqlite(connection, hasHeader, values);
+        SqliteHelper.InsertDataToSqliteWithoutType(connection, values, hasHeader);
 
         var results = connection.Query<dynamic>("SELECT * FROM a");
         connection.Close();
@@ -120,12 +121,28 @@ public static class XlApp
 
         SqliteHelper.InsertDataToSqlite(connection, values, rowCount, colCount, hasHeader, entityType);
 
+        // 注册处理器
+        SqlMapper.AddTypeHandler(new TimeSpanHandler());
         var results = connection.Query<T>($"SELECT * FROM {typeof(T).Name}");
         connection.Close();
 
         return results;
     }
 }
+
+public class TimeSpanHandler : SqlMapper.TypeHandler<TimeSpan>
+{
+    public override TimeSpan Parse(object value)
+    {
+        return TimeSpan.Parse((string)value);
+    }
+
+    public override void SetValue(IDbDataParameter parameter, TimeSpan value)
+    {
+        parameter.Value = value.ToString();
+    }
+}
+
 
 public static class Debug
 {

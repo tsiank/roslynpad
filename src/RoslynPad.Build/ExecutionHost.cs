@@ -230,7 +230,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             {
                 var code = File.ReadAllText(path);
 
-                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code).ConfigureAwait(true);
+                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code, path).ConfigureAwait(true);
 
                 //using (standardResult)
                 {

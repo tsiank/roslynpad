@@ -240,6 +240,9 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
 
             var asm = typeof(OfficeMacroExt.XlApp).Assembly.Location;
             var asmref = MetadataReference.CreateFromFile(asm);
+            
+            var datetimeOnlyAsm = typeof(DateOnly).Assembly.Location;
+            var datetimeOnlyRef = MetadataReference.CreateFromFile(datetimeOnlyAsm);
 
             project = project
                 .WithMetadataReferences(_executionHost.MetadataReferences)
@@ -248,6 +251,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
                 .AddMetadataReference(CSharpScriptingRunHelper.ExcelAppAsm)
                 .AddMetadataReference(CSharpScriptingRunHelper.OfficepAsm)
                 .AddMetadataReference(asmref);
+                //.AddMetadataReference(datetimeOnlyRef);
                 
             document = project.GetDocument(DocumentId);
 

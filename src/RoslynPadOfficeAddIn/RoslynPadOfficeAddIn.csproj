@@ -36,6 +36,7 @@
     <PackageReference Include="Dirkster.AvalonDock" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" />
     <PackageReference Include="ExcelDna.AddIn" />
+    <PackageReference Include="ExcelDna.IntelliSense" />
     <PackageReference Include="Mono.Cecil" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
