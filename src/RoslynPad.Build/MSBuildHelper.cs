@@ -22,7 +22,8 @@ internal static class MSBuildHelper
             new XAttribute("Sdk", Sdk),
             BuildProperties(targetFramework, copyBuildOutput: true),
             Reference(referenceItems),
-            Using(usingItems)));
+            Using(usingItems),
+            CopySQLiteInteropTarget())); //copy SQLite.Interop.dll
 
     private static XElement ReferenceAssemblies(bool isDotNet) =>
         isDotNet ? new XElement("ItemGroup") : new XElement("ItemGroup",
@@ -91,4 +92,40 @@ internal static class MSBuildHelper
         new("Import",
             new XAttribute("Sdk", sdk),
             new XAttribute("Project", project));
+    private static XElement CopySQLiteInteropTarget() =>
+      new("Target",
+          new XAttribute("Name", "CopySQLiteInterop"),
+          new XAttribute("AfterTargets", "AfterBuild"),
+          // x86 copy
+          new XElement("PropertyGroup",
+              new XElement("SourceFile_x86", $"{AppContext.BaseDirectory}\\x86\\SQLite.Interop.dll"),
+              new XElement("TargetDir_x86", "$(OutputPath)\\x86"),
+              new XElement("TargetFile_x86", "$(TargetDir_x86)\\SQLite.Interop.dll")),
+          new XElement("MakeDir",
+              new XAttribute("Directories", "$(TargetDir_x86)"),
+              new XAttribute("Condition", "!Exists('$(TargetDir_x86)')")),
+          new XElement("Copy",
+              new XAttribute("SourceFiles", "$(SourceFile_x86)"),
+              new XAttribute("DestinationFiles", "$(TargetFile_x86)"),
+              new XAttribute("Condition", "Exists('$(SourceFile_x86)')"),
+              new XAttribute("SkipUnchangedFiles", "true")),
+          new XElement("Message",
+              new XAttribute("Text", "Copied SQLite.Interop.dll from $(SourceFile_x86) to $(TargetFile_x86)"),
+              new XAttribute("Importance", "High")),
+          // x64 copy
+          new XElement("PropertyGroup",
+              new XElement("SourceFile_x64", $"{AppContext.BaseDirectory}\\x64\\SQLite.Interop.dll"),
+              new XElement("TargetDir_x64", "$(OutputPath)\\x64"),
+              new XElement("TargetFile_x64", "$(TargetDir_x64)\\SQLite.Interop.dll")),
+          new XElement("MakeDir",
+              new XAttribute("Directories", "$(TargetDir_x64)"),
+              new XAttribute("Condition", "!Exists('$(TargetDir_x64)')")),
+          new XElement("Copy",
+              new XAttribute("SourceFiles", "$(SourceFile_x64)"),
+              new XAttribute("DestinationFiles", "$(TargetFile_x64)"),
+              new XAttribute("Condition", "Exists('$(SourceFile_x64)')"),
+              new XAttribute("SkipUnchangedFiles", "true")),
+          new XElement("Message",
+              new XAttribute("Text", "Copied SQLite.Interop.dll from $(SourceFile_x64) to $(TargetFile_x64)"),
+              new XAttribute("Importance", "High")));
 }

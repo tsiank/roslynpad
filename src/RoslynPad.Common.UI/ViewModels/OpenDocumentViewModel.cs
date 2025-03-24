@@ -238,21 +238,10 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
 
             var project = document.Project;
 
-            var asm = typeof(OfficeMacroExt.XlApp).Assembly.Location;
-            var asmref = MetadataReference.CreateFromFile(asm);
-            
-            var datetimeOnlyAsm = typeof(DateOnly).Assembly.Location;
-            var datetimeOnlyRef = MetadataReference.CreateFromFile(datetimeOnlyAsm);
-
             project = project
                 .WithMetadataReferences(_executionHost.MetadataReferences)
-                .WithAnalyzerReferences(_executionHost.Analyzers)
-                .AddMetadataReference(CSharpScriptingRunHelper.ExcelDNAsm)
-                .AddMetadataReference(CSharpScriptingRunHelper.ExcelAppAsm)
-                .AddMetadataReference(CSharpScriptingRunHelper.OfficepAsm)
-                .AddMetadataReference(asmref);
-                //.AddMetadataReference(datetimeOnlyRef);
-                
+                .WithAnalyzerReferences(_executionHost.Analyzers);
+
             document = project.GetDocument(DocumentId);
 
             host.UpdateDocument(document!);

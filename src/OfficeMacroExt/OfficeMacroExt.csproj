@@ -38,6 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="IndexRangeExt.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" />
     <PackageReference Include="ExcelDna.Integration" />
     <PackageReference Include="IndexRange" />
@@ -58,6 +62,10 @@
 
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReferenceManage\ReferenceManage.csproj" />
   </ItemGroup>
 
 </Project>

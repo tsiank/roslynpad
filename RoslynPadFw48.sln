@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPadOfficeAddIn", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeMacroExt", "src\OfficeMacroExt\OfficeMacroExt.csproj", "{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceManage", "src\ReferenceManage\ReferenceManage.csproj", "{89F4028C-BA0F-4925-931C-7660E75DA8CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -184,6 +186,14 @@ Global
 		{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}.Release|x64.ActiveCfg = Release|Any CPU
 		{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}.Release|x64.Build.0 = Release|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Debug|x64.Build.0 = Debug|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{89F4028C-BA0F-4925-931C-7660E75DA8CB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using NuGet.Packaging;
+using ReferenceManage;
 using RoslynPad.Build;
 using RoslynPad.Roslyn;
 using RoslynPad.Themes;
@@ -185,10 +186,10 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     protected virtual ImmutableArray<Assembly> CompositionAssemblies => [typeof(MainViewModel).Assembly];
 
     private async Task InitializeInternal()
-    {
+    {        
         RoslynHost = await Task.Run(() => new CustomRoslynHost(CompositionAssemblies,
-            RoslynHostReferences.NamespaceDefault.With(
-                imports: ["RoslynPad.Runtime", "OfficeMacroExt", "ExcelDna.Integration"]),
+            RoslynHostReferences.NamespaceDefault.With(imports: ["RoslynPad.Runtime"])
+                                                 .With(imports: ReferenceInfo.AdditionalImports),
             disabledDiagnostics: ["CS1701", "CS1702", "CS7011", "CS8097"],
             analyzerConfigFiles: [_editorConfigPath]))
             .ConfigureAwait(true);

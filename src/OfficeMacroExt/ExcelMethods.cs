@@ -26,8 +26,8 @@ namespace OfficeMacroExt;
 #nullable disable
 public static class XlApp
 {
-    public static Excel.Application Application => ExcelDnaUtil.Application as Excel.Application;
-    public static Excel.Application Application2 => (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
+    public static Excel.Application Application => ExcelDnaUtil.Application as Excel.Application ?? 
+        (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
     public static Excel.Workbook ActiveWorkbook => Application.ActiveWorkbook;
     public static Excel.Worksheet ActiveSheet => (Excel.Worksheet)Application.ActiveSheet;
     public static Excel.Range ActiveCell => Application.ActiveCell;
@@ -67,6 +67,14 @@ public static class XlApp
             num = (num - 1) / 26;
         }
         return columnName;
+    }
+
+    //自定义函数注册
+    public static void RegFunc<T>()
+    {
+        var type = typeof(T);
+        MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+        ExcelIntegration.RegisterMethods(methods.ToList());
     }
 
     public static IEnumerable<dynamic> Query(string address, bool hasHeader = true)

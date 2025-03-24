@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OfficeMacroExt\OfficeMacroExt.csproj" />
+    <ProjectReference Include="..\ReferenceManage\ReferenceManage.csproj" />
     <ProjectReference Include="..\RoslynPad.Build\RoslynPad.Build.csproj" />
     <ProjectReference Include="..\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj" />
     <ProjectReference Include="..\RoslynPad.Themes\RoslynPad.Themes.csproj" />

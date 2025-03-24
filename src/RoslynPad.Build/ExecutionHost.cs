@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -22,6 +23,7 @@ using Mono.Cecil;
 using Nerdbank.Streams;
 using NuGet.Versioning;
 using OfficeMacroExt;
+using ReferenceManage;
 using RoslynPad.Build.ILDecompiler;
 using RoslynPad.Roslyn;
 
@@ -671,14 +673,19 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             return;
         }
 
-        var officeExtentionAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "OfficeMacroExt.dll"));
-        var excelDnaAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "ExcelDna.Integration.dll"));
-        var indexRangeAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "IndexRange.dll"));
-
         var libraries = ParseReferences(Platform.IsDotNet, syntaxRoot)
-            .Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef)
-            .Append(officeExtentionAssemblyLibraryRef)
-            .Append(excelDnaAssemblyLibraryRef);
+            .Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef);
+
+        List<string> officeAddInDefaultLibs = Platform.IsDotNet
+            ? ReferenceInfo.DotNetDefaultReferences
+            : ReferenceInfo.FwDefaultReferences;
+
+        officeAddInDefaultLibs.AddRange(ReferenceInfo.FwGUIDefaultReferences);
+
+        foreach (var lib in officeAddInDefaultLibs)
+        {
+            libraries = libraries.Append(LibraryRef.Reference(lib));
+        }
 
         if (UpdateLibraries(libraries))
         {
@@ -735,23 +742,12 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
                 bool embedInteropTypes = false;
                 if (!string.IsNullOrEmpty(value) && value[value.Length - 1] == '@')
                 {
-                    value = value.Substring(0, value.Length - 1);
-                    var asmFiles = GACAsmSearch.SearchAssemblyInGacDirectory(value);
-                    if (asmFiles.Count == 1)
+                    var asm = GACInfo.QueryAssemblyInfo(value.Substring(0, value.Length - 1));
+                    if (asm != null)
                     {
-                        value = asmFiles[0];
+                        value = asm;
+                        embedInteropTypes = isDotNet;
                     }
-                    else if (asmFiles.Count > 1)
-                    {
-                        var ret = string.Join("\n", asmFiles);
-                        Console.WriteLine("There are more than one assembly in different directory, please specify a full name one.");
-                        value = asmFiles[0];
-                    }
-                    else
-                    {
-                        Console.WriteLine("Assembly not found in GAC directory, please check.");
-                    }
-                    embedInteropTypes = isDotNet;
                 }
 
                 if (HasPrefix(FxPrefix, value))

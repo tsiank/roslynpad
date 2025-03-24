@@ -62,7 +62,6 @@ public class CustomRoslynHost : RoslynHost
 
         if (!isScript && GetUsings(project) is { Length: > 0 } usings)
         {
-            usings += "global using Microsoft.Office.Interop.Excel; global using ExcelDna.Integration; using static OfficeMacroExt.XlApp";
             project = project.AddDocument("RoslynPadGeneratedUsings", usings).Project;
         }
 
