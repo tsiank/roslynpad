@@ -16,6 +16,7 @@ public static class ReferenceInfo
     public static List<string> FwGUIDefaultReferences =>
         [
             "System.Windows.Forms",
+            "WindowsFormsIntegration",
             "WindowsBase",
             "PresentationCore",
             "PresentationFramework",
@@ -30,21 +31,26 @@ public static class ReferenceInfo
                                                     "OfficeMacroExt",
                                                     "ExcelDna.Integration",
                                                     "Microsoft.Office.Interop.Excel",
-                                                    "System.Windows"
+                                                    "System.Windows",
+                                                    "System.Windows.Controls"
                                                  ];
 
 
     public static List<string> ScriptingAdditionalImports => [
                                                     "System",
                                                     "System.Linq",
+                                                    "System.Threading",
+                                                    "System.Threading.Tasks",
                                                     "System.Reflection",
                                                     "System.Collections.Generic",
                                                     "System.Text.RegularExpressions",
                                                     "System.IO",
+                                                    "RoslynPad.Runtime",
                                                     "OfficeMacroExt",
                                                     "ExcelDna.Integration",
                                                     "Microsoft.Office.Interop.Excel",
-                                                    "System.Windows"
+                                                    "System.Windows",
+                                                    "System.Windows.Controls"
                                                      ];
 
     public static List<Assembly> ScriptingDefaultAssemblies = [
@@ -114,7 +120,8 @@ public static class ReferenceInfo
 	{
 		List<string> result = [
             "ExcelDna.Integration.dll",
-            "OfficeMacroExt.dll"
+            "OfficeMacroExt.dll",
+            "RoslynPad.Runtime.dll"
         ];
 
         if(!isDotNet)
@@ -160,7 +167,15 @@ public static class ReferenceInfo
 
     private static string ResolvePathInAppDir(string fileName)
     {
-        return Path.Combine(AppContext.BaseDirectory, fileName);
+        var roslynPadRuntimeFile = Path.Combine(AppContext.BaseDirectory, "runtimes", "netfx", fileName);
+        if(File.Exists(roslynPadRuntimeFile))
+        {
+            return roslynPadRuntimeFile;
+        }
+        else
+        {
+            return Path.Combine(AppContext.BaseDirectory, fileName);
+        }    
     }
 
     public static byte[] GetAssemblyBytesInMemeory(string asmName)
