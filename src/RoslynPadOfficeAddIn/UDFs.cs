@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,54 +7,31 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ExcelDna.Integration;
+
 using Microsoft.Office.Interop.Excel;
-using Microsoft.Vbe.Interop;
 using Excel = Microsoft.Office.Interop.Excel;
 
 #nullable disable
 
-namespace RoslynPad;
+namespace ExcelSharp;
 
-public static class UDFs
+public static class UDFS
 {
-    [ExcelFunction(Description = "Execute SQL query on Excel ranges (first table required, tables named a, b, c, ...)")]
+    [ExcelFunction(Description = "Execute SQL query on Excel ranges (first range required, ranges named a, b, c, ...)")]
     public static object[,] SQL(
-       [ExcelArgument("range area", AllowReference = true, Name = "Range")] object table,
-       [ExcelArgument("sql statement")] string query,
-       [ExcelArgument("true or false, use first row header, default true")] object hasHeader,
-       [ExcelArgument("true or false, return first row header, defalut false")] object returnHeader,
-       [ExcelArgument("more range area", AllowReference = true)] params object[] tables)
+       [ExcelArgument(Description = "needed range", AllowReference = true, Name = "Range")] object table,
+       [ExcelArgument(Description = "sql query statement", Name = "Query")] string query,
+       [ExcelArgument(Description = "use first row header, default true", Name = "HasRangeHeader")] object hasRangeHeader,
+       [ExcelArgument(Description = "return first row header, defalut true", Name = "HasResultHeader")] object hasResultHeader,
+       [ExcelArgument(Description = "more ranges", AllowReference = true, Name = "Ranges")] params object[] tables)
     {
-        bool hasHeader2 = true;
-        if (hasHeader is ExcelMissing or null)
-        {
-            hasHeader2 = true;
-        }
-        else if (hasHeader is bool bl)
-        {
-            hasHeader2 = bl;
-        }
-
-        bool returnHeader2 = true;
-        if (returnHeader is ExcelMissing or null)
-        {
-            returnHeader2 = true;
-        }
-        else if (returnHeader is bool bl)
-        {
-            returnHeader2 = bl;
-        }
-
-
-        if (returnHeader is ExcelMissing or null)
-        {
-            returnHeader = false;
-        }
+        bool hasRangeHeader2 = hasRangeHeader is ExcelMissing or null ? true : (bool)hasRangeHeader;
+        bool hasResultHeader2 = hasResultHeader is ExcelMissing or null ? true : (bool)hasResultHeader;
 
         try
         {
             // 获取 Excel Application 对象
-            Excel.Application app = ExcelDnaUtil.Application;
+            Excel.Application app = ExcelDnaUtil.Application as Excel.Application;
 
             // 验证第一个表（必须参数）
             if (!(table is ExcelReference firstTable))
@@ -80,7 +56,7 @@ public static class UDFs
                 for (int i = 0; i < allTables.Count; i++)
                 {
                     string tableName = GetTableName(i);
-                    CreateAndPopulateTable(connection, tableName, allTables[i], hasHeader2, app, fieldTypes);
+                    CreateAndPopulateTable(connection, tableName, allTables[i], hasRangeHeader2, app, fieldTypes);
                 }
 
                 // 执行查询
@@ -102,11 +78,11 @@ public static class UDFs
 
                     // 处理返回结果
                     if (results.Count == 0) return new object[,] { { "No results" } };
-                    int rowOffset = returnHeader2 ? 1 : 0;
+                    int rowOffset = hasResultHeader2 ? 1 : 0;
                     var resultArray = new object[results.Count + rowOffset, colCount];
 
                     // 添加表头（如果需要）
-                    if (returnHeader2)
+                    if (hasResultHeader2)
                     {
                         for (int j = 0; j < colCount; j++)
                         {
@@ -289,19 +265,26 @@ public static class UDFs
         string sheetName = (string)XlCall.Excel(XlCall.xlSheetNm, xlRef);
         int index = sheetName.LastIndexOf("]");
         sheetName = sheetName.Substring(index + 1);
-        Worksheet ws = (Worksheet)app.Sheets[sheetName];
-        Excel.Range target = app.Range[ws.Cells[xlRef.RowFirst + 1, xlRef.ColumnFirst + 1], ws.Cells[xlRef.RowLast + 1, xlRef.ColumnLast + 1]];
+        
+        Worksheet sht = (Worksheet)app.Sheets[sheetName];
+        Excel.Range target = sht.Range[sht.Cells[xlRef.RowFirst + 1, xlRef.ColumnFirst + 1], sht.Cells[xlRef.RowLast + 1, xlRef.ColumnLast + 1]];
 
         string address = target.Address[false, false, Excel.XlReferenceStyle.xlA1];
 
         // 检查是否为整列或单单元格
-        if (address.Contains(":") && char.IsLetter(address[^1])) // 例如 "A:B"
+        if (address.Contains(":") && char.IsLetter(address.Last())) // 例如 "A:B"
         {
-            return app.Range["A1"].CurrentRegion;
+            string[] parts = address.Split(':');
+            var firstRange = sht.Range[parts[0] + "1"];
+
+            int startRow = firstRange.Value != null ? 1 : firstRange.End[Excel.XlDirection.xlDown].Row;
+            int endRow = sht.Range[parts[1] + sht.Rows.Count.ToString()].End[Excel.XlDirection.xlUp].Row;
+
+            return sht.Range[$"{parts[0]}{startRow}:{parts[1]}{endRow}"];
         }
         else if (!address.Contains(":")) // 例如 "A1"
         {
-            return app.Range[address].CurrentRegion;
+            return sht.Range[address].CurrentRegion;
         }
         else // 例如 "A1:B4"
         {

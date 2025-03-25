@@ -42,13 +42,13 @@ public static class RangeProcessor
         {
             if (IsColumnRange(parts[0], parts[1])) // 列范围，例如 "C:D"
             {
-                //Excel.Range fullRange = range.Worksheet.Range[parts[0] + "1:" + parts[1] + range.Worksheet.Rows.Count];
-                //Excel.Range usedRange = range.Worksheet.UsedRange;
-                //return range.Worksheet.Application.Intersect(fullRange, usedRange) ?? fullRange; // 若无交集返回全范围
+                var sht = range.Worksheet;
+                var firstRange = sht.Range[parts[0] + "1"];
+                
+                int startRow = firstRange.Value != null ? 1 : firstRange.End[Excel.XlDirection.xlDown].Row;
+                int endRow = sht.Range[parts[1] + sht.Rows.Count.ToString()].End[Excel.XlDirection.xlUp].Row;
 
-                Excel.Range fullRange = range.Worksheet.Range[parts[0] + "1:" + parts[1] + range.Worksheet.Rows.Count];
-                Excel.Range usedRange = range.Worksheet.UsedRange;
-                return range.Worksheet.Application.Intersect(fullRange, usedRange) ?? fullRange; // 若无交集返回全范围
+                return sht.Range[$"{parts[0]}{startRow}:{parts[1]}{endRow}"];
             }
             else if (IsFullRange(parts[0], parts[1])) // 完整范围，例如 "A2:D3"
             {
