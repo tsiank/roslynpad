@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -18,6 +19,9 @@ public class ExcelAddIn : IExcelAddIn
 {
     public void AutoOpen()
     {
+        // force using TLS 1.2 or greater, NuGet need
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+
         CodeAutoRun.CheckConfig();
         _ = RunStartupTasksAsync(); // Fire and forget, but handle exceptions internally
 
