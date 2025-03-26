@@ -2,7 +2,9 @@
 using NuGet.Versioning;
 using RoslynPad.Build;
 using RoslynPad.UI;
+using System;
 using System.Composition;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace RoslynPad;
@@ -31,6 +33,11 @@ internal class PlatformsFactory : IPlatformsFactory
 
         foreach (var directory in IOUtilities.EnumerateDirectories(sdkPath))
         {
+            if (directory.Contains("MSBuildTool"))
+            {
+                continue;
+            }
+
             var versionName = Path.GetFileName(directory);
             if (NuGetVersion.TryParse(versionName, out var version) && version.Major > 1)
             {
@@ -80,7 +87,7 @@ internal class PlatformsFactory : IPlatformsFactory
                 "/usr/local/share/dotnet",
             ]);
         }
-
+        
         var dotnetExe = GetDotnetExe();
         var paths = (from path in dotnetPaths
                      let exePath = Path.Combine(path, dotnetExe)
@@ -90,7 +97,15 @@ internal class PlatformsFactory : IPlatformsFactory
 
         if (paths.exePath is null)
         {
-            paths = (string.Empty, string.Empty);
+            var msbuildPath = Path.Combine(AppContext.BaseDirectory, "MSBuildTool", "MSBuild", "Current", "Bin");
+            if (Directory.Exists(msbuildPath))
+            {
+                paths = (Path.Combine(msbuildPath, "MSBuild.exe"), msbuildPath);
+            }
+            else
+            {
+                paths = (string.Empty, string.Empty);
+            }      
         }
 
         _dotnetPaths = paths;
