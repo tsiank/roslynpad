@@ -14,10 +14,10 @@ using System.Windows.Controls;
 
 namespace OfficeMacroExt;
 
-internal static class SqliteHelper
+public static class SqliteHelper
 {
 
-    internal static void InsertDataToSqliteWithoutType(SQLiteConnection connection, object[,] table, bool hasHeader)
+    public static void InsertDataToSqliteWithoutType(SQLiteConnection connection, object[,] table, bool hasHeader)
     {
         int startRow = hasHeader ? 2 : 1; // 从 1 开始，hasHeader = true 时列名在第 1 行，数据从第 2 行
         string tableName = "a";
@@ -232,7 +232,7 @@ internal static class SqliteHelper
         }
     }
 
-    internal static string[] InsertDataToSqlite(SQLiteConnection connection, object[,] table, int rowCount, int colCount, bool hasHeader, Type entityType)
+    public static string[] InsertDataToSqlite(SQLiteConnection connection, object[,] table, int rowCount, int colCount, bool hasHeader, Type entityType)
     {
         int startRow = hasHeader ? 2 : 1; // 从 1 开始，hasHeader = true 时列名在第 1 行，数据从第 2 行
         var properties = entityType.GetProperties().Where(p => p.Name != "Id").ToArray();
@@ -243,7 +243,7 @@ internal static class SqliteHelper
                 .Select(col => table[1, col]?.ToString()?.Replace(" ", "_").Replace(".", "_") ?? $"Column{col}")
                 .ToArray()
             : Enumerable.Range(1, colCount)
-                .Select(col => XlApp.NumToColName(col))
+                .Select(col => NumToColName(col))
                 .ToArray();
 
         if (_headers.Length < properties.Length)
@@ -306,6 +306,19 @@ internal static class SqliteHelper
 
         throw new NotSupportedException($"Type {clrType.Name} is not supported.");
     }
+
+    private static string NumToColName(int num)
+    {
+        string columnName = "";
+        while (num > 0)
+        {
+            int remainder = (num - 1) % 26;
+            columnName = (char)('A' + remainder) + columnName;
+            num = (num - 1) / 26;
+        }
+        return columnName;
+    }
+
 
     //private static Type GenerateEntityType(string[] headers, string[] sqliteTypes)
     //{

@@ -59,7 +59,7 @@ public static class CSharpScriptingRunHelper
         {
             await RunMacroAsync(async () =>
             {
-                var resolver = new CustomSourceReferenceResolver(rootPath!, searchPaths ?? []);
+                var resolver = new CustomSourceReferenceResolver(rootPath!, searchPaths);
 
                 var options = ScriptOptions.Default
                      .WithSourceResolver(resolver)

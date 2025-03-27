@@ -231,8 +231,8 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             if(IsScript)
             {
                 var code = File.ReadAllText(path);
-
-                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code, path).ConfigureAwait(true);
+                var codeDir = new FileInfo(path).DirectoryName;
+                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code, codeDir).ConfigureAwait(true);
 
                 //using (standardResult)
                 {

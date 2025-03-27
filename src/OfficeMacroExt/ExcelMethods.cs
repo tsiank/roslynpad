@@ -138,7 +138,7 @@ public static class XlApp
     }
 }
 
-public class TimeSpanHandler : SqlMapper.TypeHandler<TimeSpan>
+internal class TimeSpanHandler : SqlMapper.TypeHandler<TimeSpan>
 {
     public override TimeSpan Parse(object value)
     {
