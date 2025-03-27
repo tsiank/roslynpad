@@ -83,6 +83,13 @@ public partial class DocumentView : IDisposable
         Editor.FontSize = _viewModel.MainViewModel.EditorFontSize;
 
         var documentText = await _viewModel.LoadTextAsync().ConfigureAwait(true);
+        if(documentText.Length == 0)
+        {
+            var usingStatements = "using Excel = Microsoft.Office.Interop.Excel;\n" +
+                                  "using static OfficeMacroExt.XlApp;\n\n";
+
+            documentText = usingStatements;
+        }
 
         ViewModel.MainViewModel.ThemeChanged += OnThemeChanged;
         var documentId = await Editor.InitializeAsync(_viewModel.MainViewModel.RoslynHost, new ThemeClassificationColors(_viewModel.MainViewModel.Theme),
