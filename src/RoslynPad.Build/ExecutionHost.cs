@@ -321,21 +321,9 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         var buildWarningsPath = Path.Combine(BuildPath, "build-warnings.log");
         var buildErrorsPath = Path.Combine(BuildPath, "build-errors.log");
 
-        string? buildArgs;
-
-        if(!DotNetExecutable.EndsWith("MSBuild.exe"))
-        {
-            buildArgs =
+        string? buildArgs =
                 $"build -nologo -v:q -p:Configuration={optimizationLevel} \"-p:AssemblyName={Name}\" " +
                 $"\"-flp1:logfile={buildWarningsPath};warningsonly;Encoding=UTF-8\" \"-flp2:logfile={buildErrorsPath};errorsonly;Encoding=UTF-8\" \"{csprojPath}\" ";
-        }
-        else
-        {            
-            buildArgs =
-                $"\"{csprojPath}\" " +
-                $"-t:Build -nologo -v:q -p:Configuration={optimizationLevel} -p:AssemblyName=\"{Name}\" " +
-                $"-flp1:logfile=\"{buildWarningsPath}\";warningsonly;Encoding=UTF-8 -flp2:logfile=\"{buildErrorsPath}\";errorsonly;Encoding=UTF-8 ";
-        }
         
         using var buildResult = await ProcessUtil.RunProcessAsync(DotNetExecutable, BuildPath,
             $"{buildArgs}", cancellationToken).ConfigureAwait(false);
@@ -865,24 +853,10 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    string? buildArgs;
-
-                    if(!DotNetExecutable.EndsWith("MSBuild.exe"))
-                    {
-                        buildArgs =
+                    string buildArgs =
                             $"build --interactive -nologo " +
                             $"-flp:errorsonly;logfile=\"{restoreErrorsPath}\";Encoding=UTF-8 \"{projBuildResult.CsprojPath}\" " +
                             $"-getTargetResult:build -getItem:ReferencePathWithRefAssemblies,Analyzer ";
-                    }
-                    else
-                    {
-                        buildArgs =
-                            $"\"{projBuildResult.CsprojPath}\" " +
-                            $"-t:Restore;Build -p:Configuration=Debug -interactive -nologo " +
-                            $"-flp:errorsonly;logfile=\"{restoreErrorsPath}\";Encoding=UTF-8 " +
-                            $"-getTargetResult:build -getItem:ReferencePathWithRefAssemblies,Analyzer ";
-
-                    }
 
                     using var restoreResult = await ProcessUtil.RunProcessAsync(DotNetExecutable, BuildPath,
                             $"{buildArgs}", cancellationToken).ConfigureAwait(false);
