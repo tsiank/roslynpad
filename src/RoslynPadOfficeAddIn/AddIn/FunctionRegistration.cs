@@ -9,9 +9,8 @@ using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using static OfficeMacroExt.FunctionExamples;
 
-namespace OfficeMacroExt;
+namespace RoslynPad;
 
 public class FuncRegistration
 {
@@ -45,12 +44,12 @@ public class FuncRegistration
 
     private static void UpdateFunctions(List<string> functions, List<MethodInfo> m)
     {
-        foreach (string function in functions)
+        foreach (var function in functions)
         {
             Unregister(function);
         }
         functions.Clear();
-        foreach (MethodInfo item in m)
+        foreach (var item in m)
         {
             functions.Add(item.Name);
         }
@@ -58,11 +57,11 @@ public class FuncRegistration
 
     private static void Unregister(string functionName)
     {
-        object obj = XlCall.Excel(XlCall.xlfEvaluate, functionName);
+        var obj = XlCall.Excel(XlCall.xlfEvaluate, functionName);
         XlCall.Excel(XlCall.xlfSetName, functionName);
         XlCall.Excel(XlCall.xlfUnregister, obj);
-        object obj2 = XlCall.Excel(XlCall.xlGetName);
-        object obj3 = XlCall.Excel(XlCall.xlfRegister, obj2, "xlAutoRemove", "I", functionName, ExcelMissing.Value, 2);
+        var obj2 = XlCall.Excel(XlCall.xlGetName);
+        var obj3 = XlCall.Excel(XlCall.xlfRegister, obj2, "xlAutoRemove", "I", functionName, ExcelMissing.Value, 2);
         XlCall.Excel(XlCall.xlfSetName, functionName);
         XlCall.Excel(XlCall.xlfUnregister, obj3);
     }
@@ -74,8 +73,8 @@ internal class FunctionExamples
 {
     public void Reg()
     {
-        Type type = typeof(UDFAndCommand);
-        MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+        var type = typeof(UDFAndCommand);
+        var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
 
         ExcelIntegration.RegisterMethods(methods.ToList());
     }

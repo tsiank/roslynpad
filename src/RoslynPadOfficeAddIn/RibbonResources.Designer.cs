@@ -61,29 +61,49 @@ namespace RoslynPad {
         }
         
         /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static byte[] Image1 {
+        internal static System.Drawing.Bitmap ctp {
             get {
-                object obj = ResourceManager.GetObject("Image1", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("ctp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap ide {
+            get {
+                object obj = ResourceManager.GetObject("ide", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;customUI xmlns=&apos;http://schemas.microsoft.com/office/2009/07/customui&apos; loadImage=&apos;LoadImage&apos; onLoad=&apos;onload&apos;&gt;
-        /// &lt;ribbon&gt;
-        ///  &lt;tabs&gt;
-        ///   &lt;tab id=&apos;tab1&apos; label=&apos;OfficeMacroEditor&apos;&gt;
-        ///    &lt;group id=&apos;group1&apos; label=&apos;My Group&apos;&gt;
-        ///     &lt;button id=&apos;button1&apos; label=&apos;打开IDE&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;Image1&apos;/&gt;
-        ///     &lt;button id=&apos;button2&apos; label=&apos;打开CTP&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;Image1&apos;/&gt;
-        ///                    &lt;button id=&apos;button3&apos; label=&apos;设置&apos; onAction=&apos;OnButtonSetting&apos; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///	&lt;ribbon&gt;
+        ///		&lt;tabs&gt;
+        ///			&lt;tab id=&apos;tab1&apos; label=&apos;OfficeSharp&apos;&gt;
+        ///				&lt;group id=&apos;group1&apos; label=&apos;Editor&apos;&gt;
+        ///                    &lt;box id=&quot;myBox&quot; boxStyle=&quot;horizontal&quot;&gt;
+        ///                        &lt;button id=&apos;button1&apos; label=&apos;IDE&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;ide&apos; size=&quot;large&quot; /&gt;
+        ///                        &lt;button id=&apos;button2&apos; label=&apos;CTP&apos; onAction=&apos;OnButtonPressedCTP&apos; [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Ribbon {
             get {
                 return ResourceManager.GetString("Ribbon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap setting {
+            get {
+                object obj = ResourceManager.GetObject("setting", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

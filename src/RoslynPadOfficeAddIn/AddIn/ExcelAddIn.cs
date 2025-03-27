@@ -25,10 +25,10 @@ public class ExcelAddIn : IExcelAddIn
         CodeAutoRun.CheckConfig();
         _ = RunStartupTasksAsync(); // Fire and forget, but handle exceptions internally
 
-        //ExcelRegistration
-        //   .GetExcelFunctions()
-        //   .ProcessParamsRegistrations()
-        //   .RegisterFunctions();
+        ExcelRegistration
+           .GetExcelFunctions()
+           .ProcessParamsRegistrations()
+           .RegisterFunctions();
 
         IntelliSenseServer.Install();
     }

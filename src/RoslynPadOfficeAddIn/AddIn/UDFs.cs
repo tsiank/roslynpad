@@ -7,13 +7,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ExcelDna.Integration;
-
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 
 #nullable disable
 
-namespace ExcelSharp;
+namespace RoslynPad.AddIn;
 
 public static class UDFS
 {
@@ -25,13 +24,13 @@ public static class UDFS
        [ExcelArgument(Description = "return first row header, defalut true", Name = "HasResultHeader")] object hasResultHeader,
        [ExcelArgument(Description = "more ranges", AllowReference = true, Name = "Ranges")] params object[] tables)
     {
-        bool hasRangeHeader2 = hasRangeHeader is ExcelMissing or null ? true : (bool)hasRangeHeader;
-        bool hasResultHeader2 = hasResultHeader is ExcelMissing or null ? true : (bool)hasResultHeader;
+        var hasRangeHeader2 = hasRangeHeader is ExcelMissing or null ? true : (bool)hasRangeHeader;
+        var hasResultHeader2 = hasResultHeader is ExcelMissing or null ? true : (bool)hasResultHeader;
 
         try
         {
             // 获取 Excel Application 对象
-            Excel.Application app = ExcelDnaUtil.Application as Excel.Application;
+            var app = ExcelDnaUtil.Application as Application;
 
             // 验证第一个表（必须参数）
             if (!(table is ExcelReference firstTable))
@@ -53,9 +52,9 @@ public static class UDFS
                 connection.Open();
 
                 // 创建并填充表，表名使用 a, b, c, ...
-                for (int i = 0; i < allTables.Count; i++)
+                for (var i = 0; i < allTables.Count; i++)
                 {
-                    string tableName = GetTableName(i);
+                    var tableName = GetTableName(i);
                     CreateAndPopulateTable(connection, tableName, allTables[i], hasRangeHeader2, app, fieldTypes);
                 }
 
@@ -64,12 +63,12 @@ public static class UDFS
                 using (var reader = command.ExecuteReader())
                 {
                     // 获取结果列数和行数
-                    int colCount = reader.FieldCount;
+                    var colCount = reader.FieldCount;
                     var results = new List<object[]>();
                     while (reader.Read())
                     {
                         var row = new object[colCount];
-                        for (int j = 0; j < colCount; j++)
+                        for (var j = 0; j < colCount; j++)
                         {
                             row[j] = reader[j];
                         }
@@ -78,22 +77,22 @@ public static class UDFS
 
                     // 处理返回结果
                     if (results.Count == 0) return new object[,] { { "No results" } };
-                    int rowOffset = hasResultHeader2 ? 1 : 0;
+                    var rowOffset = hasResultHeader2 ? 1 : 0;
                     var resultArray = new object[results.Count + rowOffset, colCount];
 
                     // 添加表头（如果需要）
                     if (hasResultHeader2)
                     {
-                        for (int j = 0; j < colCount; j++)
+                        for (var j = 0; j < colCount; j++)
                         {
                             resultArray[0, j] = reader.GetName(j);
                         }
                     }
 
                     // 添加数据
-                    for (int i = 0; i < results.Count; i++)
+                    for (var i = 0; i < results.Count; i++)
                     {
-                        for (int j = 0; j < colCount; j++)
+                        for (var j = 0; j < colCount; j++)
                         {
                             resultArray[i + rowOffset, j] = results[i][j];
                         }
@@ -115,7 +114,7 @@ public static class UDFS
     private static (string standardQuery, Dictionary<string, (string sqliteType, string originalType)> fieldTypes) ParseQuery(string query, int tableCount)
     {
         var fieldTypes = new Dictionary<string, (string sqliteType, string originalType)>(StringComparer.OrdinalIgnoreCase);
-        string standardQuery = query;
+        var standardQuery = query;
 
         // 匹配 {字段名:类型} 或 {字段名}
         var pattern = new Regex(@"\{([^:}]+)(?::([^}]+))?\}");
@@ -123,12 +122,12 @@ public static class UDFS
 
         foreach (Match match in matches)
         {
-            string fieldName = match.Groups[1].Value.Trim();
-            string originalType = match.Groups[2].Success ? match.Groups[2].Value.Trim().ToLower() : null;
+            var fieldName = match.Groups[1].Value.Trim();
+            var originalType = match.Groups[2].Success ? match.Groups[2].Value.Trim().ToLower() : null;
 
             if (originalType != null)
             {
-                string sqliteType = MapToSqliteType(originalType);
+                var sqliteType = MapToSqliteType(originalType);
                 if (sqliteType != null)
                 {
                     if (!fieldName.Contains(".") && tableCount > 1)
@@ -140,10 +139,10 @@ public static class UDFS
             }
 
             // 替换为不带类型和大括号的字段名
-            string replacement = fieldName;
+            var replacement = fieldName;
             if (match.Index > 0 && query[match.Index - 1] == '(') // 函数内的字段
             {
-                string funcPart = query.Substring(0, match.Index - 1).TrimEnd().Split(' ').Last();
+                var funcPart = query.Substring(0, match.Index - 1).TrimEnd().Split(' ').Last();
                 standardQuery = standardQuery.Replace($"{funcPart}({match.Value})", $"{funcPart}({fieldName})");
             }
             else
@@ -186,8 +185,8 @@ public static class UDFS
         }
         else
         {
-            int first = index / 26 - 1;
-            int second = index % 26;
+            var first = index / 26 - 1;
+            var second = index % 26;
             return ((char)('a' + first)).ToString() + ((char)('a' + second)).ToString();
         }
     }
@@ -197,22 +196,22 @@ public static class UDFS
                                                 string tableName, 
                                                 ExcelReference excelRef, 
                                                 bool hasHeader, 
-                                                Excel.Application app,
+                                                Application app,
                                                 Dictionary<string, (string sqliteType, string originalType)> fieldTypes)
     {
         // 获取 Range 对象
-        Excel.Range range = GetRangeFromReference(excelRef, app);
-        object[,] values = range.Value as object[,] ?? throw new ArgumentException($"Range {tableName} contains no data.");
+        var range = GetRangeFromReference(excelRef, app);
+        var values = range.Value as object[,] ?? throw new ArgumentException($"Range {tableName} contains no data.");
 
-        int rowCount = values.GetLength(0);
-        int colCount = values.GetLength(1);
+        var rowCount = values.GetLength(0);
+        var colCount = values.GetLength(1);
 
         // 推断列类型和名称
         var columnInfos = InferColumnTypes(values, hasHeader, colCount, rowCount, tableName, fieldTypes);
         CreateDynamicTable(connection, tableName, columnInfos);
 
         // 插入数据
-        int startRow = hasHeader ? 2 : 1;
+        var startRow = hasHeader ? 2 : 1;
         //for (int i = startRow; i <= rowCount; i++)
         //{
         //    var rowData = new Dictionary<string, object>();
@@ -227,18 +226,18 @@ public static class UDFS
 
         using (var transaction = connection.BeginTransaction())
         {
-            for (int row = startRow; row <= rowCount; row++)
+            for (var row = startRow; row <= rowCount; row++)
             {
                 using (var cmd = new SQLiteCommand(connection))
                 {
                     cmd.Parameters.Clear();
                     var columnNames = columnInfos.Select(p => $"[{p.Name}]").ToList();
                     var paramNames = new List<string>();
-                    for (int col = 1; col <= colCount; col++)
+                    for (var col = 1; col <= colCount; col++)
                     {
-                        string paramName = $"@p{col}";
+                        var paramName = $"@p{col}";
                         var value = col <= colCount ? values[row, col] : null;
-                        string colName = columnInfos[col - 1].Name;
+                        var colName = columnInfos[col - 1].Name;
                         //string sqliteType = columnInfos[col - 1].Type;
                         //string originalType = fieldTypes.ContainsKey($"{tableName}.{colName}") ? fieldTypes[$"{tableName}.{colName}"].originalType :
                         //                      fieldTypes.ContainsKey(colName) ? fieldTypes[colName].originalType : null;
@@ -260,25 +259,25 @@ public static class UDFS
     }
 
     // 根据 ExcelReference 获取 Range
-    private static Excel.Range GetRangeFromReference(ExcelReference xlRef, Excel.Application app)
+    private static Excel.Range GetRangeFromReference(ExcelReference xlRef, Application app)
     {
-        string sheetName = (string)XlCall.Excel(XlCall.xlSheetNm, xlRef);
-        int index = sheetName.LastIndexOf("]");
+        var sheetName = (string)XlCall.Excel(XlCall.xlSheetNm, xlRef);
+        var index = sheetName.LastIndexOf("]");
         sheetName = sheetName.Substring(index + 1);
         
-        Worksheet sht = (Worksheet)app.Sheets[sheetName];
-        Excel.Range target = sht.Range[sht.Cells[xlRef.RowFirst + 1, xlRef.ColumnFirst + 1], sht.Cells[xlRef.RowLast + 1, xlRef.ColumnLast + 1]];
+        var sht = (Worksheet)app.Sheets[sheetName];
+        var target = sht.Range[sht.Cells[xlRef.RowFirst + 1, xlRef.ColumnFirst + 1], sht.Cells[xlRef.RowLast + 1, xlRef.ColumnLast + 1]];
 
-        string address = target.Address[false, false, Excel.XlReferenceStyle.xlA1];
+        var address = target.Address[false, false, XlReferenceStyle.xlA1];
 
         // 检查是否为整列或单单元格
         if (address.Contains(":") && char.IsLetter(address.Last())) // 例如 "A:B"
         {
-            string[] parts = address.Split(':');
+            var parts = address.Split(':');
             var firstRange = sht.Range[parts[0] + "1"];
 
-            int startRow = firstRange.Value != null ? 1 : firstRange.End[Excel.XlDirection.xlDown].Row;
-            int endRow = sht.Range[parts[1] + sht.Rows.Count.ToString()].End[Excel.XlDirection.xlUp].Row;
+            var startRow = firstRange.Value != null ? 1 : firstRange.End[XlDirection.xlDown].Row;
+            var endRow = sht.Range[parts[1] + sht.Rows.Count.ToString()].End[XlDirection.xlUp].Row;
 
             return sht.Range[$"{parts[0]}{startRow}:{parts[1]}{endRow}"];
         }
@@ -306,19 +305,19 @@ public static class UDFS
         if (hasHeader && rowCount >= 1)
         {
             headers = new object[colCount];
-            for (int j = 0; j < colCount; j++)
+            for (var j = 0; j < colCount; j++)
             {
                 headers[j] = values[1, j + 1];
             }
         }
 
-        for (int j = 1; j <= colCount; j++)
+        for (var j = 1; j <= colCount; j++)
         {
-            string colName = hasHeader && headers != null && headers[j - 1] != null
+            var colName = hasHeader && headers != null && headers[j - 1] != null
                 ? headers[j - 1].ToString().Trim()
                 : ((char)('A' + j - 1)).ToString();
 
-            string fullColName = $"{tableName}.{colName}";
+            var fullColName = $"{tableName}.{colName}";
             string sqliteType;
 
             if (fieldTypes.ContainsKey(fullColName))
@@ -344,17 +343,17 @@ public static class UDFS
     // 根据前 N 行数据推断类型
     private static string InferSqliteType(object[,] values, int colIndex, int sampleRows, int startRow)
     {
-        bool allNumeric = true;
-        bool allInt = true;
-        bool allBoolean = true;
-        bool hasLongNumber = false;
+        var allNumeric = true;
+        var allInt = true;
+        var allBoolean = true;
+        var hasLongNumber = false;
 
-        for (int i = startRow; i < startRow + sampleRows && i <= values.GetUpperBound(0) + 1; i++)
+        for (var i = startRow; i < startRow + sampleRows && i <= values.GetUpperBound(0) + 1; i++)
         {
-            object value = values[i, colIndex]; // 不再减 1，直接使用 i 和 colIndex
+            var value = values[i, colIndex]; // 不再减 1，直接使用 i 和 colIndex
             if (value == null) continue;
 
-            string valStr = value.ToString().Trim().ToUpper();
+            var valStr = value.ToString().Trim().ToUpper();
             if (string.IsNullOrEmpty(valStr)) continue;
 
             // 检查布尔值
@@ -368,7 +367,7 @@ public static class UDFS
                 allBoolean = false;
 
                 // 检查是否为数字
-                if (!double.TryParse(valStr, out double num))
+                if (!double.TryParse(valStr, out var num))
                 {
                     allNumeric = false;
                     allInt = false;
@@ -376,7 +375,7 @@ public static class UDFS
                 }
 
                 // 检查数字长度（去除小数点和小数部分）
-                string intPart = valStr.Split('.')[0];
+                var intPart = valStr.Split('.')[0];
                 if (intPart.Length > 15)
                 {
                     hasLongNumber = true;
@@ -401,8 +400,8 @@ public static class UDFS
     // 创建动态表
     private static void CreateDynamicTable(SQLiteConnection connection, string tableName, List<ColumnInfo> columnInfos)
     {
-        string columns = string.Join(", ", columnInfos.Select(c => $"{c.Name} {c.Type}"));
-        string createTableSql = $"CREATE TABLE IF NOT EXISTS {tableName} (Id INTEGER PRIMARY KEY, {columns})";
+        var columns = string.Join(", ", columnInfos.Select(c => $"{c.Name} {c.Type}"));
+        var createTableSql = $"CREATE TABLE IF NOT EXISTS {tableName} (Id INTEGER PRIMARY KEY, {columns})";
         using (var command = new SQLiteCommand(createTableSql, connection))
         {
             command.ExecuteNonQuery();
@@ -412,9 +411,9 @@ public static class UDFS
     // 插入动态记录
     private static void InsertDynamicItem(SQLiteConnection connection, string tableName, Dictionary<string, object> row)
     {
-        string columns = string.Join(", ", row.Keys);
-        string parameters = string.Join(", ", row.Keys.Select(k => $"@{k}"));
-        string insertSql = $"INSERT INTO {tableName} ({columns}) VALUES ({parameters})";
+        var columns = string.Join(", ", row.Keys);
+        var parameters = string.Join(", ", row.Keys.Select(k => $"@{k}"));
+        var insertSql = $"INSERT INTO {tableName} ({columns}) VALUES ({parameters})";
 
         using (var command = new SQLiteCommand(insertSql, connection))
         {
@@ -430,11 +429,11 @@ public static class UDFS
     private static object ConvertValue(object value, string sqliteType, string originalType = null)
     {
         if (value == null) return DBNull.Value;
-        string valStr = value.ToString().Trim();
+        var valStr = value.ToString().Trim();
 
         if (originalType != null && originalType.ToLower() == "datetime" && sqliteType == "TEXT")
         {
-            if (DateTime.TryParse(valStr, out DateTime dt))
+            if (DateTime.TryParse(valStr, out var dt))
             {
                 return dt.ToString("yyyy-MM-dd HH:mm:ss");
             }
@@ -446,9 +445,9 @@ public static class UDFS
             case "INTEGER":
                 if (valStr.ToUpper() == "TRUE") return 1;
                 if (valStr.ToUpper() == "FALSE") return 0;
-                return int.TryParse(valStr, out int i) ? i : DBNull.Value;
+                return int.TryParse(valStr, out var i) ? i : DBNull.Value;
             case "REAL":
-                return double.TryParse(valStr, out double d) ? d : DBNull.Value;
+                return double.TryParse(valStr, out var d) ? d : DBNull.Value;
             case "TEXT":
             default:
                 return valStr;

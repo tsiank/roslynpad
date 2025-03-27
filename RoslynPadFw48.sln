@@ -47,18 +47,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Themes", "src\RoslynPad.Themes\RoslynPad.Themes.csproj", "{2763C291-F1E6-4C22-8217-0E2032620130}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fw48Utilities", "Fw48Utilities", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-	ProjectSection(SolutionItems) = preProject
-		FwUtility.cs = FwUtility.cs
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPadOfficeAddIn", "src\RoslynPadOfficeAddIn\RoslynPadOfficeAddIn.csproj", "{72ECD844-6814-A3C2-912E-AFE65247CC26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeMacroExt", "src\OfficeMacroExt\OfficeMacroExt.csproj", "{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceManage", "src\ReferenceManage\ReferenceManage.csproj", "{89F4028C-BA0F-4925-931C-7660E75DA8CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeUtility", "OfficeUtility\OfficeUtility.csproj", "{4A6D989D-72F1-45AF-8344-90ECC7ECEA3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeUtility", "src\OfficeUtility\OfficeUtility.csproj", "{4A6D989D-72F1-45AF-8344-90ECC7ECEA3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

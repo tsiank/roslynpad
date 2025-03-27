@@ -118,23 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>RibbonResources\Image1.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="ctp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddIn\RibbonResources\ctp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ide" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddIn\RibbonResources\ide.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Ribbon" xml:space="preserve">
     <value>&lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' loadImage='LoadImage' onLoad='onload'&gt;
- &lt;ribbon&gt;
-  &lt;tabs&gt;
-   &lt;tab id='tab1' label='OfficeMacroEditor'&gt;
-    &lt;group id='group1' label='My Group'&gt;
-     &lt;button id='button1' label='打开IDE' onAction='OnButtonPressed' image='Image1'/&gt;
-     &lt;button id='button2' label='打开CTP' onAction='OnButtonPressedCTP' image='Image1'/&gt;
-                    &lt;button id='button3' label='设置' onAction='OnButtonSetting' image='Image1'/&gt;
-    &lt;/group&gt;
-   &lt;/tab&gt;
-  &lt;/tabs&gt;
- &lt;/ribbon&gt;
+	&lt;ribbon&gt;
+		&lt;tabs&gt;
+			&lt;tab id='tab1' label='OfficeSharp'&gt;
+				&lt;group id='group1' label='Editor'&gt;
+                    &lt;box id="myBox" boxStyle="horizontal"&gt;
+                        &lt;button id='button1' label='IDE' onAction='OnButtonPressed' image='ide' size="large" /&gt;
+                        &lt;button id='button2' label='CTP' onAction='OnButtonPressedCTP' image='ctp' size="large" /&gt;
+                        &lt;button id='button3' label='Setting' onAction='OnButtonSetting' image='setting' size="large" /&gt;
+                    &lt;/box&gt;
+				&lt;/group&gt;
+			&lt;/tab&gt;
+		&lt;/tabs&gt;
+	&lt;/ribbon&gt;
 &lt;/customUI&gt;</value>
+  </data>
+  <data name="setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddIn\RibbonResources\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

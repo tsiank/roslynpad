@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OfficeUtility\OfficeUtility.csproj" />
+    <ProjectReference Include="..\OfficeUtility\OfficeUtility.csproj" />
     <ProjectReference Include="..\ReferenceManage\ReferenceManage.csproj" />
   </ItemGroup>
 

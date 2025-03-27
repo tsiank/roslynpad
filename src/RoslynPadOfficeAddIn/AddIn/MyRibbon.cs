@@ -25,6 +25,7 @@ using System.Windows.Media;
 using System.Windows;
 using RoslynPad.SettingsUI;
 using System.IO;
+using RoslynPad;
 
 
 namespace RoslynPad;

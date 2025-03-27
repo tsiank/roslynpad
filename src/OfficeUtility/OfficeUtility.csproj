@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ReferenceManage\ReferenceManage.csproj" />
+    <ProjectReference Include="..\ReferenceManage\ReferenceManage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

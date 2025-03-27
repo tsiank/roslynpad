@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' loadImage='LoadImage' onLoad='onload'>
+    <ribbon>
+        <tabs>
+            <tab id='tab1' label='OfficeSharp'>
+                <group id='group1' label='Editor'>
+                    <box id="myBox" boxStyle="horizontal">
+                        <button id='button1' label='IDE' onAction='OnButtonPressed' image='ide' size="large" />
+                        <button id='button2' label='CTP' onAction='OnButtonPressedCTP' image='ctp' size="large" />
+                        <button id='button3' label='Setting' onAction='OnButtonSetting' image='setting' size="large" />
+                    </box>
+                </group>
+            </tab>
+        </tabs>
+    </ribbon>
+</customUI>

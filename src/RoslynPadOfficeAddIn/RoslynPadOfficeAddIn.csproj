@@ -62,7 +62,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="RibbonResources\" />
+    <Folder Include="AddIn\RibbonResources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Buffers">
+      <VersionOverride>4.6.0.0</VersionOverride>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="RibbonResources.Designer.cs">
@@ -77,11 +82,12 @@
       <LastGenOutput>RibbonResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Buffers">
-      <VersionOverride>4.6.0.0</VersionOverride>
-    </PackageReference>
-  </ItemGroup>
+  <Target Name="CopyExcelDnaIntegration" AfterTargets="Build">
+    <ItemGroup>
+      <ExcelDnaFiles Include="$(NuGetPackageRoot)exceldna.integration\1.9.0-beta1\lib\net462\ExcelDna.Integration.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExcelDnaFiles)" DestinationFolder="$(OutputPath)" />
+  </Target>
   <Target Name="CopyAppConfig" AfterTargets="ExcelDnaBuild">
     <Message Importance="High" Text="Copy $(TargetPath).config to $(TargetDir)RoslynPad-AddIn[64][-packed].xll.config" />
     <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn.xll.config" />

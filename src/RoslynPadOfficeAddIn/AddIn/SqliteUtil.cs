@@ -19,20 +19,20 @@ public static class SqliteUtil
         var cmd = new SQLiteCommand();
         cmd.Connection = m_dbConnection;
 
-        int i = 0;
+        var i = 0;
         string header;
         string type;
 
-        DataTable dt = new DataTable();
+        var dt = new DataTable();
 
         foreach (object[,] table in tables)
         {
-            int rowsCount = GetLastRow(table);
+            var rowsCount = GetLastRow(table);
             //int rowsCount = table.GetLength(0);
-            int colsCount = table.GetLength(1);
+            var colsCount = table.GetLength(1);
 
-            string[] headersTypes = new string[colsCount];
-            string[] types = new string[colsCount];
+            var headersTypes = new string[colsCount];
+            var types = new string[colsCount];
 
             for (var j = 0; j < colsCount; j++)
             {
@@ -60,22 +60,22 @@ public static class SqliteUtil
                 types[j] = type;
             }
 
-            string fields = string.Join(", ", headersTypes);
+            var fields = string.Join(", ", headersTypes);
 
-            ASCIIEncoding asciiEncoding = new ASCIIEncoding();
-            byte[] btNumber = new byte[] { (byte)(i + 65) };
-            string tableName = asciiEncoding.GetString(btNumber);
+            var asciiEncoding = new ASCIIEncoding();
+            var btNumber = new byte[] { (byte)(i + 65) };
+            var tableName = asciiEncoding.GetString(btNumber);
 
             cmd.CommandText = $"CREATE TABLE {tableName} ({fields})";
             cmd.ExecuteNonQuery();
 
-            StringBuilder values = new StringBuilder();
+            var values = new StringBuilder();
             for (var k = useColumnName ? 0 : 1; k < rowsCount; k++)
             {
-                string[] tempBrr = new string[colsCount];
+                var tempBrr = new string[colsCount];
                 for (var j = 0; j < colsCount; j++)
                 {
-                    string temp = table[k, j].ToString();
+                    var temp = table[k, j].ToString();
                     if (table[k, j].GetType() == typeof(ExcelEmpty))
                     {
                         tempBrr[j] = "NULL";
@@ -111,8 +111,8 @@ public static class SqliteUtil
 
     public static int GetLastRow(object[,] arr)
     {
-        int lastRow = arr.GetLength(0);
-        int lastColumn = arr.GetLength(1);
+        var lastRow = arr.GetLength(0);
+        var lastColumn = arr.GetLength(1);
 
         if (lastRow < 1048576)
         {
@@ -138,10 +138,10 @@ public static class SqliteUtil
 
         Func<int, int, int> getRow = (m, n) =>
         {
-            int ret = 0;
+            var ret = 0;
             for (var i = m; i > n; i--)
             {
-                int j = 0;
+                var j = 0;
                 while (j < lastColumn)
                 {
                     if (arr[i, j].GetType() == typeof(ExcelEmpty))
@@ -159,7 +159,7 @@ public static class SqliteUtil
             return ret;
         };
 
-        int[] rett = new int[8];
+        var rett = new int[8];
 
         Parallel.Invoke(
             () => rett[0] = getRow(lastRow - 1, 917504),
@@ -184,12 +184,12 @@ public static class SqliteUtil
         }
 
         var asciiEncoding = new ASCIIEncoding();
-        string colName = "";
+        var colName = "";
         while (num > 0)
         {
             var btNumber = new byte[] { (byte)((num - 1) % 26 + 65) };
             colName = asciiEncoding.GetString(btNumber) + colName;
-            num = (int)(num - 1) / 26;
+            num = (num - 1) / 26;
         }
         return colName;
     }
@@ -197,10 +197,10 @@ public static class SqliteUtil
     //excel列名转数字
     public static int ColNameToNum(string colName)
     {
-        int num = 0;
+        var num = 0;
 
         colName = colName.ToUpper();
-        int firstChar = Convert.ToInt32(colName[0]);
+        var firstChar = Convert.ToInt32(colName[0]);
         if (firstChar < 91 && firstChar > 64)
         {
             for (var i = colName.Length - 1; i >= 0; i--)
