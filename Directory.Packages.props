@@ -66,6 +66,7 @@
     <PackageVersion Include="System.Reactive.Linq" Version="6.0.1" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="$(DotNetExtensionsVersion)" />
     <PackageVersion Include="System.Reflection.Metadata" Version="9.0.2" />
+    <PackageVersion Include="System.Resources.Extensions" Version="9.0.2" />
     <PackageVersion Include="System.Text.Json" Version="9.0.1" />
     <PackageVersion Include="System.Composition" Version="$(DotNetExtensionsVersion)" />
     <PackageVersion Include="Xunit.StaFact" Version="2.0.36-alpha" />

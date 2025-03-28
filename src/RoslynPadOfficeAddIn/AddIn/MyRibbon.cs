@@ -26,6 +26,8 @@ using System.Windows;
 using RoslynPad.SettingsUI;
 using System.IO;
 using RoslynPad;
+using Microsoft.Office.Interop.Excel;
+using System.Diagnostics;
 
 
 namespace RoslynPad;
@@ -89,7 +91,7 @@ public class MyRibbon : ExcelRibbon
         }
     }
 
-    public void OnButtonPressed(IRibbonControl control)
+    public void OnButtonPressedIDE(IRibbonControl control)
     {
         lock (_lock)
         {
@@ -168,6 +170,29 @@ public class MyRibbon : ExcelRibbon
         }
     }
 
+
+    public void OnButtonPressedSIDE(IRibbonControl control)
+    {
+        var appExePath = Path.Combine(AppContext.BaseDirectory, "RoslynPad.exe");
+
+        ProcessStartInfo processStartInfo = new ProcessStartInfo
+        {
+            FileName = appExePath,
+            UseShellExecute = false
+        };
+
+        try
+        {
+            using (Process process = Process.Start(processStartInfo))
+            {
+                Console.WriteLine("RoslynPad.exe is running.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Running RoslynPad.exe error: {ex.Message}");
+        }
+    }
 
     public void OnButtonPressedCTP(IRibbonControl control)
     {

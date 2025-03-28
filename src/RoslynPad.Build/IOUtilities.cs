@@ -4,7 +4,7 @@ using System.Security;
 
 namespace RoslynPad.Build;
 
-internal static class IOUtilities
+public static class IOUtilities
 {
     public static void PerformIO(Action action)
     {

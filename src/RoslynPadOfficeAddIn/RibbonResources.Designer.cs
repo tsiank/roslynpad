@@ -83,13 +83,13 @@ namespace RoslynPad {
         /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;customUI xmlns=&apos;http://schemas.microsoft.com/office/2009/07/customui&apos; loadImage=&apos;LoadImage&apos; onLoad=&apos;onload&apos;&gt;
-        ///	&lt;ribbon&gt;
-        ///		&lt;tabs&gt;
-        ///			&lt;tab id=&apos;tab1&apos; label=&apos;OfficeSharp&apos;&gt;
-        ///				&lt;group id=&apos;group1&apos; label=&apos;Editor&apos;&gt;
+        ///    &lt;ribbon&gt;
+        ///        &lt;tabs&gt;
+        ///            &lt;tab id=&apos;tab1&apos; label=&apos;OfficeSharp&apos;&gt;
+        ///                &lt;group id=&apos;group1&apos; label=&apos;Editor&apos;&gt;
         ///                    &lt;box id=&quot;myBox&quot; boxStyle=&quot;horizontal&quot;&gt;
-        ///                        &lt;button id=&apos;button1&apos; label=&apos;IDE&apos; onAction=&apos;OnButtonPressed&apos; image=&apos;ide&apos; size=&quot;large&quot; /&gt;
-        ///                        &lt;button id=&apos;button2&apos; label=&apos;CTP&apos; onAction=&apos;OnButtonPressedCTP&apos; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///                        &lt;button id=&apos;button1&apos; label=&apos;CTP&apos; supertip=&apos;Open as custome task pane&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;ctp&apos; size=&quot;large&quot; /&gt;
+        ///                 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Ribbon {
             get {
@@ -103,6 +103,16 @@ namespace RoslynPad {
         internal static System.Drawing.Bitmap setting {
             get {
                 object obj = ResourceManager.GetObject("setting", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap side {
+            get {
+                object obj = ResourceManager.GetObject("side", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

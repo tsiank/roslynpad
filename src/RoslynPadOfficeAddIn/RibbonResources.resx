@@ -127,22 +127,26 @@
   <data name="Ribbon" xml:space="preserve">
     <value>&lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;customUI xmlns='http://schemas.microsoft.com/office/2009/07/customui' loadImage='LoadImage' onLoad='onload'&gt;
-	&lt;ribbon&gt;
-		&lt;tabs&gt;
-			&lt;tab id='tab1' label='OfficeSharp'&gt;
-				&lt;group id='group1' label='Editor'&gt;
+    &lt;ribbon&gt;
+        &lt;tabs&gt;
+            &lt;tab id='tab1' label='OfficeSharp'&gt;
+                &lt;group id='group1' label='Editor'&gt;
                     &lt;box id="myBox" boxStyle="horizontal"&gt;
-                        &lt;button id='button1' label='IDE' onAction='OnButtonPressed' image='ide' size="large" /&gt;
-                        &lt;button id='button2' label='CTP' onAction='OnButtonPressedCTP' image='ctp' size="large" /&gt;
-                        &lt;button id='button3' label='Setting' onAction='OnButtonSetting' image='setting' size="large" /&gt;
+                        &lt;button id='button1' label='CTP' supertip='Open as custome task pane' onAction='OnButtonPressedCTP' image='ctp' size="large" /&gt;
+                        &lt;button id='button2' label='IDE' supertip='Open as IDE within Excel process' onAction='OnButtonPressedIDE' image='ide' size="large" /&gt;
+                        &lt;button id='button3' label='SIDE' supertip='Open as standalone IDE with new process' onAction='OnButtonPressedSIDE' image='side' size="large" /&gt;
+                        &lt;button id='button4' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" /&gt;
                     &lt;/box&gt;
-				&lt;/group&gt;
-			&lt;/tab&gt;
-		&lt;/tabs&gt;
-	&lt;/ribbon&gt;
+                &lt;/group&gt;
+            &lt;/tab&gt;
+        &lt;/tabs&gt;
+    &lt;/ribbon&gt;
 &lt;/customUI&gt;</value>
   </data>
   <data name="setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>AddIn\RibbonResources\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddIn\RibbonResources\side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

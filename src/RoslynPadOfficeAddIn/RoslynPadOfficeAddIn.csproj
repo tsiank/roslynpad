@@ -23,15 +23,23 @@
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
   </PropertyGroup>
+
+  <!-- Add an additional OutputType for Exe -->
+  <PropertyGroup Condition="'$(Configuration)' == 'WinExe'">
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="**\*.xshd" />
     <EmbeddedResource Include="**\*.xshd" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\OfficeMacroExt\OfficeMacroExt.csproj" />
     <ProjectReference Include="..\RoslynPad.Common.UI\RoslynPad.Common.UI.csproj" />
     <ProjectReference Include="..\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" />
@@ -43,6 +51,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="System.Data.SQLite" />
   </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces">
       <HintPath>..\RoslynPad.Roslyn\obj\Debug\netstandard2.0\IgnoresAccessChecksToGenerator\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
@@ -61,14 +70,17 @@
       <HintPath>WpfContrib.dll</HintPath>
     </Reference>
   </ItemGroup>
+
   <ItemGroup>
     <Folder Include="AddIn\RibbonResources\" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Buffers">
       <VersionOverride>4.6.0.0</VersionOverride>
     </PackageReference>
   </ItemGroup>
+
   <ItemGroup>
     <Compile Update="RibbonResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -76,19 +88,23 @@
       <DependentUpon>RibbonResources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Update="RibbonResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RibbonResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
   <Target Name="CopyExcelDnaIntegration" AfterTargets="Build">
     <ItemGroup>
       <ExcelDnaFiles Include="$(NuGetPackageRoot)exceldna.integration\1.9.0-beta1\lib\net462\ExcelDna.Integration.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(ExcelDnaFiles)" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="CopyAppConfig" AfterTargets="ExcelDnaBuild">
+
+  <!--if msbuild with WinExe, it will still build ExcelDna tasks and end with errors, but we can ignore, just copy .exe and .exe.config file to the previouse generated dll type directiory-->
+  <Target Name="CopyAppConfig" AfterTargets="ExcelDnaBuild" Condition="'$(Configuration)' != 'WinExe'">
     <Message Importance="High" Text="Copy $(TargetPath).config to $(TargetDir)RoslynPad-AddIn[64][-packed].xll.config" />
     <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn.xll.config" />
     <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn-packed.xll.config" />

@@ -5,9 +5,10 @@
             <tab id='tab1' label='OfficeSharp'>
                 <group id='group1' label='Editor'>
                     <box id="myBox" boxStyle="horizontal">
-                        <button id='button1' label='IDE' onAction='OnButtonPressed' image='ide' size="large" />
-                        <button id='button2' label='CTP' onAction='OnButtonPressedCTP' image='ctp' size="large" />
-                        <button id='button3' label='Setting' onAction='OnButtonSetting' image='setting' size="large" />
+                        <button id='button1' label='CTP' supertip='Open as custome task pane' onAction='OnButtonPressedCTP' image='ctp' size="large" />
+                        <button id='button2' label='IDE' supertip='Open as IDE within Excel process' onAction='OnButtonPressedIDE' image='ide' size="large" />
+                        <button id='button3' label='SIDE' supertip='Open as standalone IDE with new process' onAction='OnButtonPressedSIDE' image='side' size="large" />
+                        <button id='button4' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" />
                     </box>
                 </group>
             </tab>
