@@ -9,7 +9,7 @@ namespace RoslynPad.UI;
 [Export(typeof(IApplicationSettings)), Shared]
 internal class ApplicationSettings : IApplicationSettings
 {
-    private const string DefaultConfigFileName = "RoslynPad.json";
+    private const string DefaultConfigFileName = "OfficeSharp.json";
 
     private static readonly JsonSerializerOptions s_serializerOptions = new()
     {
@@ -76,7 +76,7 @@ internal class ApplicationSettings : IApplicationSettings
             _telemetryProvider?.ReportError(new InvalidOperationException("Unable to locate the user documents folder; Using root"));
         }
 
-        return Path.Combine(documentsPath, "RoslynPad");
+        return Path.Combine(documentsPath, "OfficeSharpConfig");
     }
 
     private void LoadSettings(string path)

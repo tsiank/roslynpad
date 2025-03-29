@@ -87,8 +87,8 @@ internal static class CodeAutoRun
     {
 
         var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var configPath = Path.Combine(documentPath, "RoslynPad");
-        var configFile = Path.Combine(configPath, "OfficeMacroAddIn.json");
+        var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
+        var configFile = Path.Combine(configPath, "OfficeSharpMacroAddIn.json");
 
         var json = File.ReadAllText(configFile);
 
@@ -102,21 +102,20 @@ internal static class CodeAutoRun
 
     }
 
-
     internal static void CheckConfig()
     {
-        var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var configPath = Path.Combine(documentPath, "RoslynPad");
-        var jsonPath = Path.Combine(configPath, "OfficeMacroAddIn.json");
-        
-        var excelMacroPath = Path.Combine(documentPath, "OfficeMacroAddIn", "ExcelMacroAddIn");
-        //var wordMacroPath = Path.Combine(documentPath, "OfficeMacroAddIn", "WordMacroAddIn");
-        //var pptMacroPath = Path.Combine(documentPath, "OfficeMacroAddIn", "PPTMacroAddIn");
-        //var outlookMacroPath = Path.Combine(documentPath, "OfficeMacroAddIn", "OutlookMacroAddIn");
-        //var accessMacroPath = Path.Combine(documentPath, "OfficeMacroAddIn", "AccessMacroAddIn");
-
         try
         {
+            var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
+            var jsonPath = Path.Combine(configPath, "OfficeMacroAddIn.json");
+
+            var excelMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "ExcelMacroAddIn");
+            //var wordMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "WordMacroAddIn");
+            //var pptMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "PPTMacroAddIn");
+            //var outlookMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "OutlookMacroAddIn");
+            //var accessMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "AccessMacroAddIn");
+
             // 创建配置对象
             var config = new { excelmacroAddinPath = excelMacroPath };
 
@@ -172,6 +171,17 @@ internal static class CodeAutoRun
             Console.WriteLine($"Stack trace: {ex.StackTrace}");
             throw;
         }
-
     }
+
+    internal static string GetExcelMacroPath()
+    {
+        var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
+        var jsonPath = Path.Combine(configPath, "OfficeMacroAddIn.json");
+
+        var excelMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "ExcelMacroAddIn");
+
+        return excelMacroPath;
+    }
+
 }

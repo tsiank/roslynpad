@@ -58,7 +58,7 @@ public sealed class NuGetViewModel : NotificationObject, INuGetCompletionProvide
 
                 try
                 {
-                    settings = new Settings(appSettings.GetDefaultDocumentPath(), "RoslynPad.nuget.config");
+                    settings = new Settings(appSettings.GetDefaultDocumentPath(), "OfficeSharp.nuget.config");
                 }
                 catch (NuGetConfigurationException ex)
                 {

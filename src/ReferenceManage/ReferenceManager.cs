@@ -177,7 +177,7 @@ public static class ReferenceInfo
 
 	private static string GetOfficeMacroReferencePath(string fileName)
 	{
-		return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OfficeMacroAddIn" + fileName);
+		return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OfficeSharpMacroAddIn" + fileName);
 	}
 
     private static string ResolvePathInAppDir(bool isDotNet, string fileName)

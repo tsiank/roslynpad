@@ -151,7 +151,7 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         _runtimeAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "runtimes", "net", "RoslynPad.Runtime.dll"));
         _runtimeNetFxAssemblyLibraryRef = LibraryRef.Reference(Path.Combine(AppContext.BaseDirectory, "runtimes", "netfx", "RoslynPad.Runtime.dll"));
 
-        _restoreCachePath = Path.Combine(Path.GetTempPath(), "roslynpad", "restore");
+        _restoreCachePath = Path.Combine(Path.GetTempPath(), "OfficeSharp", "restore");
     }
 
     public event Action<IList<CompilationErrorResultObject>>? CompilationErrors;

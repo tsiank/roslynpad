@@ -105,7 +105,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
 
     private void ClearRestoreCache()
     {
-        IOUtilities.PerformIO(() => Directory.Delete(Path.Combine(Path.GetTempPath(), "roslynpad", "restore"), recursive: true));
+        IOUtilities.PerformIO(() => Directory.Delete(Path.Combine(Path.GetTempPath(), "OfficeSharp", "restore"), recursive: true));
     }
 
     public void InitializeTheme()
@@ -199,11 +199,11 @@ public abstract class MainViewModel : NotificationObject, IDisposable
 
         if (HasCachedUpdate())
         {
-            HasUpdate = true;
+            //HasUpdate = true;
         }
         else
         {
-            var task = Task.Run(CheckForUpdates);
+            //var task = Task.Run(CheckForUpdates);
         }
     }
 
@@ -266,7 +266,9 @@ public abstract class MainViewModel : NotificationObject, IDisposable
                 { Build: <= 0 } => $"{s_currentVersion.Major}.{s_currentVersion.Minor}",
                 _ => s_currentVersion.ToString()
             };
-            return "RoslynPad " + currentVersion;
+
+            currentVersion = "";
+            return "OfficeSharp" + currentVersion;
         }
     }
 
@@ -496,7 +498,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     public async Task OnExit()
     {
         await AutoSaveOpenDocuments().ConfigureAwait(false);
-        IOUtilities.PerformIO(() => Directory.Delete(Path.Combine(Path.GetTempPath(), "roslynpad", "build"), recursive: true));
+        IOUtilities.PerformIO(() => Directory.Delete(Path.Combine(Path.GetTempPath(), "OfficeSharp", "build"), recursive: true));
     }
 
     public Exception? LastError

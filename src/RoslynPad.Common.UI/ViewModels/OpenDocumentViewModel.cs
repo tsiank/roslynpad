@@ -132,7 +132,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
     public OpenDocumentViewModel(IServiceProvider serviceProvider, MainViewModel mainViewModel, ICommandProvider commands, IAppDispatcher appDispatcher, ITelemetryProvider telemetryProvider, ILogger<OpenDocumentViewModel> logger)
     {
         Id = Guid.NewGuid().ToString("n");
-        BuildPath = Path.Combine(Path.GetTempPath(), "roslynpad", "build", Id);
+        BuildPath = Path.Combine(Path.GetTempPath(), "OfficeSharp", "build", Id);
         Directory.CreateDirectory(BuildPath);
 
         _telemetryProvider = telemetryProvider;
