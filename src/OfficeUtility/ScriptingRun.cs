@@ -30,7 +30,7 @@ public class StandardResult
 public static class CSharpScriptingRunHelper
 {
     private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { WriteIndented = false };
-    public static async Task<StandardResult> RunInMemory(string code, string? rootPath, IList<string>? searchPaths = null)
+    public static async Task<StandardResult> RunInMemory(bool isDotnet, string code, string? rootPath, IList<string>? searchPaths = null)
     {
         var originalConsoleOut = Console.Out;
         var originalConsoleError = Console.Error;
@@ -60,13 +60,20 @@ public static class CSharpScriptingRunHelper
             await RunMacroAsync(async () =>
             {
                 var resolver = new CustomSourceReferenceResolver(rootPath!, searchPaths);
-
                 var options = ScriptOptions.Default
-                     .WithSourceResolver(resolver)
-                    .AddReferences(ReferenceInfo.ScriptingDefaultRefs)
-                    .AddReferences(ReferenceInfo.FwDefaultMetadataReferences)
-                    .AddReferences(ReferenceInfo.FwGUIDefaultReferences)
-                    .AddImports(ReferenceInfo.ScriptingAdditionalImports);
+                                .WithSourceResolver(resolver)
+                                .AddReferences(ReferenceInfo.ScriptingDefaultRefs)
+                                .AddImports(ReferenceInfo.ScriptingAdditionalImports);
+                
+                if (isDotnet)
+                {
+                    options = options.AddReferences(ReferenceInfo.DotNetDefaultMetadataReferences);
+                }
+                else
+                {
+                    options = options.AddReferences(ReferenceInfo.FwDefaultMetadataReferences)
+                                    .AddReferences(ReferenceInfo.FwGUIDefaultReferences);
+                }
 
                 //默认使用用UDF类表示自定义函数和命令，UDF类必须在Main.csx中出现;
 

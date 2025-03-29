@@ -229,10 +229,17 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
             _assemblyPath = Path.Combine(binPath, $"{Name}.{ExecutableExtension}");
 
             if(IsScript)
-            {
+            { 
                 var code = File.ReadAllText(path);
                 var codeDir = new FileInfo(path).DirectoryName;
-                var standardResult = await CSharpScriptingRunHelper.RunInMemory(code, codeDir).ConfigureAwait(true);
+                var searchPath = new List<string>();
+                
+                if(Platform.IsDotNet)
+                {
+                    //todo
+                }
+                
+                var standardResult = await CSharpScriptingRunHelper.RunInMemory(Platform.IsDotNet, code, codeDir, searchPath).ConfigureAwait(true);
 
                 //using (standardResult)
                 {
@@ -678,15 +685,29 @@ internal partial class ExecutionHost : IExecutionHost, IDisposable
         var libraries = ParseReferences(Platform.IsDotNet, syntaxRoot)
             .Append(Platform.IsDotNet ? _runtimeAssemblyLibraryRef : _runtimeNetFxAssemblyLibraryRef);
 
-        List<string> officeAddInDefaultLibs = Platform.IsDotNet
-            ? ReferenceInfo.DotNetDefaultReferences
-            : ReferenceInfo.FwDefaultReferences;
-
-        officeAddInDefaultLibs.AddRange(ReferenceInfo.FwGUIDefaultReferences);
-
-        foreach (var lib in officeAddInDefaultLibs)
+        if(Platform.IsDotNet)
         {
-            libraries = libraries.Append(LibraryRef.Reference(lib));
+            foreach (var officeRef in ReferenceInfo.DotNetDefaultReferences)
+            {
+                libraries = libraries.Append(LibraryRef.Reference(officeRef));
+            }
+
+            foreach (var officeRef in ReferenceInfo.OfficeReletedReferences)
+            {
+                libraries = libraries.Append(LibraryRef.Reference(officeRef, embedInteropTypes: true));
+            }
+        }
+        else
+        {
+            foreach(var fwRef in ReferenceInfo.FwDefaultReferences)
+            {
+                libraries = libraries.Append(LibraryRef.Reference(fwRef));
+            }
+
+            foreach (var fwGuiRef in ReferenceInfo.FwGUIDefaultReferences)
+            {
+                libraries = libraries.Append(LibraryRef.Reference(fwGuiRef));
+            }
         }
 
         if (UpdateLibraries(libraries))

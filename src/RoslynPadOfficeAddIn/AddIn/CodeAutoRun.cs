@@ -13,6 +13,7 @@ using ExcelDna.Integration;
 using System.Text.Json.Serialization;
 using RoslynPad.UI;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis;
 
 namespace RoslynPad;
 
@@ -29,22 +30,35 @@ internal static class CodeAutoRun
 
         var tasks = activedFolder.Select(async folder =>
         {
-            var mainCodeFile = Path.Combine(folder, "Main.csx");
-            if (File.Exists(mainCodeFile))
+            var mainFxCodeFile = Path.Combine(folder, "Program.csx");
+            var mainCoreCodeFile = Path.Combine(folder, "ProgramC.csx");
+
+            string mainCode;
+            bool isDotNet;
+
+            if (File.Exists(mainFxCodeFile))
             {
-                try
-                {
-                    var mainCode = await IOUtilities.ReadAllTextAsync(mainCodeFile);
-                    await CSharpScriptingRunHelper.RunInMemory(mainCode, folder, [folder]);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"处理文件夹 {folder} 时出错: {ex.Message}");
-                }
+                mainCode = await IOUtilities.ReadAllTextAsync(mainFxCodeFile);
+                isDotNet = false;    
+            }
+            else if(File.Exists(mainCoreCodeFile))
+            {
+                mainCode = await IOUtilities.ReadAllTextAsync(mainCoreCodeFile);
+                isDotNet = true;
             }
             else
             {
-                Console.WriteLine($"文件夹 {folder} 中未找到 Main.csx 文件");
+                Console.WriteLine($"文件夹 {folder} 中未找到 Program.csx 文件");
+                return;
+            }
+
+            try
+            {
+                await CSharpScriptingRunHelper.RunInMemory(isDotNet, mainCode, folder, [folder]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"处理文件夹 {folder} 时出错: {ex.Message}");
             }
         });
 

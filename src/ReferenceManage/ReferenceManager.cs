@@ -10,29 +10,77 @@ namespace ReferenceManage;
 
 public static class ReferenceInfo
 {
-    public static List<string> FwDefaultReferences => GetDefaultReferences(isDotNet: false, needOfficeRef: true, needGUI: true);
+    public static List<string> FwDefaultReferences
+    {
+        get
+        {
+            List<string> result = [];
+
+            result.AddRange(OfficeReletedReferences);
+
+            var appBaseResult = GetAdditionalReferences(false);
+            foreach (var r in appBaseResult)
+            {
+                result.Add(ResolvePathInAppDir(false, r));
+            }
+
+            return result;
+        }
+    }
+
+    public static List<string> FwGUIDefaultReferences =>
+    [
+        "System.Windows.Forms",
+        "WindowsFormsIntegration",
+        "WindowsBase",
+        "PresentationCore",
+        "PresentationFramework",
+        "System.Xaml",
+        "Microsoft.CSharp"
+    ];
+
     public static List<MetadataReference> FwDefaultMetadataReferences => GetMetadataReferences(FwDefaultReferences);
     public static List<MetadataReference> FwGUIMetadataReferences => GetMetadataReferences(FwGUIDefaultReferences);
-    public static List<string> FwGUIDefaultReferences =>
-        [
-            "System.Windows.Forms",
-            "WindowsFormsIntegration",
-            "WindowsBase",
-            "PresentationCore",
-            "PresentationFramework",
-            "System.Xaml",
-            "Microsoft.CSharp"
-        ];
 
-    public static List<string> DotNetDefaultReferences => GetDefaultReferences(isDotNet: true, needOfficeRef: true, needGUI: true);
-    public static List<MetadataReference> DotNetDefaultMetadataReferences => GetMetadataReferences(DotNetDefaultReferences);
+    public static List<string> DotNetDefaultReferences
+    {
+        get
+        {
+            List<string> result = [];
+            var appBaseResult = GetAdditionalReferences(true);
+            foreach (var r in appBaseResult)
+            {
+                result.Add(ResolvePathInAppDir(true, r));
+            }
+
+            return result;
+        }
+    }
+
+    public static List<string> DotNetScriptingReferences
+    {
+        get
+        {
+            List<string> result = [];
+
+            result.AddRange(OfficeReletedReferences);
+
+            var appBaseResult = GetAdditionalReferences(true);
+            foreach (var r in appBaseResult)
+            {
+                result.Add(ResolvePathInAppDir(true, r));
+            }
+
+            return result;
+        }
+    }
+
+    public static List<MetadataReference> DotNetDefaultMetadataReferences => GetMetadataReferences(DotNetScriptingReferences);
 
     public static List<string> AdditionalImports => [
                                                     "OfficeMacroExt",
                                                     "ExcelDna.Integration",
-                                                    "Microsoft.Office.Interop.Excel",
-                                                    "System.Windows",
-                                                    "System.Windows.Controls"
+                                                    "Microsoft.Office.Interop.Excel"
                                                  ];
 
 
@@ -48,9 +96,7 @@ public static class ReferenceInfo
                                                     "RoslynPad.Runtime",
                                                     "OfficeMacroExt",
                                                     "ExcelDna.Integration",
-                                                    "Microsoft.Office.Interop.Excel",
-                                                    "System.Windows",
-                                                    "System.Windows.Controls"
+                                                    "Microsoft.Office.Interop.Excel"
                                                      ];
 
     public static List<Assembly> ScriptingDefaultAssemblies = [
@@ -64,59 +110,28 @@ public static class ReferenceInfo
     public static List<MetadataReference> ScriptingDefaultRefs =>
                                 [.. ScriptingDefaultAssemblies.Select(a => MetadataReference.CreateFromFile(a.Location))];
 
-
-    public static List<string> GetDefaultReferences(bool isDotNet, bool needOfficeRef, bool needGUI = false)
+    public static List<string> OfficeReletedReferences
     {
-        List<string> result = [];
-
-        List<string> gacResult = [];
-        List<string> appBaseResult = [];
-
-        if (!isDotNet)
+        get
         {
-            if (needOfficeRef)
+            List<string> result = [];
+            List<string> officeNames = [
+                                        "Microsoft.Vbe.Interop",
+                                        "OFFICE",
+                                        "Microsoft.Office.Interop.Excel"
+                                       ];
+
+            foreach (var r in officeNames)
             {
-                gacResult.AddRange(GetOfficeReletedReferences());
-
-                appBaseResult.AddRange(GetFwAdditionalReferences(isDotNet));
+                result.Add(ResolvePathInGAC(r));
             }
+
+            return result;
         }
-        else
-        {
-            if (needOfficeRef)
-            {
-                gacResult.AddRange(GetOfficeReletedReferences());
-
-                appBaseResult.AddRange(GetFwAdditionalReferences(isDotNet));
-            }
-        }
-
-        foreach (var r in gacResult)
-        {
-            result.Add(ResolvePathInGAC(r));
-        }
-
-        foreach (var r in appBaseResult)
-        {
-            result.Add(ResolvePathInAppDir(r));
-        }
-
-        return result;
-
     }
 
-    public static List<string> GetOfficeReletedReferences()
-    {
-        List<string> result = [
-            "Microsoft.Vbe.Interop",
-            "OFFICE",
-            "Microsoft.Office.Interop.Excel"
-            ];
 
-        return result;
-    }
-
-    public static List<string> GetFwAdditionalReferences(bool isDotNet)
+    public static List<string> GetAdditionalReferences(bool isDotNet)
 	{
 		List<string> result = [
             "ExcelDna.Integration.dll",
@@ -165,9 +180,10 @@ public static class ReferenceInfo
 		return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OfficeMacroAddIn" + fileName);
 	}
 
-    private static string ResolvePathInAppDir(string fileName)
+    private static string ResolvePathInAppDir(bool isDotNet, string fileName)
     {
-        var roslynPadRuntimeFile = Path.Combine(AppContext.BaseDirectory, "runtimes", "netfx", fileName);
+        var pathName = isDotNet ? "net" : "netfx";
+        var roslynPadRuntimeFile = Path.Combine(AppContext.BaseDirectory, "runtimes", pathName, fileName);
         if(File.Exists(roslynPadRuntimeFile))
         {
             return roslynPadRuntimeFile;
