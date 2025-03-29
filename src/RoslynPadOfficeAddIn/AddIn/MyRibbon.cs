@@ -172,7 +172,7 @@ public class MyRibbon : ExcelRibbon
 
     public void OnButtonPressedSIDE(IRibbonControl control)
     {
-        var appExePath = Path.Combine(AppContext.BaseDirectory, "RoslynPad.exe");
+        var appExePath = Path.Combine(AppContext.BaseDirectory, "OfficeSharp.exe");
 
         ProcessStartInfo processStartInfo = new ProcessStartInfo
         {
