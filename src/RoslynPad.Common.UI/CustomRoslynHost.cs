@@ -12,7 +12,7 @@ using RoslynPad.Build;
 using System.Windows.Forms;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public class CustomRoslynHost : RoslynHost
 {

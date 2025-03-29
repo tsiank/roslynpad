@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using RoslynPad.UI;
 
-namespace RoslynPad.Converters;
+namespace OfficeSharp.Converters;
 
 public static class StringSearch
 {

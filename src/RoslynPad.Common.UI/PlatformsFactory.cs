@@ -5,7 +5,7 @@ using RoslynPad.UI;
 using System.Composition;
 using System.Runtime.InteropServices;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(IPlatformsFactory))]
 internal class PlatformsFactory : IPlatformsFactory

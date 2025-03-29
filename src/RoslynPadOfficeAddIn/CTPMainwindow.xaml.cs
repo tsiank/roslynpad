@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using RoslynPad.Themes;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 /// <summary>
 /// Interaction logic for CTPMainWindow.xaml

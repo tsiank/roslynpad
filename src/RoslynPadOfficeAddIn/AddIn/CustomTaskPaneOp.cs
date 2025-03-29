@@ -10,7 +10,7 @@ using UserControl = System.Windows.Controls.UserControl;
 
 #nullable disable
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 internal static class CTPManager
 {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RoslynPad {
+namespace OfficeSharp {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RoslynPad {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoslynPad.RibbonResources", typeof(RibbonResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OfficeSharp.RibbonResources", typeof(RibbonResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -23,14 +23,13 @@ using AvalonDock.Layout;
 using AvalonDock;
 using System.Windows.Media;
 using System.Windows;
-using RoslynPad.SettingsUI;
+using OfficeSharp.SettingsUI;
 using System.IO;
-using RoslynPad;
 using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [ComVisible(true)]
 public class MyRibbon : ExcelRibbon

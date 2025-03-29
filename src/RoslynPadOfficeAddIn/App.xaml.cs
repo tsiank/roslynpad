@@ -1,7 +1,7 @@
 ﻿using System.Runtime;
 using System.Windows;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public partial class App : Application
 {

@@ -6,7 +6,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Search;
 
-namespace RoslynPad.Controls;
+namespace OfficeSharp.Controls;
 
 public partial class ILViewer
 {
@@ -18,7 +18,7 @@ public partial class ILViewer
             {
                 var assembly = typeof(ILViewer).Assembly;
                 var resourceNames = assembly.GetManifestResourceNames();
-                using var stream = typeof(ILViewer).Assembly.GetManifestResourceStream("RoslynPad.Controls.ILAsm-Mode.xshd")!;
+                using var stream = typeof(ILViewer).Assembly.GetManifestResourceStream("OfficeSharp.Controls.ILAsm-Mode.xshd")!;
                 using var reader = new XmlTextReader(stream);
                 return HighlightingLoader.Load(reader, HighlightingManager.Instance);
             });

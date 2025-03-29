@@ -3,7 +3,7 @@ using RoslynPad.Themes;
 
 #pragma warning disable CA1010 // Generic interface should also be implemented
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public class ThemeDictionary : ThemeDictionaryBase
 {

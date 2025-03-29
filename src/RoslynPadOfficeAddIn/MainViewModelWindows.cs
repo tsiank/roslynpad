@@ -4,7 +4,7 @@ using RoslynPad.UI;
 using System.Collections.Immutable;
 using Microsoft.Win32;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(MainViewModel)), Shared]
 [method: ImportingConstructor]

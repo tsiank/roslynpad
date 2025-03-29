@@ -1,7 +1,7 @@
 ﻿using System.Composition.Hosting.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public class ServiceCollectionExportDescriptorProvider(ServiceCollection services) : ExportDescriptorProvider
 {

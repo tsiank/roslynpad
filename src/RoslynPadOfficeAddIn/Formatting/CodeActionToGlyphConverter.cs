@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using RoslynPad.Roslyn;
 using RoslynPad.Roslyn.CodeActions;
 
-namespace RoslynPad.Formatting;
+namespace OfficeSharp.Formatting;
 
 internal sealed class CodeActionToGlyphConverter : MarkupExtension, IValueConverter
 {

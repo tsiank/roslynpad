@@ -5,7 +5,7 @@ using System.Windows.Input;
 using RoslynPad.Build;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 /// <summary>
 /// Interaction logic for ResultsView.xaml

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad", "src\RoslynPad\RoslynPad.csproj", "{2F7723C1-297B-416F-9A78-153156D319B9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn", "src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj", "{AC9F325F-A3FF-4561-941E-49CE4736CBD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Runtime", "src\RoslynPad.Runtime\RoslynPad.Runtime.csproj", "{FAE8AF1B-5004-42B6-8B42-EFF1DB5B677F}"
@@ -63,14 +61,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Debug|x64.Build.0 = Debug|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Release|x64.ActiveCfg = Release|Any CPU
-		{2F7723C1-297B-416F-9A78-153156D319B9}.Release|x64.Build.0 = Release|Any CPU
 		{AC9F325F-A3FF-4561-941E-49CE4736CBD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC9F325F-A3FF-4561-941E-49CE4736CBD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC9F325F-A3FF-4561-941E-49CE4736CBD0}.Debug|x64.ActiveCfg = Debug|Any CPU

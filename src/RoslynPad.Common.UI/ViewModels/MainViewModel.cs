@@ -14,6 +14,7 @@ using RoslynPad.Build;
 using RoslynPad.Roslyn;
 using RoslynPad.Themes;
 using RoslynPad.Utilities;
+using OfficeSharp;
 
 namespace RoslynPad.UI;
 

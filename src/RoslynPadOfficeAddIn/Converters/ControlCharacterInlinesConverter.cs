@@ -4,7 +4,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using RoslynPad.UI;
 
-namespace RoslynPad.Converters;
+namespace OfficeSharp.Converters;
 
 public class ControlCharacterInlinesConverter : IValueConverter
 {

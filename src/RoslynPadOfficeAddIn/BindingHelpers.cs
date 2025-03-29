@@ -2,7 +2,7 @@
 using System.Windows.Documents;
 using System.Windows;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 internal static class BindingHelpers
 {

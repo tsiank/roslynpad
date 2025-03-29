@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace RoslynPad.Formatting;
+namespace OfficeSharp.Formatting;
 
 internal sealed class BooleanToVisibilityConverter : IValueConverter
 {

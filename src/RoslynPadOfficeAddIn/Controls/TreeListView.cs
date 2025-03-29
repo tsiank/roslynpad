@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RoslynPad.Editor;
 
-namespace RoslynPad.Controls;
+namespace OfficeSharp.Controls;
 
 internal class TreeListView : TreeView
 {

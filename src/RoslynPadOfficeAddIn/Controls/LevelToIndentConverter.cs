@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace RoslynPad.Controls;
+namespace OfficeSharp.Controls;
 
 internal sealed class LevelToIndentConverter : IValueConverter
 {

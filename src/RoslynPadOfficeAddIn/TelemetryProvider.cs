@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(ITelemetryProvider)), Shared]
 internal class TelemetryProvider : TelemetryProviderBase

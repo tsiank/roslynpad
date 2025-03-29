@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using RoslynPad.UI;
 
-namespace RoslynPad.Formatting;
+namespace OfficeSharp.Formatting;
 
 public class DocumentCollectionViewConverter : IValueConverter
 {

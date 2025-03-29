@@ -15,7 +15,7 @@ using RoslynPad.UI;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 internal static class CodeAutoRun
 {
@@ -108,7 +108,7 @@ internal static class CodeAutoRun
         {
             var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
-            var jsonPath = Path.Combine(configPath, "OfficeMacroAddIn.json");
+            var jsonPath = Path.Combine(configPath, "OfficeSharpMacroAddIn.json");
 
             var excelMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "ExcelMacroAddIn");
             //var wordMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "WordMacroAddIn");
@@ -177,7 +177,7 @@ internal static class CodeAutoRun
     {
         var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
-        var jsonPath = Path.Combine(configPath, "OfficeMacroAddIn.json");
+        var jsonPath = Path.Combine(configPath, "OfficeSharpMacroAddIn.json");
 
         var excelMacroPath = Path.Combine(documentPath, "OfficeSharpMacroAddIn", "ExcelMacroAddIn");
 

@@ -1,10 +1,10 @@
-﻿<rp:ThemeDictionaryBase x:Class="RoslynPad.DockThemeDictionary"
+﻿<rp:ThemeDictionaryBase x:Class="OfficeSharp.DockThemeDictionary"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:dock="https://github.com/Dirkster99/AvalonDock"
-      xmlns:rp="clr-namespace:RoslynPad"
+      xmlns:rp="clr-namespace:OfficeSharp"
       mc:Ignorable="d">
 
     <Style x:Key="DocumentPaneControlTabStyle" TargetType="TabItem">

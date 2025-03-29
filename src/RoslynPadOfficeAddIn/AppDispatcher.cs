@@ -2,7 +2,7 @@
 using System.Windows.Threading;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(IAppDispatcher))]
 public class AppDispatcher : DispatcherObject, IAppDispatcher

@@ -1,6 +1,6 @@
 ﻿using RoslynPad.Build;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 /// <summary>
 /// Allows referencing internal types from XAML

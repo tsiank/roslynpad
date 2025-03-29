@@ -8,10 +8,9 @@ using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using Avalon.Windows.Controls;
 using ExcelDna.Integration.CustomUI;
-using RoslynPad.AddIn;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 /// <summary>
 /// Interaction logic for SaveDocumentDialog.xaml

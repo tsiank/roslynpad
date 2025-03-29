@@ -7,7 +7,7 @@ using RoslynPad.UI;
 
 #nullable disable
 
-namespace RoslynPad.SettingsUI;
+namespace OfficeSharp.SettingsUI;
 
 public partial class SettingsWindow : Window
 {

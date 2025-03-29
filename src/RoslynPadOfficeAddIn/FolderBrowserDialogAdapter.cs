@@ -3,7 +3,7 @@ using System.Windows;
 using Avalon.Windows.Dialogs;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(IFolderBrowserDialog))]
 internal class FolderBrowserDialogAdapter : IFolderBrowserDialog

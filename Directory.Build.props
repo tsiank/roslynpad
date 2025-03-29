@@ -24,8 +24,8 @@
     <PackageProjectUrl>https://roslynpad.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/roslynpad/roslynpad</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>Roslyn;RoslynPad</PackageTags>
-    <PackageIcon>RoslynPad.png</PackageIcon>
+    <PackageTags>Roslyn;RoslynPad;OfficeSharp</PackageTags>
+    <PackageIcon>OfficeSharp.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
@@ -47,7 +47,7 @@
     <_RoslynPadInitialRuntimeIdentifier>$(RuntimeIdentifier)</_RoslynPadInitialRuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\src\RoslynPad\Resources\RoslynPad.png" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)\src\RoslynPadOfficeAddIn\Resources\OfficeSharp.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)\docs\packages\README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Avalon.Windows.Controls;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 /// <summary>
 /// Interaction logic for RenameSymbolDialog.xaml

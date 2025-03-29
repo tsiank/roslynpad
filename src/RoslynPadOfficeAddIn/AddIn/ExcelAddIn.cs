@@ -13,7 +13,7 @@ using ExcelDna.Registration;
 using OfficeMacroExt;
 using RoslynPad.Build;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public class ExcelAddIn : IExcelAddIn
 {

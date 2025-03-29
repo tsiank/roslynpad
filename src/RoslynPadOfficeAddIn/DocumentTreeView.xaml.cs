@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public partial class DocumentTreeView
 {

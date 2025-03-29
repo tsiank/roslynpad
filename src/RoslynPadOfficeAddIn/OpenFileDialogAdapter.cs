@@ -3,7 +3,7 @@ using System.Windows;
 using Microsoft.Win32;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 [Export(typeof(IOpenFileDialog))]
 internal class OpenFileDialogAdapter : IOpenFileDialog

@@ -13,7 +13,7 @@ using RoslynPad.Editor;
 using RoslynPad.Themes;
 using RoslynPad.UI;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public partial class DocumentView : IDisposable
 {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ExcelDna.Integration;
 
-namespace RoslynPad;
+namespace OfficeSharp;
 
 public static class SqliteUtil
 {

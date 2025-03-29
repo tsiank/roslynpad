@@ -3,7 +3,7 @@
     <TargetFrameworks>net48</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <OutputType>Library</OutputType>
-    <ApplicationIcon>Resources\RoslynPad.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\OfficeSharp.ico</ApplicationIcon>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <NoWarn>1701;1702</NoWarn>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -16,12 +16,17 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <AssemblyName>RoslynPad</AssemblyName>
-    <RootNamespace>RoslynPad</RootNamespace>
+    <AssemblyName>OfficeSharp</AssemblyName>
+    <RootNamespace>OfficeSharp</RootNamespace>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+    <PackageProjectUrl>https://github.com/tsiank</PackageProjectUrl>
+    <PackageIcon>OfficeSharp.png</PackageIcon>
+    <PackageTags>Roslyn;RoslynPad;OfficeSharp</PackageTags>
+    <Authors>Tsiank</Authors>
+    <RepositoryUrl>https://github.com/tsiank/roslynpadfw48</RepositoryUrl>
   </PropertyGroup>
 
   <!-- Add an additional OutputType for Exe -->
@@ -77,6 +82,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\RoslynPadOfficeAddIn\Resources\OfficeSharp.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Buffers">
       <VersionOverride>4.6.0.0</VersionOverride>
     </PackageReference>
@@ -106,10 +118,10 @@
 
   <!--if msbuild with WinExe, it will still build ExcelDna tasks and end with errors, but we can ignore, just copy .exe and .exe.config file to the previouse generated dll type directiory-->
   <Target Name="CopyAppConfig" AfterTargets="ExcelDnaBuild" Condition="'$(Configuration)' != 'WinExe'">
-    <Message Importance="High" Text="Copy $(TargetPath).config to $(TargetDir)RoslynPad-AddIn[64][-packed].xll.config" />
-    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn.xll.config" />
-    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn-packed.xll.config" />
-    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn64.xll.config" />
-    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)RoslynPad-AddIn64-packed.xll.config" />
+    <Message Importance="High" Text="Copy $(TargetPath).config to $(TargetDir)OfficeSharp-AddIn[64][-packed].xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)OfficeSharp-AddIn.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)OfficeSharp-AddIn-packed.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)OfficeSharp-AddIn64.xll.config" />
+    <Copy SourceFiles="$(TargetPath).config" DestinationFiles="$(TargetDir)OfficeSharp-AddIn64-packed.xll.config" />
   </Target>
 </Project>
