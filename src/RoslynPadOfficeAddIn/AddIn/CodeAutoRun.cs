@@ -50,20 +50,21 @@ internal static class CodeAutoRun
 
         var syncContext = SynchronizationContext.Current;
 
-        var oldStatusBar = ExcelDnaUtil.Application.StatusBar;
+        var xlApp = ExcelDnaUtil.Application as Excel.Application ?? (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+        var oldStatusBar = xlApp.StatusBar;
 
         await Task.WhenAll(tasks);
 
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
-            ExcelDnaUtil.Application.StatusBar = "C#脚本成功运行！";
+            xlApp.StatusBar = "C#脚本成功运行！";
         });
 
         // Wait 3 seconds, then restore the original status bar
         await Task.Delay(3000);
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
-            ExcelDnaUtil.Application.StatusBar = false;
+            xlApp.StatusBar = false;
         });
 
     }

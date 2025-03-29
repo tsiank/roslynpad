@@ -45,6 +45,7 @@
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" />
     <PackageReference Include="ExcelDna.AddIn" />
     <PackageReference Include="ExcelDna.IntelliSense" />
+    <PackageReference Include="ExcelDna.Registration" />
     <PackageReference Include="Mono.Cecil" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
@@ -98,7 +99,7 @@
 
   <Target Name="CopyExcelDnaIntegration" AfterTargets="Build">
     <ItemGroup>
-      <ExcelDnaFiles Include="$(NuGetPackageRoot)exceldna.integration\1.9.0-beta1\lib\net462\ExcelDna.Integration.dll" />
+      <ExcelDnaFiles Include="$(NuGetPackageRoot)exceldna.integration\1.8.0\lib\net452\ExcelDna.Integration.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(ExcelDnaFiles)" DestinationFolder="$(OutputPath)" />
   </Target>

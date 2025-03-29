@@ -1,5 +1,4 @@
 ﻿using ExcelDna.Integration;
-using ExcelDna.Registration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

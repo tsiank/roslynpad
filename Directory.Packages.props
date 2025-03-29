@@ -24,11 +24,11 @@
     <PackageVersion Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.72.1" />
     <PackageVersion Include="Dock.Avalonia" Version="11.2.0" />
     <PackageVersion Include="Dock.Model.Avalonia" Version="11.2.0" />
-    <PackageVersion Include="ExcelDna.AddIn" Version="1.9.0-beta1" />
+    <PackageVersion Include="ExcelDna.AddIn" Version="1.8.0" />
     <PackageVersion Include="dotnetCampus.LatestCSharpFeatures" Version="12.0.1" />
-    <PackageVersion Include="ExcelDna.Integration" Version="1.9.0-beta1" />
-    <PackageVersion Include="ExcelDna.IntelliSense" Version="1.9.0-beta1" />
-    <PackageVersion Include="ExcelDna.Registration" Version="1.9.0-beta1" />
+    <PackageVersion Include="ExcelDna.Integration" Version="1.8.0" />
+    <PackageVersion Include="ExcelDna.IntelliSense" Version="1.8.0" />
+    <PackageVersion Include="ExcelDna.Registration" Version="1.8.0" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.8.0" />
     <PackageVersion Include="IndexRange" Version="1.0.3" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="$(DotNetExtensionsVersion)" />

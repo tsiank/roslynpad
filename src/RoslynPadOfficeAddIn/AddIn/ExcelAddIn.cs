@@ -49,7 +49,7 @@ public class ExcelAddIn : IExcelAddIn
             // Log the error (e.g., to a file or console) since this runs in the background
             ExcelAsyncUtil.QueueAsMacro(() =>
             {
-                ExcelDnaUtil.Application.StatusBar = $"启动时出错: {ex.Message}";
+                ((Microsoft.Office.Interop.Excel.Application)ExcelDnaUtil.Application).StatusBar = $"启动时出错: {ex.Message}";
             });
             Console.WriteLine($"AutoRunCode failed: {ex.Message}");
         }
