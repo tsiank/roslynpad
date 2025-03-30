@@ -209,6 +209,7 @@ public class MyRibbon : ExcelRibbon
     public void OnAddInManage(IRibbonControl control)
     {
         var settingsWindow = new SettingsWindow();
+        settingsWindow.SettingsTabControl.SelectedIndex = 1;
         settingsWindow.ShowDialog();
     }
 }

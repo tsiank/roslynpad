@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using RoslynPad.UI;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
+using OfficeSharp.SettingsUI;
 
 namespace OfficeSharp;
 
@@ -21,14 +22,15 @@ internal static class CodeAutoRun
 {
     internal static async Task AutoRunCode()
     {
-        var excelMacroCodeFilePath = GetScriptingPath();
+        var scriptingActiveDirs = GetScriptingActiveDirs();
 
-        var activedFolder = Directory.GetDirectories(excelMacroCodeFilePath)
-                                        .Where(d => Path.GetFileName(d)
-                                        .StartsWith("1_"))
-                                        .ToList();
+        if (scriptingActiveDirs.Count == 0)
+        {
+            Console.WriteLine("No active scripting to run");
+            return;
+        }
 
-        var tasks = activedFolder.Select(async folder =>
+        var tasks = scriptingActiveDirs.Select(async folder =>
         {
             var mainFxCodeFile = Path.Combine(folder, "Entry.csx");
             var mainCoreCodeFile = Path.Combine(folder, "EntryC.csx");
@@ -83,7 +85,7 @@ internal static class CodeAutoRun
 
     }
 
-    private static string GetScriptingPath()
+    private static List<string> GetScriptingActiveDirs()
     {
 
         var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -92,13 +94,11 @@ internal static class CodeAutoRun
 
         var json = File.ReadAllText(configFile);
 
-        using JsonDocument doc = JsonDocument.Parse(json);
-        var codeFileRootPath = doc.RootElement
-            .GetProperty("excelmacroAddinPath")
-            .GetString();
-
-        var excelMacroCodeFilePath = Path.Combine(codeFileRootPath);
-        return excelMacroCodeFilePath;
+        var jsonOptions = new JsonSerializerOptions();
+        jsonOptions.PropertyNameCaseInsensitive = true;
+        var addinConfig = JsonSerializer.Deserialize<AddInConfig>(json, jsonOptions);
+        var activeDirectories = addinConfig!.AddInList.Where(a => a.Value == true).Select(a => Path.Combine(addinConfig.ExcelMacroAddinPath, a.Key)).ToList();
+        return activeDirectories;
 
     }
 

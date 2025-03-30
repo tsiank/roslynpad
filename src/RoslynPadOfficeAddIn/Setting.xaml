@@ -1,9 +1,9 @@
 ﻿<Window x:Class="OfficeSharp.SettingsUI.SettingsWindow"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignWidth="400" Height="477">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" d:DesignWidth="400" Height="477">
     <Window.Resources>
         <Style x:Key="ScrollableComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -19,36 +19,46 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,10">
-            <CheckBox x:Name="SendErrorsCheckBox" Content="Send Error" Margin="0,0,0,10"/>
-            <CheckBox x:Name="EnableBraceCompletionCheckBox" Content="启用大括号补全" Margin="0,0,0,10"/>
-            <CheckBox x:Name="FormatDocumentOnCommentCheckBox" Content="注释时格式化文档" Margin="0,0,0,10"/>
+        <TabControl x:Name="SettingsTabControl" Grid.Row="0" Margin="0,0,0,10">
+            <TabItem x:Name="GeneralControl" Header="General">
+                <StackPanel Margin="5">
+                    <CheckBox x:Name="SendErrorsCheckBox" Content="Send Error" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="EnableBraceCompletionCheckBox" Content="启用大括号补全" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="FormatDocumentOnCommentCheckBox" Content="注释时格式化文档" Margin="0,0,0,10"/>
 
-            <Label Content="默认平台:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="DefaultPlatformComboBox" 
-                      Style="{StaticResource ScrollableComboBoxStyle}"
-                      Margin="0,0,0,10"/>
+                    <Label Content="默认平台:" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="DefaultPlatformComboBox" 
+                              Style="{StaticResource ScrollableComboBoxStyle}"
+                              Margin="0,0,0,10"/>
 
-            <Label Content="编辑器字体家族:" Margin="0,0,0,5"/>
-            <TextBox x:Name="EditorFontFamilyTextBox" 
-                     Margin="0,0,0,10" 
-                     AcceptsReturn="False" 
-                     ToolTip="输入字体名称，用逗号分隔多个字体（如：Cascadia Code,Consolas）"/>
+                    <Label Content="编辑器字体家族:" Margin="0,0,0,5"/>
+                    <TextBox x:Name="EditorFontFamilyTextBox" 
+                             Margin="0,0,0,10" 
+                             AcceptsReturn="False" 
+                             ToolTip="输入字体名称，用逗号分隔多个字体（如：Cascadia Code,Consolas）"/>
 
-            <Label Content="编辑器字体大小:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="EditorFontSizeComboBox" 
-                      Style="{StaticResource ScrollableComboBoxStyle}"
-                      Margin="0,0,0,10"/>
+                    <Label Content="编辑器字体大小:" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="EditorFontSizeComboBox" 
+                              Style="{StaticResource ScrollableComboBoxStyle}"
+                              Margin="0,0,0,10"/>
 
-            <Label Content="输出字体大小:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="OutputFontSizeComboBox" 
-                      Style="{StaticResource ScrollableComboBoxStyle}"
-                      Margin="0,0,0,10"/>
-            <Label Content="主题:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="CustomThemeName" 
-                      Style="{StaticResource ScrollableComboBoxStyle}"
-                      Margin="0,0,0,10"/>
-        </StackPanel>
+                    <Label Content="输出字体大小:" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="OutputFontSizeComboBox" 
+                              Style="{StaticResource ScrollableComboBoxStyle}"
+                              Margin="0,0,0,10"/>
+                    <Label Content="主题:" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="CustomThemeName" 
+                              Style="{StaticResource ScrollableComboBoxStyle}"
+                              Margin="0,0,0,10"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="AddInControl" Header="AddIn Manage">
+                <StackPanel Margin="5">
+                    <Label Content="AddIn List(Choose which addin script you want to run when OfficeSharp load, multiple choice):" Margin="0,0,0,5"/>
+                    <StackPanel x:Name="AddInCheckBoxPanel" Orientation="Vertical"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="保存" Click="SaveButton_Click" Margin="0,0,10,0" Padding="10,5"/>

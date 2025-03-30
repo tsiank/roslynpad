@@ -2,6 +2,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using RoslynPad.UI;
 using static RoslynPad.UI.ApplicationSettings;
 
@@ -20,6 +21,10 @@ public partial class SettingsWindow : Window
     private readonly List<string> _platforms = [".NET Framework x64 ", ".NET 6 ", ".NET 8 ", ".NET 9 "];
     private readonly List<string> _themeTypes = ["Light", "Dark"];
 
+    private string _addinConfigPath;
+    private AddInConfig _addinConfig;
+    private Dictionary<string, CheckBox> _addinCheckBoxes = new Dictionary<string, CheckBox>();
+
     internal SettingsWindow()
     {
         Title = "OfficeSharp Settings";
@@ -30,6 +35,7 @@ public partial class SettingsWindow : Window
         InitializeComponent();
         InitializeComboBoxes();
         LoadSettings();
+        LoadAddInSettings();
     }
 
     private void InitializeComboBoxes()
@@ -112,6 +118,50 @@ public partial class SettingsWindow : Window
         }
     }
 
+    private void LoadAddInSettings()
+    {
+        try
+        {
+            var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
+            _addinConfigPath = Path.Combine(configPath, "OfficeSharpMacroAddIn.json");
+
+            string json = File.ReadAllText(_addinConfigPath);
+            var jsonOptions = new JsonSerializerOptions();
+            jsonOptions.PropertyNameCaseInsensitive = true;
+            _addinConfig = JsonSerializer.Deserialize<AddInConfig>(json, jsonOptions);
+
+            // 获取 excelmacroAddinPath 下的子目录
+            var subDirectories = Directory.Exists(_addinConfig.ExcelMacroAddinPath)
+                ? Directory.GetDirectories(_addinConfig.ExcelMacroAddinPath).Select(Path.GetFileName).ToList()
+                : new List<string>();
+
+            // 清空之前的 CheckBox
+            AddInCheckBoxPanel.Children.Clear();
+            _addinCheckBoxes.Clear();
+
+            // 生成 CheckBox
+            foreach (var dir in subDirectories)
+            {
+                bool isChecked = _addinConfig.AddInList != null && _addinConfig.AddInList.TryGetValue(dir, out bool value) && value;
+                var checkBox = new CheckBox
+                {
+                    Content = dir,
+                    IsChecked = isChecked,
+                    Margin = new Thickness(0, 0, 0, 5)
+                };
+                AddInCheckBoxPanel.Children.Add(checkBox);
+                _addinCheckBoxes[dir] = checkBox;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"加载加载项设置时出错: {ex.Message}");
+        }
+    }
+
+
+
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -140,6 +190,22 @@ public partial class SettingsWindow : Window
             File.WriteAllText(_settingsPath, jsonContent);
             MessageBox.Show($"Saved settings file: {_settingsPath}");
 
+            // 保存 AddIn 设置
+            if (_addinConfig != null)
+            {
+                _addinConfig.AddInList = _addinCheckBoxes.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.IsChecked ?? false
+                );
+
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+                File.WriteAllText(_addinConfigPath, JsonSerializer.Serialize(_addinConfig, options));
+            }
+
             Window.GetWindow(this).Close();
         }
         catch (Exception ex)
@@ -152,6 +218,8 @@ public partial class SettingsWindow : Window
     {
         Window.GetWindow(this).Close();
     }
+
+
 }
 
 public class JsonLowerCaseNamingPolicy : JsonNamingPolicy
@@ -160,4 +228,10 @@ public class JsonLowerCaseNamingPolicy : JsonNamingPolicy
     {
         return char.ToLower(name[0]) + name[1..];
     }
+}
+
+public class AddInConfig
+{
+    public string ExcelMacroAddinPath { get; set; } = string.Empty;
+    public Dictionary<string, bool> AddInList { get; set; }
 }
