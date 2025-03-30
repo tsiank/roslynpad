@@ -111,7 +111,7 @@ public class MyRibbon : ExcelRibbon
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"重新显示窗口失败: {ex.Message}");
+                    MessageBox.Show($"UI failed to show: {ex.Message}");
                     CreateNewWindowThread(); // 如果失败，重新创建
                 }
             }
@@ -126,7 +126,7 @@ public class MyRibbon : ExcelRibbon
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"激活窗口失败: {ex.Message}");
+                    MessageBox.Show($"Activate UI failed: {ex.Message}");
                 }
             }
         }
@@ -159,7 +159,7 @@ public class MyRibbon : ExcelRibbon
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"窗口线程初始化失败: {ex.Message}");
+                    MessageBox.Show($"UI thread initialization failed: {ex.Message}");
                 }
             });
 
@@ -184,12 +184,12 @@ public class MyRibbon : ExcelRibbon
         {
             using (Process process = Process.Start(processStartInfo))
             {
-                Console.WriteLine("RoslynPad.exe is running.");
+                Console.WriteLine("OfficeSharp.exe is running.");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Running RoslynPad.exe error: {ex.Message}");
+            Console.WriteLine($"Running OfficeSharp.exe error: {ex.Message}");
         }
     }
 
