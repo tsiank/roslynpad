@@ -22,8 +22,11 @@ public class ExcelAddIn : IExcelAddIn
         // force using TLS 1.2 or greater, NuGet need
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 
-        CodeAutoRun.CheckConfig();
-        _ = RunStartupTasksAsync(); // Fire and forget, but handle exceptions internally
+        var autoRunMacro = CodeAutoRun.CheckOfficeSharpMacroAddInConfig();
+        if (autoRunMacro)
+        {
+            _ = RunStartupTasksAsync();
+        }
 
         ExcelRegistration
            .GetExcelFunctions()
@@ -38,7 +41,7 @@ public class ExcelAddIn : IExcelAddIn
         IntelliSenseServer.Uninstall();
     }
 
-    private static async Task RunStartupTasksAsync()
+    internal static async Task RunStartupTasksAsync()
     {
         try
         {

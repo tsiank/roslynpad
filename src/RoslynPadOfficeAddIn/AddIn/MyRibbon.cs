@@ -200,6 +200,13 @@ public class MyRibbon : ExcelRibbon
         _ctpMainWindow = CTPManager.ShowCTP();
     }
 
+    public void onRunScriptManully(IRibbonControl control)
+    {
+        _ = CodeAutoRun.CheckOfficeSharpMacroAddInConfig();
+        _ = ExcelAddIn.RunStartupTasksAsync();
+
+    }
+
     public void OnButtonSetting(IRibbonControl control)
     {
         var settingsWindow = new SettingsWindow();

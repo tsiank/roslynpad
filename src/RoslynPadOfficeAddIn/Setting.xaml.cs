@@ -131,6 +131,8 @@ public partial class SettingsWindow : Window
             jsonOptions.PropertyNameCaseInsensitive = true;
             _addinConfig = JsonSerializer.Deserialize<AddInConfig>(json, jsonOptions);
 
+            AutoRunMacroCheckBox.IsChecked = _addinConfig.AutoRunMacro;
+
             // 获取 excelmacroAddinPath 下的子目录
             var subDirectories = Directory.Exists(_addinConfig.ExcelMacroAddinPath)
                 ? Directory.GetDirectories(_addinConfig.ExcelMacroAddinPath).Select(Path.GetFileName).ToList()
@@ -193,6 +195,8 @@ public partial class SettingsWindow : Window
             // 保存 AddIn 设置
             if (_addinConfig != null)
             {
+                _addinConfig.AutoRunMacro = (bool)AutoRunMacroCheckBox.IsChecked;
+
                 _addinConfig.AddInList = _addinCheckBoxes.ToDictionary(
                     kvp => kvp.Key,
                     kvp => kvp.Value.IsChecked ?? false
@@ -233,5 +237,6 @@ public class JsonLowerCaseNamingPolicy : JsonNamingPolicy
 public class AddInConfig
 {
     public string ExcelMacroAddinPath { get; set; } = string.Empty;
+    public bool AutoRunMacro { get; set; } = true;
     public Dictionary<string, bool> AddInList { get; set; }
 }

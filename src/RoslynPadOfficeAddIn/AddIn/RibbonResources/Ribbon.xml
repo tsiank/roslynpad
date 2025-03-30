@@ -11,9 +11,10 @@
                     </box>
                 </group>
                 <group id='group2' label='Operation'>
-                    <button id='button4' label='Exit' supertip='Close and exit CTP or IDE thread' onAction='ExitCTPOrIDE' image='exit' size="large" />
-                    <button id='button5' label='AddInMng' supertip='Choose which addin to run when this addin loading' onAction='OnAddInManage' image='addinmanage' size="large" />
-                    <button id='button6' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" />
+                    <button id='button4' label='RunScript' supertip='Run script addin manully' onAction='onRunScriptManully' image='runscriptmannully' size="large" />
+                    <button id='button5' label='Exit' supertip='Close and exit CTP or IDE thread' onAction='ExitCTPOrIDE' image='exit' size="large" />
+                    <button id='button6' label='AddInMng' supertip='Choose which addin to run when this addin loading' onAction='OnAddInManage' image='addinmanage' size="large" />
+                    <button id='button7' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" />
                 </group>
             </tab>
         </tabs>

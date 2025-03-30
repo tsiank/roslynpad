@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d" d:DesignWidth="400" Height="477">
+        mc:Ignorable="d" d:DesignWidth="400" Height="532">
     <Window.Resources>
         <Style x:Key="ScrollableComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -52,9 +52,10 @@
                               Margin="0,0,0,10"/>
                 </StackPanel>
             </TabItem>
-            <TabItem x:Name="AddInControl" Header="AddIn Manage">
+            <TabItem x:Name="AddInControl" Header="AddIn Macro Manage">
                 <StackPanel Margin="5">
-                    <Label Content="AddIn List(Choose which addin script you want to run when OfficeSharp load, multiple choice):" Margin="0,0,0,5"/>
+                    <CheckBox x:Name="AutoRunMacroCheckBox" Content="If auto running AddIn Macro when OfficeSharp load." Margin="5,5,0,10"/>
+                    <Label Content="Choose which addin to run when OfficeSharp load:" Margin="0,0,0,5" />
                     <StackPanel x:Name="AddInCheckBoxPanel" Orientation="Vertical"/>
                 </StackPanel>
             </TabItem>

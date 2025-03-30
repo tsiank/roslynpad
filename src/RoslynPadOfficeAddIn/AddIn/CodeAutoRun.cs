@@ -102,8 +102,9 @@ internal static class CodeAutoRun
 
     }
 
-    internal static void CheckConfig()
+    internal static bool CheckOfficeSharpMacroAddInConfig()
     {
+        bool autoRunMacro = false;
         try
         {
             var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -126,25 +127,25 @@ internal static class CodeAutoRun
                 Console.WriteLine($"Created configuration directory: {configPath}");
             }
 
-            // 处理json文件
             if (File.Exists(jsonPath))
             {
-                //try
-                //{
-                //    // 读取现有配置
-                //    var existingJson = File.ReadAllText(jsonPath);
-                //    var existingConfig = JsonSerializer.Deserialize<Dictionary<string, string>>(existingJson);
-                //}
-                //catch (JsonException)
-                //{
-                //    // 如果现有文件不是有效的JSON，重新创建它
-                //    var jsonContent = JsonSerializer.Serialize(config, new JsonSerializerOptions
-                //    {
-                //        WriteIndented = true
-                //    });
-                //    File.WriteAllText(jsonPath, jsonContent);
-                //    Console.WriteLine($"Recreated configuration file: {jsonPath}");
-                //}
+                try
+                {
+                    // 读取现有配置
+                    var existingJson = File.ReadAllText(jsonPath);
+                    var existingConfig = JsonSerializer.Deserialize<AddInConfig>(existingJson);
+                    autoRunMacro = existingConfig!.AutoRunMacro;
+                }
+                catch (JsonException)
+                {
+                    // 如果现有文件不是有效的JSON，重新创建它
+                    var jsonContent = JsonSerializer.Serialize(config, new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+                    File.WriteAllText(jsonPath, jsonContent);
+                    Console.WriteLine($"Recreated configuration file: {jsonPath}");
+                }
             }
 
             if (!File.Exists(jsonPath))
@@ -171,6 +172,8 @@ internal static class CodeAutoRun
             Console.WriteLine($"Stack trace: {ex.StackTrace}");
             throw;
         }
+
+        return autoRunMacro;
     }
 
     internal static string GetExcelMacroPath()
