@@ -42,12 +42,107 @@ public static class LinqExtensions
     //以下操作对象必须有ID属性
 
     //对Excel Range对象的操作
+
+    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
+                                        string address,
+                                        Action<Excel.Range> formatAction)
+    {
+        if (source == null)
+        {
+            yield break;
+        }
+
+        var range = XlApp.ActiveSheet.Range[address];
+        foreach (var item in source)
+        {
+            Excel.Range rowRange = (Excel.Range)range.Rows[(int)item.Id + 1];
+            formatAction(rowRange);
+            yield return item;
+        }
+    }
+
+    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
+                                            Excel.Range range,
+                                            Action<Excel.Range> formatAction)
+    {
+        if (source == null)
+        {
+            yield break;
+        }
+
+        foreach (var item in source)
+        {
+            Excel.Range rowRange = (Excel.Range)range.Rows[(int)item.Id + 1];
+            formatAction(rowRange);
+            yield return item;
+        }
+    }
+
+
+    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
+                                        string address,
+                                        Action<Excel.Range> formatAction,
+                                        bool hasHeader = true
+                                        )
+    {
+        var range = XlApp.ActiveSheet.Range[address];
+        foreach (var item in source)
+        {
+            int offset = hasHeader ? 1 : 0;
+            int relativeRow = (int)item.Id + offset;
+            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
+            {
+                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
+                formatAction(rowRange);
+            }
+            yield return item;
+        }
+    }
+
+
+    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
+                                            Excel.Range range,
+                                            Action<Excel.Range> formatAction,
+                                            bool hasHeader = true
+                                            )
+    {
+        foreach (var item in source)
+        {
+            int offset = hasHeader ? 1 : 0;
+            int relativeRow = (int)item.Id + offset;
+            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
+            {
+                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
+                formatAction(rowRange);
+            }
+            yield return item;
+        }
+    }
+
+    public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
+                                        string address,
+                                        Action<Excel.Range> formatAction) where T : class, IHasId
+    {
+        if (source == null)
+        {
+            yield break;
+        }
+
+        var range = XlApp.ActiveSheet.Range[address];
+        foreach (var item in source)
+        {
+            Excel.Range rowRange = (Excel.Range)range.Rows[item.Id + 1];
+            formatAction(rowRange);
+            yield return item;
+        }
+    }
+
+
     public static IEnumerable<T> Format<T>(this IEnumerable<T> source, 
                                             Excel.Range range, 
                                             Action<Excel.Range> formatAction) where T : class, IHasId
     {
-        var items = source.ToList();
-        if (!items.Any())
+        if (source == null)
         {
             yield break;
         }
@@ -60,6 +155,25 @@ public static class LinqExtensions
         }
     }
 
+    public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
+                                        string address,
+                                        Action<Excel.Range> formatAction,
+                                        bool hasHeader = true
+                                        ) where T : class, IHasId
+    {
+        var range = XlApp.ActiveSheet.Range[address];
+        foreach (var item in source)
+        {
+            int offset = hasHeader ? 1 : 0;
+            int relativeRow = item.Id + offset;
+            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
+            {
+                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
+                formatAction(rowRange);
+            }
+            yield return item;
+        }
+    }
 
     public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
                                             Excel.Range range,
