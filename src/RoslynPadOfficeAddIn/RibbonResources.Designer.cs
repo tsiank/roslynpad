@@ -63,9 +63,29 @@ namespace OfficeSharp {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap addinmanage {
+            get {
+                object obj = ResourceManager.GetObject("addinmanage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap ctp {
             get {
                 object obj = ResourceManager.GetObject("ctp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap exit {
+            get {
+                object obj = ResourceManager.GetObject("exit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -86,7 +106,7 @@ namespace OfficeSharp {
         ///    &lt;ribbon&gt;
         ///        &lt;tabs&gt;
         ///            &lt;tab id=&apos;tab1&apos; label=&apos;OfficeSharp&apos;&gt;
-        ///                &lt;group id=&apos;group1&apos; label=&apos;Editor&apos;&gt;
+        ///                &lt;group id=&apos;group1&apos; label=&apos;Window&apos;&gt;
         ///                    &lt;box id=&quot;myBox&quot; boxStyle=&quot;horizontal&quot;&gt;
         ///                        &lt;button id=&apos;button1&apos; label=&apos;CTP&apos; supertip=&apos;Open as custome task pane&apos; onAction=&apos;OnButtonPressedCTP&apos; image=&apos;ctp&apos; size=&quot;large&quot; /&gt;
         ///                 [字符串的其余部分被截断]&quot;; 的本地化字符串。

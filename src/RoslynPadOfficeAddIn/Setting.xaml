@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="400">
+             mc:Ignorable="d" d:DesignWidth="400" Height="477">
     <Window.Resources>
         <Style x:Key="ScrollableComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -43,6 +42,10 @@
 
             <Label Content="输出字体大小:" Margin="0,0,0,5"/>
             <ComboBox x:Name="OutputFontSizeComboBox" 
+                      Style="{StaticResource ScrollableComboBoxStyle}"
+                      Margin="0,0,0,10"/>
+            <Label Content="主题:" Margin="0,0,0,5"/>
+            <ComboBox x:Name="CustomThemeName" 
                       Style="{StaticResource ScrollableComboBoxStyle}"
                       Margin="0,0,0,10"/>
         </StackPanel>

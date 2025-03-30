@@ -113,7 +113,9 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     {
         UseSystemTheme = Settings.CustomThemePath is null && Settings.BuiltInTheme == BuiltInTheme.System;
 
-        var theme = Settings.CustomThemePath is null ? GetBuiltinThemePath(Settings.BuiltInTheme) : (path: Settings.CustomThemePath, type: Settings.CustomThemeType.GetValueOrDefault());
+        var theme = Settings.CustomThemePath is null
+            ? GetBuiltinThemePath(Settings.BuiltInTheme) 
+            : (path: Path.Combine(Settings.CustomThemePath, Settings.CustomThemeName + ".json"), type: Settings.CustomThemeName.StartsWith("dark") ? ThemeType.Dark : ThemeType.Light);
         LoadTheme(theme.path, theme.type);
 
         if (UseSystemTheme)

@@ -25,7 +25,8 @@ public interface IApplicationSettingsValues : INotifyPropertyChanged
     double? WindowFontSize { get; set; }
     bool FormatDocumentOnComment { get; set; }
     string EffectiveDocumentPath { get; }
-    string? CustomThemePath { get; }
+    string? CustomThemePath { get; set; }
     ThemeType? CustomThemeType { get; }
+    string CustomThemeName { get; set; }
     BuiltInTheme BuiltInTheme { get; }
 }

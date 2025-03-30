@@ -30,8 +30,8 @@ internal static class CodeAutoRun
 
         var tasks = activedFolder.Select(async folder =>
         {
-            var mainFxCodeFile = Path.Combine(folder, "Program.csx");
-            var mainCoreCodeFile = Path.Combine(folder, "ProgramC.csx");
+            var mainFxCodeFile = Path.Combine(folder, "Entry.csx");
+            var mainCoreCodeFile = Path.Combine(folder, "EntryC.csx");
 
             string mainCode;
             bool isDotNet;
@@ -48,7 +48,7 @@ internal static class CodeAutoRun
             }
             else
             {
-                Console.WriteLine($"文件夹 {folder} 中未找到 Program.csx 文件");
+                Console.WriteLine($"No found Entry.csx in {folder}");
                 return;
             }
 
@@ -58,7 +58,7 @@ internal static class CodeAutoRun
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"处理文件夹 {folder} 时出错: {ex.Message}");
+                Console.WriteLine($"Folder {folder} error: {ex.Message}");
             }
         });
 
@@ -71,7 +71,7 @@ internal static class CodeAutoRun
 
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
-            xlApp.StatusBar = "C#脚本成功运行！";
+            xlApp.StatusBar = "C# run successfully！";
         });
 
         // Wait 3 seconds, then restore the original status bar

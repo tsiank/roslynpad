@@ -115,7 +115,7 @@ internal class ApplicationSettings : IApplicationSettings
         }
     }
 
-    private class SerializableValues : NotificationObject, IApplicationSettingsValues
+    public class SerializableValues : NotificationObject, IApplicationSettingsValues
     {
         private const int LiveModeDelayMsDefault = 2000;
         private const int DefaultFontSize = 12;
@@ -142,6 +142,7 @@ internal class ApplicationSettings : IApplicationSettings
         private string? _effectiveDocumentPath;
         private string? _customThemePath;
         private ThemeType? _customThemeType;
+        private string? _customThemeName = string.Empty;
 
         public void LoadDefaultSettings()
         {
@@ -295,6 +296,12 @@ internal class ApplicationSettings : IApplicationSettings
         {
             get => _customThemeType;
             set => SetProperty(ref _customThemeType, value);
+        }
+
+        public string CustomThemeName
+        {
+            get => _customThemeName!;
+            set => SetProperty(ref _customThemeName, value);
         }
 
         public BuiltInTheme BuiltInTheme

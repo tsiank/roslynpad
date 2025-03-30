@@ -66,7 +66,7 @@ public class MyRibbon : ExcelRibbon
     }
 
     // 清理资源
-    public void Unload(IRibbonUI ribbonUI)
+    public void ExitCTPOrIDE(IRibbonUI ribbonUI)
     {
         lock (_lock)
         {
@@ -88,6 +88,8 @@ public class MyRibbon : ExcelRibbon
             _IDEApp = null;
             _mainWindow = null;
         }
+
+        CTPManager.DeleteCTP();
     }
 
     public void OnButtonPressedIDE(IRibbonControl control)
@@ -200,12 +202,14 @@ public class MyRibbon : ExcelRibbon
 
     public void OnButtonSetting(IRibbonControl control)
     {
-        var mainViewMd = (MainViewModel)_ctpMainWindow!.DataContext;
-        var appSettings = mainViewMd.Settings;
-        var settingsWindow = new SettingsWindow(appSettings);
+        var settingsWindow = new SettingsWindow();
         settingsWindow.ShowDialog();
     }
 
-
+    public void OnAddInManage(IRibbonControl control)
+    {
+        var settingsWindow = new SettingsWindow();
+        settingsWindow.ShowDialog();
+    }
 }
 

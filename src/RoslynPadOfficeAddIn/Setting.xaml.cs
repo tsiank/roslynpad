@@ -1,9 +1,9 @@
-﻿using System;
-using System.Drawing.Text;
+﻿using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Windows;
-using System.Windows.Controls;
-using System.Collections.Generic;
 using RoslynPad.UI;
+using static RoslynPad.UI.ApplicationSettings;
 
 #nullable disable
 
@@ -11,16 +11,18 @@ namespace OfficeSharp.SettingsUI;
 
 public partial class SettingsWindow : Window
 {
-    private readonly IApplicationSettingsValues _appSettings;
-    private readonly List<string> _fontSizes = new List<string> { "8", "9", "10", "11", "12",  "13", "14", "15", "16", "18", "20", "22", "24" };
-    private readonly List<string> _platforms = new List<string> { ".NET Framework x64 ", ".NET Framework x86 ", ".NET 6 ", ".NET 9 " };
+    private SerializableValues _appSettings;
 
-    internal SettingsWindow(IApplicationSettingsValues appSettings)
+    private string _settingsPath;
+    //private Settings _settings;
+
+    private readonly List<string> _fontSizes = ["8", "9", "10", "11", "12",  "13", "14", "15", "16", "18", "20", "22", "24"];
+    private readonly List<string> _platforms = [".NET Framework x64 ", ".NET 6 ", ".NET 8 ", ".NET 9 "];
+    private readonly List<string> _themeTypes = ["Light", "Dark"];
+
+    internal SettingsWindow()
     {
-        if (appSettings == null) throw new ArgumentNullException(nameof(appSettings));
-
-        _appSettings = appSettings;
-
+        Title = "OfficeSharp Settings";
         Width = 500;
         Height = 400;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -39,23 +41,74 @@ public partial class SettingsWindow : Window
 
     private void LoadSettings()
     {
+        var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
+        var jsonPath = Path.Combine(configPath, "OfficeSharp.json");
+        
+        if (!File.Exists(jsonPath)) throw new ArgumentNullException(nameof(jsonPath));
+
+        _settingsPath = jsonPath;
+        var settingsJson = File.ReadAllText(jsonPath);
+
+        var jsonOptions = new JsonSerializerOptions();
+        jsonOptions.PropertyNameCaseInsensitive = true;
+        var settingConfig = JsonSerializer.Deserialize<SerializableValues>(settingsJson, jsonOptions);
+
         try
         {
-            var values = _appSettings;
+            _appSettings = settingConfig;
+            SendErrorsCheckBox.IsChecked = _appSettings.SendErrors;
+            EnableBraceCompletionCheckBox.IsChecked = _appSettings.EnableBraceCompletion;
+            FormatDocumentOnCommentCheckBox.IsChecked = _appSettings.FormatDocumentOnComment;
+            DefaultPlatformComboBox.SelectedItem = _appSettings.DefaultPlatformName;
 
-            SendErrorsCheckBox.IsChecked = values.SendErrors;
-            EnableBraceCompletionCheckBox.IsChecked = values.EnableBraceCompletion;
-            FormatDocumentOnCommentCheckBox.IsChecked = values.FormatDocumentOnComment;
-            DefaultPlatformComboBox.SelectedItem = values.DefaultPlatformName;
+            EditorFontFamilyTextBox.Text = _appSettings.EditorFontFamily;
 
-            EditorFontFamilyTextBox.Text = values.EditorFontFamily;
+            EditorFontSizeComboBox.SelectedItem = _appSettings.EditorFontSize.ToString();
+            OutputFontSizeComboBox.SelectedItem = _appSettings.OutputFontSize.ToString();
 
-            EditorFontSizeComboBox.SelectedItem = values.EditorFontSize.ToString();
-            OutputFontSizeComboBox.SelectedItem = values.OutputFontSize.ToString();
+            CustomThemeName.ItemsSource = GetThemeNameList();
+            CustomThemeName.SelectedItem = _appSettings.CustomThemeName;
+
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error loading settings: {ex.Message}");
+        }
+
+        List<string> GetThemeNameList()
+        {
+            var themeNameList = new List<string>();
+
+            var themePath = Path.Combine(configPath, "Themes");
+            if (!Directory.Exists(themePath))
+            {
+                Directory.CreateDirectory(themePath);
+                var sourceThemePath = Path.Combine(AppContext.BaseDirectory, "Themes");
+                foreach (string file in Directory.GetFiles(sourceThemePath))
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(themePath, fileName);
+                    File.Copy(file, destFile, true);
+
+                    var themeName = Path.GetFileName(file).Replace(".json", "");
+                    themeNameList.Add(themeName);
+                }
+
+                _appSettings.CustomThemePath = themePath;
+                return themeNameList;
+            }
+
+            var customeThemePath = settingConfig.CustomThemePath;
+            var themeFiles = Directory.GetFiles(customeThemePath);
+
+            foreach (var themeFile in themeFiles)
+            {
+                var themeName = Path.GetFileName(themeFile)?.Replace(".json", "");
+                 themeNameList.Add(themeName);
+            }
+
+            return themeNameList;
         }
     }
 
@@ -75,7 +128,18 @@ public partial class SettingsWindow : Window
             values.EditorFontSize = double.Parse(EditorFontSizeComboBox.SelectedItem?.ToString() ?? "12");
             values.OutputFontSize = double.Parse(OutputFontSizeComboBox.SelectedItem?.ToString() ?? "12");
 
-            // The SaveSettings method is called automatically via PropertyChanged event in ApplicationSettings
+            _appSettings.CustomThemeName = CustomThemeName.SelectedItem.ToString();
+
+            var jsonContent = JsonSerializer.Serialize(values, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                PropertyNamingPolicy = new JsonLowerCaseNamingPolicy()
+            });
+
+            File.WriteAllText(_settingsPath, jsonContent);
+            MessageBox.Show($"Saved settings file: {_settingsPath}");
+
             Window.GetWindow(this).Close();
         }
         catch (Exception ex)
@@ -87,5 +151,13 @@ public partial class SettingsWindow : Window
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
         Window.GetWindow(this).Close();
+    }
+}
+
+public class JsonLowerCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name)
+    {
+        return char.ToLower(name[0]) + name[1..];
     }
 }

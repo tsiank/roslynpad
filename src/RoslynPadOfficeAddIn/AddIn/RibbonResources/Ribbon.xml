@@ -3,13 +3,17 @@
     <ribbon>
         <tabs>
             <tab id='tab1' label='OfficeSharp'>
-                <group id='group1' label='Editor'>
+                <group id='group1' label='Window'>
                     <box id="myBox" boxStyle="horizontal">
                         <button id='button1' label='CTP' supertip='Open as custome task pane' onAction='OnButtonPressedCTP' image='ctp' size="large" />
                         <button id='button2' label='IDE' supertip='Open as IDE within Excel process' onAction='OnButtonPressedIDE' image='ide' size="large" />
                         <button id='button3' label='SIDE' supertip='Open as standalone IDE with new process' onAction='OnButtonPressedSIDE' image='side' size="large" />
-                        <button id='button4' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" />
                     </box>
+                </group>
+                <group id='group2' label='Operation'>
+                    <button id='button4' label='Exit' supertip='Close and exit CTP or IDE thread' onAction='ExitCTPOrIDE' image='exit' size="large" />
+                    <button id='button5' label='AddInMng' supertip='Choose which addin to run when this addin loading' onAction='OnAddInManage' image='addinmanage' size="large" />
+                    <button id='button6' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" />
                 </group>
             </tab>
         </tabs>
