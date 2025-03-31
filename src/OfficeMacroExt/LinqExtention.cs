@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,179 +17,115 @@ namespace OfficeMacroExt;
 //todo
 public static class LinqExtensions
 {
-    public static IEnumerable<Excel.Range> AsRange<T>(this IEnumerable<T> source, Excel.Range rng) where T : class
-    {
-        if (source != null)
-        {
-            foreach (var item in source)
-            {
-                yield return (Excel.Range)item;
-            }
-        }
-    }
+    //未实现
+    //public static IEnumerable<Excel.Range> AsRange<T>(this IEnumerable<T> source, Excel.Range rng) where T : class
+    //{
+    //    if (source != null)
+    //    {
+    //        foreach (var item in source)
+    //        {
+    //            yield return (Excel.Range)item;
+    //        }
+    //    }
+    //}
 
     //未实现
-    public static IEnumerable<Excel.Range> Format(this IEnumerable<Excel.Range> source, Action<Excel.Range> rangeAction)
-    {
-        if (source != null)
-        {
-            foreach (var item in source)
-            {
-                rangeAction(item);
-                yield return item;
-            }
-        }
-    }
+    //public static IEnumerable<Excel.Range> Format(this IEnumerable<Excel.Range> source, Action<Excel.Range> rangeAction)
+    //{
+    //    if (source != null)
+    //    {
+    //        foreach (var item in source)
+    //        {
+    //            rangeAction(item);
+    //            yield return item;
+    //        }
+    //    }
+    //}
 
     //以下操作对象必须有ID属性
 
     //对Excel Range对象的操作
 
     public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
-                                        string address,
-                                        Action<Excel.Range> formatAction)
-    {
-        if (source == null)
-        {
-            yield break;
-        }
-
-        var range = XlApp.ActiveSheet.Range[address];
-        foreach (var item in source)
-        {
-            Excel.Range rowRange = (Excel.Range)range.Rows[(int)item.Id + 1];
-            formatAction(rowRange);
-            yield return item;
-        }
-    }
-
-    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
-                                            Excel.Range range,
-                                            Action<Excel.Range> formatAction)
-    {
-        if (source == null)
-        {
-            yield break;
-        }
-
-        foreach (var item in source)
-        {
-            Excel.Range rowRange = (Excel.Range)range.Rows[(int)item.Id + 1];
-            formatAction(rowRange);
-            yield return item;
-        }
-    }
-
-
-    public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
-                                        string address,
-                                        Action<Excel.Range> formatAction,
-                                        bool hasHeader = true
-                                        )
+                                                 string address,
+                                                 Action<Excel.Range> formatAction,
+                                                 bool hasHeader = true)
     {
         var range = XlApp.ActiveSheet.Range[address];
-        foreach (var item in source)
-        {
-            int offset = hasHeader ? 1 : 0;
-            int relativeRow = (int)item.Id + offset;
-            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
-            {
-                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
-                formatAction(rowRange);
-            }
-            yield return item;
-        }
+        return FormatInternal(source, range, formatAction, hasHeader);
     }
 
-
     public static IEnumerable<dynamic> Format(this IEnumerable<dynamic> source,
-                                            Excel.Range range,
+                                               Excel.Range range,
+                                               Action<Excel.Range> formatAction,
+                                               bool hasHeader = true)
+    {
+        return FormatInternal(source, range, formatAction, hasHeader);
+    }
+
+    public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
+                                            string address,
                                             Action<Excel.Range> formatAction,
-                                            bool hasHeader = true
-                                            )
-    {
-        foreach (var item in source)
-        {
-            int offset = hasHeader ? 1 : 0;
-            int relativeRow = (int)item.Id + offset;
-            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
-            {
-                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
-                formatAction(rowRange);
-            }
-            yield return item;
-        }
-    }
-
-    public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
-                                        string address,
-                                        Action<Excel.Range> formatAction) where T : class, IHasId
-    {
-        if (source == null)
-        {
-            yield break;
-        }
-
-        var range = XlApp.ActiveSheet.Range[address];
-        foreach (var item in source)
-        {
-            Excel.Range rowRange = (Excel.Range)range.Rows[item.Id + 1];
-            formatAction(rowRange);
-            yield return item;
-        }
-    }
-
-
-    public static IEnumerable<T> Format<T>(this IEnumerable<T> source, 
-                                            Excel.Range range, 
-                                            Action<Excel.Range> formatAction) where T : class, IHasId
-    {
-        if (source == null)
-        {
-            yield break;
-        }
-
-        foreach (var item in source)
-        {
-            Excel.Range rowRange = (Excel.Range)range.Rows[item.Id+1];
-            formatAction(rowRange);
-            yield return item;
-        }
-    }
-
-    public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
-                                        string address,
-                                        Action<Excel.Range> formatAction,
-                                        bool hasHeader = true
-                                        ) where T : class, IHasId
+                                            bool hasHeader = true) where T : class, IHasId
     {
         var range = XlApp.ActiveSheet.Range[address];
-        foreach (var item in source)
-        {
-            int offset = hasHeader ? 1 : 0;
-            int relativeRow = item.Id + offset;
-            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
-            {
-                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
-                formatAction(rowRange);
-            }
-            yield return item;
-        }
+        return FormatInternal(source, range, formatAction, hasHeader);
     }
 
     public static IEnumerable<T> Format<T>(this IEnumerable<T> source,
                                             Excel.Range range,
                                             Action<Excel.Range> formatAction,
-                                            bool hasHeader=true
-                                            ) where T : class, IHasId
+                                            bool hasHeader = true) where T : class, IHasId
     {
+        return FormatInternal(source, range, formatAction, hasHeader);
+    }
+
+    private static IEnumerable<T> FormatInternal<T>(IEnumerable<T> source,
+                                                    Excel.Range range,
+                                                    Action<Excel.Range> formatAction,
+                                                    bool hasHeader) where T : class, IHasId
+    {
+        if (source == null)
+        {
+            yield break;
+        }
+
+        var validRange = RangeProcessor.RangeCheck(range);
+        int offset = hasHeader ? 1 : 0;
+
         foreach (var item in source)
         {
-            int offset = hasHeader ? 1 : 0;
             int relativeRow = item.Id + offset;
-            if (relativeRow >= 1 && relativeRow <= range.Rows.Count)
+
+            if (relativeRow >= 1 && relativeRow <= validRange.Rows.Count)
             {
-                var rowRange = ((Excel.Range)range.Rows[relativeRow]);
+                var rowRange = (Excel.Range)validRange.Rows[relativeRow];
+                formatAction(rowRange);
+            }
+            yield return item;
+        }
+    }
+
+    private static IEnumerable<dynamic> FormatInternal(IEnumerable<dynamic> source,
+                                                       Excel.Range range,
+                                                       Action<Excel.Range> formatAction,
+                                                       bool hasHeader)
+    {
+        if (source == null)
+        {
+            yield break;
+        }
+
+        var validRange = RangeProcessor.RangeCheck(range);
+        int offset = hasHeader ? 1 : 0;
+
+        foreach (var item in source)
+        {
+            int relativeRow = (int)item.Id + offset;
+
+            if (relativeRow >= 1 && relativeRow <= validRange.Rows.Count)
+            {
+                var rowRange = (Excel.Range)validRange.Rows[relativeRow];
                 formatAction(rowRange);
             }
             yield return item;
@@ -195,7 +133,7 @@ public static class LinqExtensions
     }
 
 
-    //更新Range数据
+    //更新Range数据，Update方法必须强类型
     public static IEnumerable<T> Update<T>(this IEnumerable<T> source,
                                              Excel.Range range,
                                              Action<T> updateAction,
@@ -210,7 +148,7 @@ public static class LinqExtensions
 
         //Worksheet worksheet = range.Worksheet;
         //Excel.Range usedRange = worksheet.Application.Intersect(range, worksheet.UsedRange) ?? range; // 限制到实际数据范围
-        Excel.Range usedRange = range.CurrentRegion;
+        var usedRange = RangeProcessor.RangeCheck(range);
         int offset = hasHeader ? 1 : 0;
 
         // 获取列名映射
@@ -377,6 +315,96 @@ public static class LinqExtensions
             yield return item;
         }
     }
+
+    public static IEnumerable<T> WriteToRange<T>(this IEnumerable<T> source,
+                                                Excel.Range range)
+        where T : class, IHasId
+    {
+        var items = source.ToList();
+        if (!items.Any())
+        {
+            return items;
+        }
+
+        PropertyInfo[] properties = typeof(T).GetProperties();
+        object[,] arr = BuildDataArray(items, properties);
+
+        var targetFirstRange = (Excel.Range)range.Cells[1, 1];
+        var targetRange = targetFirstRange.Resize[items.Count + 1, properties.Length];
+        targetRange.Value = arr;
+
+        Marshal.ReleaseComObject(targetRange);
+        Marshal.ReleaseComObject(targetFirstRange); // 释放额外的 COM 对象
+
+        return items;
+    }
+
+    public static IEnumerable<T> SaveToExcel<T>(this IEnumerable<T> source,
+                                               string excelPath)
+        where T : class, IHasId
+    {
+        var items = source.ToList();
+        if (!items.Any())
+        {
+            return items;
+        }
+
+        PropertyInfo[] properties = typeof(T).GetProperties();
+        object[,] arr = BuildDataArray(items, properties);
+
+        var nwb = XlApp.Application.Workbooks.Add();
+        var nws = (Excel.Worksheet)nwb.Worksheets[1];
+        var targetFirstRange = (Excel.Range)nws.Cells[1, 1];
+        var targetRange = targetFirstRange.Resize[items.Count + 1, properties.Length];
+        targetRange.Value = arr;
+
+        nwb.SaveAs(excelPath);
+        nwb.Close();
+
+        // 释放 COM 对象
+        Marshal.ReleaseComObject(targetRange);
+        Marshal.ReleaseComObject(targetFirstRange);
+        Marshal.ReleaseComObject(nws);
+        Marshal.ReleaseComObject(nwb);
+
+        return items;
+    }
+
+    private static object[,] BuildDataArray<T>(IEnumerable<T> items, PropertyInfo[] properties)
+    {
+        var itemList = items.ToList();
+        if (!itemList.Any())
+        {
+            return new object[0, 0]; // 返回空数组
+        }
+
+        object[,] arr = new object[itemList.Count + 1, properties.Length];
+
+        // 写入表头
+        int offsetCol = 0;
+        foreach (var prop in properties)
+        {
+            arr[0, offsetCol] = prop.Name;
+            offsetCol++;
+        }
+
+        // 写入数据
+        int offsetRow = 1;
+        foreach (var item in itemList)
+        {
+            offsetCol = 0;
+            foreach (var prop in properties)
+            {
+                var value = prop.GetValue(item);
+                arr[offsetRow, offsetCol] = value is TimeSpan timeSpan ? timeSpan.ToString() : value;
+                offsetCol++;
+            }
+            offsetRow++;
+        }
+
+        return arr;
+    }
+
 }
 
 public interface IHasId

@@ -80,6 +80,7 @@ public static class XlApp
     public static IEnumerable<dynamic> Query(string address, bool hasHeader = true)
     {
         var range = XlApp.ActiveSheet.Range[address];
+        var validRange = RangeProcessor.RangeCheck(range);
 
         var results = Query(range, hasHeader);
   
@@ -107,8 +108,9 @@ public static class XlApp
     public static IEnumerable<T> Query<T>(string address, bool hasHeader = true) where T : class, new()
     {
         var range = XlApp.ActiveSheet.Range[address];
+        var validRange = RangeProcessor.RangeCheck(range);
 
-        var results = Query<T>(range, hasHeader);
+        var results = Query<T>(validRange, hasHeader);
 
         return results;
     }
