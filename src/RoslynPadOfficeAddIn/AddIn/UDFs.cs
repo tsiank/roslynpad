@@ -18,47 +18,65 @@ public static class UDFS
 {
     [ExcelFunction(Description = "Execute SQL query on Excel ranges (first range required, ranges named a, b, c, ...)")]
     public static object[,] SQL(
-       [ExcelArgument(Description = "needed range", AllowReference = true, Name = "Range")] object table,
+       [ExcelArgument(Description = "needed range", Name = "Range")] object table,
        [ExcelArgument(Description = "sql query statement", Name = "Query")] string query,
        [ExcelArgument(Description = "use first row header, default true", Name = "HasRangeHeader")] object hasRangeHeader,
        [ExcelArgument(Description = "return first row header, defalut true", Name = "HasResultHeader")] object hasResultHeader,
-       [ExcelArgument(Description = "more ranges", AllowReference = true, Name = "Ranges")] params object[] tables)
+       [ExcelArgument(Description = "more ranges", Name = "Ranges")] params object[] tables)
     {
-        var hasRangeHeader2 = hasRangeHeader is ExcelMissing or null ? true : (bool)hasRangeHeader;
-        var hasResultHeader2 = hasResultHeader is ExcelMissing or null ? true : (bool)hasResultHeader;
+        var hasRangeHeader2 = hasRangeHeader is ExcelMissing or null || (bool)hasRangeHeader;
+        var hasResultHeader2 = hasResultHeader is ExcelMissing or null || (bool)hasResultHeader;
 
         try
         {
-            // 获取 Excel Application 对象
-            var app = ExcelDnaUtil.Application as Application;
+            //var app = ExcelDnaUtil.Application as Application;
+            var allTables = new List<object>();
 
-            // 验证第一个表（必须参数）
-            if (!(table is ExcelReference firstTable))
-                return new object[,] { { "First table must be a valid range" } };
+            allTables.Add(table);
 
-            // 收集所有表
-            var allTables = new List<ExcelReference> { firstTable };
-            allTables.AddRange(tables.Where(t => t is ExcelReference).Cast<ExcelReference>());
+            if (tables?.Count() > 0)
+            {
+                allTables.AddRange(tables);
+            }
 
-            if (allTables.Count == 0)
-                return new object[,] { { "No valid tables provided" } };
+            var fixedTables = new List<object[,]>();
+
+            foreach (var otable in allTables)
+            {
+                if (otable is string)
+                {
+                    return new object[,] { { "Please input full range" } };
+                }
+                //else if (otable is ExcelReference tableRef)
+                //{
+                //    var tableValues = GetRangeFromReference(tableRef, app);
+                //    fixedTables.Add(tableValues);
+                //}
+                else if (otable is object[,] tableObj)
+                {
+                    fixedTables.Add(tableObj);
+                }
+                else
+                {
+                    return new object[,] { { "Invalid first table reference" } };
+                }
+
+            }
 
             // 解析查询语句中的字段类型
-            var (standardQuery, fieldTypes) = ParseQuery(query, allTables.Count);
+            var (standardQuery, fieldTypes) = ParseQuery(query, fixedTables.Count);
 
-            // 使用 SQLite 内存数据库
             using (var connection = new SQLiteConnection("Data Source=:memory:"))
             {
                 connection.Open();
 
                 // 创建并填充表，表名使用 a, b, c, ...
-                for (var i = 0; i < allTables.Count; i++)
+                for (var i = 0; i < fixedTables.Count; i++)
                 {
                     var tableName = GetTableName(i);
-                    CreateAndPopulateTable(connection, tableName, allTables[i], hasRangeHeader2, app, fieldTypes);
+                    CreateAndPopulateTable(connection, tableName, fixedTables[i], hasRangeHeader2, fieldTypes);
                 }
 
-                // 执行查询
                 using (var command = new SQLiteCommand(standardQuery, connection))
                 using (var reader = command.ExecuteReader())
                 {
@@ -194,50 +212,36 @@ public static class UDFS
     // 创建并填充 SQLite 表
     private static void CreateAndPopulateTable(SQLiteConnection connection, 
                                                 string tableName, 
-                                                ExcelReference excelRef, 
-                                                bool hasHeader, 
-                                                Application app,
+                                                object[,] values, 
+                                                bool hasHeader,
                                                 Dictionary<string, (string sqliteType, string originalType)> fieldTypes)
     {
-        // 获取 Range 对象
-        var range = GetRangeFromReference(excelRef, app);
-        var values = range.Value as object[,] ?? throw new ArgumentException($"Range {tableName} contains no data.");
 
         var rowCount = values.GetLength(0);
         var colCount = values.GetLength(1);
+        rowCount = GetLastRow(values, rowCount, colCount);
 
         // 推断列类型和名称
         var columnInfos = InferColumnTypes(values, hasHeader, colCount, rowCount, tableName, fieldTypes);
         CreateDynamicTable(connection, tableName, columnInfos);
 
         // 插入数据
-        var startRow = hasHeader ? 2 : 1;
-        //for (int i = startRow; i <= rowCount; i++)
-        //{
-        //    var rowData = new Dictionary<string, object>();
-        //    for (int j = 1; j <= colCount; j++)
-        //    {
-        //        object value = values[i, j]; // 修正为 1-based 索引
-        //        string colName = columnInfos[j - 1].Name;
-        //        rowData[colName] = ConvertValue(value, columnInfos[j - 1].Type);
-        //    }
-        //    InsertDynamicItem(connection, tableName, rowData);
-        //}
+        var startRow = hasHeader ? 1 : 0;
 
         using (var transaction = connection.BeginTransaction())
         {
-            for (var row = startRow; row <= rowCount; row++)
+            for (var row = startRow; row < rowCount; row++)
             {
                 using (var cmd = new SQLiteCommand(connection))
                 {
                     cmd.Parameters.Clear();
                     var columnNames = columnInfos.Select(p => $"[{p.Name}]").ToList();
                     var paramNames = new List<string>();
-                    for (var col = 1; col <= colCount; col++)
+                    for (var col = 0; col < colCount; col++)
                     {
                         var paramName = $"@p{col}";
                         var value = col <= colCount ? values[row, col] : null;
-                        var colName = columnInfos[col - 1].Name;
+                        var colName = columnInfos[col].Name;
                         //string sqliteType = columnInfos[col - 1].Type;
                         //string originalType = fieldTypes.ContainsKey($"{tableName}.{colName}") ? fieldTypes[$"{tableName}.{colName}"].originalType :
                         //                      fieldTypes.ContainsKey(colName) ? fieldTypes[colName].originalType : null;
@@ -254,12 +258,10 @@ public static class UDFS
             }
             transaction.Commit();
         }
-
-        Marshal.ReleaseComObject(range);
     }
 
-    // 根据 ExcelReference 获取 Range
-    private static Excel.Range GetRangeFromReference(ExcelReference xlRef, Application app)
+    // 根据 ExcelReference 获取 Range的values
+    private static object[,] GetRangeFromReference(ExcelReference xlRef, Application app)
     {
         var sheetName = (string)XlCall.Excel(XlCall.xlSheetNm, xlRef);
         var index = sheetName.LastIndexOf("]");
@@ -279,17 +281,18 @@ public static class UDFS
             var startRow = firstRange.Value != null ? 1 : firstRange.End[XlDirection.xlDown].Row;
             var endRow = sht.Range[parts[1] + sht.Rows.Count.ToString()].End[XlDirection.xlUp].Row;
 
-            return sht.Range[$"{parts[0]}{startRow}:{parts[1]}{endRow}"];
+            return (object[,])sht.Range[$"{parts[0]}{startRow}:{parts[1]}{endRow}"].Value;
         }
         else if (!address.Contains(":")) // 例如 "A1"
         {
-            return sht.Range[address].CurrentRegion;
+            return (object[,])sht.Range[address].CurrentRegion.Value;
         }
         else // 例如 "A1:B4"
         {
-            return target;
+            return (object[,])target.Value;
         }
     }
+
 
     // 推断列类型
     private static List<ColumnInfo> InferColumnTypes(object[,] values, 
@@ -307,15 +310,15 @@ public static class UDFS
             headers = new object[colCount];
             for (var j = 0; j < colCount; j++)
             {
-                headers[j] = values[1, j + 1];
+                headers[j] = values[0, j];
             }
         }
 
-        for (var j = 1; j <= colCount; j++)
+        for (var j = 0; j < colCount; j++)
         {
-            var colName = hasHeader && headers != null && headers[j - 1] != null
-                ? headers[j - 1].ToString().Trim()
-                : ((char)('A' + j - 1)).ToString();
+            var colName = hasHeader && headers != null && headers[j] != null
+                ? headers[j].ToString().Trim()
+                : ((char)('A' + j)).ToString();
 
             var fullColName = $"{tableName}.{colName}";
             string sqliteType;
@@ -330,7 +333,7 @@ public static class UDFS
             }
             else
             {
-                sqliteType = InferSqliteType(values, j, Math.Min(100, rowCount - (hasHeader ? 1 : 0)), hasHeader ? 2 : 1);
+                sqliteType = InferSqliteType(values, j, Math.Min(100, rowCount - (hasHeader ? 1 : 0)), hasHeader ? 1 : 0);
             }
 
             columnInfos.Add(new ColumnInfo { Name = colName, Type = sqliteType });
@@ -348,7 +351,7 @@ public static class UDFS
         var allBoolean = true;
         var hasLongNumber = false;
 
-        for (var i = startRow; i < startRow + sampleRows && i <= values.GetUpperBound(0) + 1; i++)
+        for (var i = startRow; i < startRow + sampleRows && i <= values.GetUpperBound(0); i++)
         {
             var value = values[i, colIndex]; // 不再减 1，直接使用 i 和 colIndex
             if (value == null) continue;
@@ -453,9 +456,198 @@ public static class UDFS
                 return valStr;
         }
     }
+
+    private static int GetLastRow(object[,] arr, int rowCount, int colCount)
+    {
+        const int PROBE_STEP = 100000; // 探测步长，例如 10 万行
+        int threadCount = Environment.ProcessorCount; // 动态线程数
+
+        // 第一阶段：探测数据分布
+        List<(int start, int end)> blocksWithData = ProbeDataDistribution(arr, rowCount, colCount, PROBE_STEP);
+
+        if (blocksWithData.Count == 0)
+        {
+            return -1; // 无数据
+        }
+
+        // 第二阶段：并行精查有数据的块
+        int[] results = new int[blocksWithData.Count];
+
+        Parallel.For(0, blocksWithData.Count, i =>
+        {
+            var (start, end) = blocksWithData[i];
+            results[i] = FindLastRowInRange(arr, start, end, colCount);
+        });
+
+        return results.Max();
+    }
+
+
+
+    private static (int lastRow, int lastCol) GetLastRowAndColumn(object[,] arr, int rowCount, int colCount)
+    {
+        const int PROBE_STEP = 100000; // 探测步长，例如 10 万行
+        int threadCount = Environment.ProcessorCount; // 动态线程数
+
+        // 第一阶段：探测数据分布
+        List<(int start, int end)> blocksWithData = ProbeDataDistribution(arr, rowCount, colCount, PROBE_STEP);
+
+        if (blocksWithData.Count == 0)
+        {
+            return (-1, -1); // 无数据
+        }
+
+        // 第二阶段：并行精查有数据的块
+        (int row, int col)[] results = new (int, int)[blocksWithData.Count];
+
+        Parallel.For(0, blocksWithData.Count, i =>
+        {
+            var (start, end) = blocksWithData[i];
+            results[i] = FindLastRowAndColumnInRange(arr, start, end, colCount);
+        });
+
+        int maxRow = -1;
+        int maxCol = -1;
+        foreach (var (row, col) in results)
+        {
+            if (row > maxRow)
+            {
+                maxRow = row;
+                maxCol = col;
+            }
+            else if (row == maxRow && col > maxCol)
+            {
+                maxCol = col;
+            }
+        }
+
+        return (maxRow, maxCol);
+    }
+
+    private static List<(int start, int end)> ProbeDataDistribution(object[,] arr, int rowCount, int colCount, int step)
+    {
+        List<(int start, int end)> blocks = new List<(int start, int end)>();
+        int probeCount = (int)Math.Ceiling((double)rowCount / step);
+
+        for (int i = 0; i < probeCount; i++)
+        {
+            int probeRow = Math.Min(i * step, rowCount - 1);
+            if (HasDataInRow(arr, probeRow, colCount))
+            {
+                int start = i * step;
+                int end = Math.Min(start + step - 1, rowCount - 1);
+                blocks.Add((start, end));
+            }
+        }
+
+        // 如果没有探测到数据，检查最后一行
+        if (blocks.Count == 0 && HasDataInRow(arr, rowCount - 1, colCount))
+        {
+            blocks.Add((rowCount - step, rowCount - 1));
+        }
+
+        return blocks;
+    }
+
+    private static int FindLastRowInRange(object[,] arr, int start, int end, int colCount)
+    {
+        int lastRow = -1;
+
+        for (int row = start; row <= end; row++)
+        {
+            if (HasDataInRow(arr, row, colCount))
+            {
+                lastRow = row + 1; // 1-based
+            }
+        }
+        return lastRow;
+    }
+
+
+    private static (int lastRow, int lastCol) FindLastRowAndColumnInRange(object[,] arr, int start, int end, int colCount)
+    {
+        int lastRow = -1;
+        int lastCol = -1;
+
+        for (int row = start; row <= end; row++)
+        {
+            int col = FindLastColumn(arr, row, colCount - 1);
+            if (col >= 0)
+            {
+                lastRow = row + 1; // 1-based
+                lastCol = col;
+            }
+        }
+        return (lastRow, lastCol);
+    }
+
+    private static bool HasDataInRow(object[,] arr, int row, int colCount)
+    {
+        if (colCount <= 20) // 少量列线性扫描
+        {
+            for (int col = 0; col < colCount; col++)
+            {
+                if (HasData(arr[row, col]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else // 大量列二分查找
+        {
+            return FindLastColumn(arr, row, colCount - 1) >= 0;
+        }
+    }
+
+    private static int FindLastColumn(object[,] arr, int row, int high)
+    {
+        int low = 0;
+        int lastValidCol = -1;
+
+        while (low <= high)
+        {
+            int mid = low + (high - low) / 2;
+            if (HasData(arr[row, mid]))
+            {
+                lastValidCol = mid;
+                low = mid + 1;
+            }
+            else
+            {
+                high = mid - 1;
+            }
+        }
+        return lastValidCol;
+    }
+
+    private static bool HasData(object value)
+    {
+        if (value == null || value is ExcelEmpty || value is ExcelError)
+        {
+            return false;
+        }
+        if (value is string str && string.IsNullOrEmpty(str))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private static string ColumnIndexToLetter(int index)
+    {
+        string letters = string.Empty;
+        while (index > 0)
+        {
+            int remainder = (index - 1) % 26;
+            letters = (char)('A' + remainder) + letters;
+            index = (index - remainder - 1) / 26;
+        }
+        return letters;
+    }
 }
 
-    // 列信息类
+// 列信息类
 internal record ColumnInfo
 {
     public string Name { get; set; }
