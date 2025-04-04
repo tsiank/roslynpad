@@ -99,7 +99,7 @@ public static class ReferenceInfo
                                                     "Microsoft.Office.Interop.Excel"
                                                      ];
 
-    public static List<Assembly> ScriptingDefaultAssemblies = [
+    public static List<Assembly> ScriptingDefaultAssemblies => [
                                 typeof(System.Text.RegularExpressions.Regex).Assembly,
                                 typeof(System.IO.Directory).Assembly,
                                 typeof(System.Reflection.MethodInfo).Assembly,

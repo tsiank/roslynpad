@@ -81,14 +81,36 @@ public partial class RenameSymbolDialog : INotifyPropertyChanged, IRenameSymbolD
 
     public Task ShowAsync()
     {
-        _dialog = new InlineModalDialog
+        if (CTPManager.CTP != null && CTPManager.CTP.Visible)
         {
-            Owner = Application.Current.MainWindow,
-            Content = this
-        };
-        _dialog.Show();
-        return Task.CompletedTask;
+            try
+            {
+                _dialog = new InlineModalDialog
+                {
+                    Owner = CTPManager.CTPUserControl!,
+                    Content = this
+                };
+                _dialog.Show();
+            }
+            catch
+            {
+                Console.WriteLine("Owner = CTPManager.CTPUserControl");
+            }
+            return Task.CompletedTask;
+        }
+        else
+        {
+            _dialog = new InlineModalDialog
+            {
+                Owner = Application.Current.MainWindow,
+                Content = this
+            };
+            _dialog.Show();
+            return Task.CompletedTask;
+        }
+
     }
+
 
     public void Close()
     {
