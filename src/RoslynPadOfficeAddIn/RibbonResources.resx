@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="about" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddIn\RibbonResources\about.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="addinmanage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>AddIn\RibbonResources\addinmanage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -148,6 +151,7 @@
                     &lt;button id='button5' label='Exit' supertip='Close and exit CTP or IDE thread' onAction='ExitCTPOrIDE' image='exit' size="large" /&gt;
                     &lt;button id='button6' label='AddInMng' supertip='Choose which addin to run when this addin loading' onAction='OnAddInManage' image='addinmanage' size="large" /&gt;
                     &lt;button id='button7' label='Settings' supertip='User Settings' onAction='OnButtonSetting' image='setting' size="large" /&gt;
+                    &lt;button id='button8' label='About' supertip='About OfficeSharp AddIn' onAction='OnButtonAbout' image='about' size="large" /&gt;
                 &lt;/group&gt;
             &lt;/tab&gt;
         &lt;/tabs&gt;
