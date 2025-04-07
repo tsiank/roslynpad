@@ -12,7 +12,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 #nullable disable
 
-namespace RoslynPad.AddIn;
+namespace OfficeSharp.AddIn;
 
 public static class UDFS
 {
@@ -34,7 +34,7 @@ public static class UDFS
 
             allTables.Add(table);
 
-            if (tables?.Count() > 0)
+            if (tables?.Length > 0)
             {
                 allTables.AddRange(tables);
             }
