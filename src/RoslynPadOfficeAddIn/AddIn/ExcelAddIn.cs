@@ -22,7 +22,7 @@ public class ExcelAddIn : IExcelAddIn
         // force using TLS 1.2 or greater, NuGet need
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 
-        var autoRunMacro = CodeAutoRun.CheckOfficeSharpMacroAddInConfig();
+        var (autoRunMacro, activeDirs) = CodeAutoRun.CheckOfficeSharpMacroAddInConfig();
         if (autoRunMacro)
         {
             _ = RunStartupTasksAsync();

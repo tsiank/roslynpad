@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using OfficeMacroExt;
@@ -16,21 +15,28 @@ using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using OfficeSharp.SettingsUI;
 
+
 namespace OfficeSharp;
 
 internal static class CodeAutoRun
 {
+    private static JsonSerializerOptions JsonOptions => new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        PropertyNameCaseInsensitive = true
+    };
+
     internal static async Task AutoRunCode()
     {
-        var scriptingActiveDirs = GetScriptingActiveDirs();
+        var (autoRunMacro, activeDirs) = CheckOfficeSharpMacroAddInConfig();
 
-        if (scriptingActiveDirs.Count == 0)
+        if (activeDirs.Count == 0)
         {
             Console.WriteLine("No active scripting to run");
             return;
         }
 
-        var tasks = scriptingActiveDirs.Select(async folder =>
+        var tasks = activeDirs.Select(async folder =>
         {
             var mainFxCodeFile = Path.Combine(folder, "Entry.csx");
             var mainCoreCodeFile = Path.Combine(folder, "EntryC.csx");
@@ -40,12 +46,12 @@ internal static class CodeAutoRun
 
             if (File.Exists(mainFxCodeFile))
             {
-                mainCode = await IOUtilities.ReadAllTextAsync(mainFxCodeFile);
-                isDotNet = false;    
+                mainCode = await IOUtilities.ReadAllTextAsync(mainFxCodeFile).ConfigureAwait(true);
+                isDotNet = false;
             }
-            else if(File.Exists(mainCoreCodeFile))
+            else if (File.Exists(mainCoreCodeFile))
             {
-                mainCode = await IOUtilities.ReadAllTextAsync(mainCoreCodeFile);
+                mainCode = await IOUtilities.ReadAllTextAsync(mainCoreCodeFile).ConfigureAwait(true);
                 isDotNet = true;
             }
             else
@@ -56,7 +62,7 @@ internal static class CodeAutoRun
 
             try
             {
-                await CSharpScriptingRunHelper.RunInMemory(isDotNet, mainCode, folder, [folder]);
+                await CSharpScriptingRunHelper.RunInMemory(isDotNet, mainCode, folder, [folder]).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -69,7 +75,7 @@ internal static class CodeAutoRun
         var xlApp = ExcelDnaUtil.Application as Excel.Application ?? (Excel.Application)Marshal.GetActiveObject("Excel.Application");
         var oldStatusBar = xlApp.StatusBar;
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).ConfigureAwait(true);
 
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
@@ -77,7 +83,7 @@ internal static class CodeAutoRun
         });
 
         // Wait 3 seconds, then restore the original status bar
-        await Task.Delay(3000);
+        await Task.Delay(3000).ConfigureAwait(true);
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             xlApp.StatusBar = false;
@@ -85,26 +91,11 @@ internal static class CodeAutoRun
 
     }
 
-    private static List<string> GetScriptingActiveDirs()
-    {
-
-        var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var configPath = Path.Combine(documentPath, "OfficeSharpConfig");
-        var configFile = Path.Combine(configPath, "OfficeSharpMacroAddIn.json");
-
-        var json = File.ReadAllText(configFile);
-
-        var jsonOptions = new JsonSerializerOptions();
-        jsonOptions.PropertyNameCaseInsensitive = true;
-        var addinConfig = JsonSerializer.Deserialize<AddInConfig>(json, jsonOptions);
-        var activeDirectories = addinConfig!.AddInList.Where(a => a.Value == true).Select(a => Path.Combine(addinConfig.ExcelMacroAddinPath, a.Key)).ToList();
-        return activeDirectories;
-
-    }
-
-    internal static bool CheckOfficeSharpMacroAddInConfig()
+    internal static (bool, List<string>) CheckOfficeSharpMacroAddInConfig()
     {
         bool autoRunMacro = false;
+        List<string> activeDirectories = [];
+
         try
         {
             var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -134,27 +125,30 @@ internal static class CodeAutoRun
                     // 读取现有配置
                     var existingJson = File.ReadAllText(jsonPath);
                     var existingConfig = JsonSerializer.Deserialize<AddInConfig>(existingJson);
+
                     autoRunMacro = existingConfig!.AutoRunMacro;
+                    var addInList = existingConfig.AddInList;
+                    if (addInList != null && addInList.Count > 0)
+                    {
+                        activeDirectories = addInList
+                                            .Where(a => a.Value == true)
+                                            .Select(a => Path.Combine(existingConfig.ExcelMacroAddinPath, a.Key))
+                                            .ToList();
+                    }
+
                 }
                 catch (JsonException)
                 {
                     // 如果现有文件不是有效的JSON，重新创建它
-                    var jsonContent = JsonSerializer.Serialize(config, new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    });
+                    var jsonContent = JsonSerializer.Serialize(config, JsonOptions);
                     File.WriteAllText(jsonPath, jsonContent);
                     Console.WriteLine($"Recreated configuration file: {jsonPath}");
                 }
             }
-
-            if (!File.Exists(jsonPath))
+            else
             {
                 // 创建新的配置文件
-                var jsonContent = JsonSerializer.Serialize(config, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
+                var jsonContent = JsonSerializer.Serialize(config, JsonOptions);
                 File.WriteAllText(jsonPath, jsonContent);
                 Console.WriteLine($"Created configuration file: {jsonPath}");
             }
@@ -173,7 +167,7 @@ internal static class CodeAutoRun
             throw;
         }
 
-        return autoRunMacro;
+        return (autoRunMacro, activeDirectories);
     }
 
     internal static string GetExcelMacroPath()
