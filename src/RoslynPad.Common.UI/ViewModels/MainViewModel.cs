@@ -280,7 +280,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
         _ = Task.Run(() => Process.Start(
             new ProcessStartInfo
             {
-                FileName = "https://github.com/aelij/RoslynPad/issues",
+                //FileName = "https://github.com/aelij/RoslynPad/issues",
                 UseShellExecute = true,
             }));
     }

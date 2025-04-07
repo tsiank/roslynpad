@@ -66,7 +66,7 @@ public partial class SettingsWindow : Window
             SendErrorsCheckBox.IsChecked = _appSettings.SendErrors;
             EnableBraceCompletionCheckBox.IsChecked = _appSettings.EnableBraceCompletion;
             FormatDocumentOnCommentCheckBox.IsChecked = _appSettings.FormatDocumentOnComment;
-            DefaultPlatformComboBox.SelectedItem = _appSettings.DefaultPlatformName;
+            DefaultPlatformComboBox.SelectedItem = string.IsNullOrEmpty(_appSettings.DefaultPlatformName) ? _platforms[0] : _appSettings.DefaultPlatformName;
 
             EditorFontFamilyTextBox.Text = _appSettings.EditorFontFamily;
 
@@ -74,7 +74,7 @@ public partial class SettingsWindow : Window
             OutputFontSizeComboBox.SelectedItem = _appSettings.OutputFontSize.ToString();
 
             CustomThemeName.ItemsSource = GetThemeNameList();
-            CustomThemeName.SelectedItem = _appSettings.CustomThemeName;
+            CustomThemeName.SelectedItem = string.IsNullOrEmpty(_appSettings.CustomThemeName) ? "light_modern" : _appSettings.CustomThemeName;
 
         }
         catch (Exception ex)
@@ -106,6 +106,11 @@ public partial class SettingsWindow : Window
             }
 
             var customeThemePath = settingConfig.CustomThemePath;
+            if (string.IsNullOrEmpty(customeThemePath))
+            {
+                customeThemePath = themePath;
+                _appSettings.CustomThemePath = themePath;
+            }
             var themeFiles = Directory.GetFiles(customeThemePath);
 
             foreach (var themeFile in themeFiles)
