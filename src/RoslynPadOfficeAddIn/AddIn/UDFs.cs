@@ -58,7 +58,7 @@ public static class UDFS
                 }
                 else
                 {
-                    return new object[,] { { "Invalid first table reference" } };
+                    return new object[,] { { "Invalid table reference" } };
                 }
 
             }
