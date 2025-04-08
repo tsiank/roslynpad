@@ -187,7 +187,7 @@ public static class SqliteHelper
     // 创建动态表
     private static void CreateDynamicTable(SQLiteConnection connection, string tableName, List<ColumnInfo> columnInfos)
     {
-        string columns = string.Join(", ", columnInfos.Select(c => $"{c.Name} {c.Type}"));
+        string columns = string.Join(", ", columnInfos.Select(c => $"[{c.Name}] {c.Type}"));
         string createTableSql = $"CREATE TABLE IF NOT EXISTS {tableName} (Id INTEGER PRIMARY KEY, {columns})";
         using (var command = new SQLiteCommand(createTableSql, connection))
         {
