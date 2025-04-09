@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d" d:DesignWidth="400" Height="532">
+        mc:Ignorable="d" d:DesignWidth="400" Height="570">
     <Window.Resources>
         <Style x:Key="ScrollableComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -50,6 +50,11 @@
                     <ComboBox x:Name="CustomThemeName" 
                               Style="{StaticResource ScrollableComboBoxStyle}"
                               Margin="0,0,0,10"/>
+                    <Label Content="加载项目录:" Margin="0,0,0,5"/>
+                    <TextBox x:Name="AddInDir" 
+                             Margin="0,0,0,10" 
+                             AcceptsReturn="False" 
+                             ToolTip="输入字体名称，用逗号分隔多个字体（如：Cascadia Code,Consolas）"/>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="AddInControl" Header="AddIn Macro Manage">

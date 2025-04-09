@@ -75,6 +75,7 @@ public partial class SettingsWindow : Window
 
             CustomThemeName.ItemsSource = GetThemeNameList();
             CustomThemeName.SelectedItem = string.IsNullOrEmpty(_appSettings.CustomThemeName) ? "light_modern" : _appSettings.CustomThemeName;
+            AddInDir.Text = _appSettings.DocumentPath;
 
         }
         catch (Exception ex)
@@ -186,6 +187,7 @@ public partial class SettingsWindow : Window
             values.OutputFontSize = double.Parse(OutputFontSizeComboBox.SelectedItem?.ToString() ?? "12");
 
             _appSettings.CustomThemeName = CustomThemeName.SelectedItem.ToString();
+            _appSettings.DocumentPath = AddInDir.Text.Trim();
 
             var jsonContent = JsonSerializer.Serialize(values, new JsonSerializerOptions
             {
