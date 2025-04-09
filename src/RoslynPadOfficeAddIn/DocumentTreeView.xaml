@@ -43,6 +43,8 @@
                      x:Shared="False">
             <MenuItem Header="_Open in File Explorer"
                       Click="DocumentsContextMenu_OpenFolder_Click" />
+            <MenuItem Header="_Delete Folder or File"
+                      Click="DocumentsContextMenu_Delete_Click" />
         </ContextMenu>
 
         <Style x:Key="DocumentItemContainerStyle"

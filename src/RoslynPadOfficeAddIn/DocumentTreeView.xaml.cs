@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -62,6 +63,37 @@ public partial class DocumentTreeView
             }
         }
     }
+    
+    private void DocumentsContextMenu_Delete_Click(object? sender, RoutedEventArgs e)
+    {
+        if (((FrameworkElement)e.Source).DataContext is DocumentViewModel documentViewModel)
+        {
+            if (documentViewModel.IsFolder)
+            {   var result = MessageBox.Show(
+                    "Are you sure you want to delete this folder and all its contents?",
+                    "Delete Folder",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Directory.Delete(documentViewModel.Path, true);
+                }
+            }
+            else
+            {
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this document?",
+                    "Delete Document",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    File.Delete(documentViewModel.Path);
+                }     
+            }
+        }
+    }
+
 
     private void Search_OnKeyDown(object? sender, KeyEventArgs e)
     {
