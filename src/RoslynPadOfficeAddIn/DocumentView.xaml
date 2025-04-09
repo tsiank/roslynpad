@@ -120,6 +120,9 @@
                 <Button Command="{Binding SaveCommand, Mode=OneTime}"
                         ToolTip="Save (Ctrl+S)"
                         Content="{StaticResource Save}" />
+                <Button Command="{Binding SaveAsCommand, Mode=OneTime}"
+                        ToolTip="SaveAs"
+                        Content="{StaticResource SaveAs}" />
                 <Button Command="{Binding OpenBuildPathCommand, Mode=OneTime}"
                         ToolTip="Open Build Folder"
                         Content="{StaticResource PackageFolder}" />

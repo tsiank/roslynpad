@@ -152,6 +152,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
 
         OpenBuildPathCommand = commands.Create(OpenBuildPath);
         SaveCommand = commands.CreateAsync(() => SaveAsync(promptSave: false));
+        SaveAsCommand = commands.CreateAsync(() => SaveAsAsync());
         RunCommand = commands.CreateAsync(RunAsync, () => !IsRunning && RestoreSuccessful && Platform != null);
         TerminateCommand = commands.CreateAsync(TerminateAsync, () => Platform != null);
         FormatDocumentCommand = commands.CreateAsync(FormatDocumentAsync);
@@ -574,6 +575,51 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
         }
     }
 
+    public async Task<SaveResult> SaveAsAsync()
+    {
+        if (_isSaving) return SaveResult.Cancel;
+
+        _isSaving = true;
+        try
+        {
+            var result = SaveResult.Save;
+            var resultSaveAs = System.Windows.Forms.DialogResult.OK;
+
+            var saveFileDialog = new System.Windows.Forms.SaveFileDialog
+            {
+                Filter = "csx file (*.csx)|*.csx|cs file (*.cs)|*.cs|all file (*.*)|*.*",
+                DefaultExt = "csx",
+                Title = "SaveAs",
+                InitialDirectory = MainViewModel.Settings.DocumentPath
+            };
+
+            resultSaveAs = saveFileDialog.ShowDialog();
+
+            string filePath = saveFileDialog.FileName;
+
+            if (resultSaveAs == System.Windows.Forms.DialogResult.OK && Document != null)
+            {
+                await SaveDocumentAsync(filePath!).ConfigureAwait(true);
+                IsDirty = false;
+                Document?.DeleteAutoSave();
+                Document = MainViewModel.AddDocument(filePath!);
+                OnPropertyChanged(nameof(Title));
+
+            }
+
+            if (result != SaveResult.Cancel)
+            {
+                Document?.DeleteAutoSave();
+            }
+
+            return result;
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
     private async Task SaveDocumentAsync(string path)
     {
         if (!_isInitialized) return;
@@ -631,6 +677,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable
     public string Title => Document != null && !Document.IsAutoSaveOnly ? Document.Name : DefaultDocumentName + GetFileExtension();
     public IDelegateCommand OpenBuildPathCommand { get; }
     public IDelegateCommand SaveCommand { get; }
+    public IDelegateCommand SaveAsCommand { get; }
     public IDelegateCommand RunCommand { get; }
     public IDelegateCommand TerminateCommand { get; }
     public IDelegateCommand FormatDocumentCommand { get; }
