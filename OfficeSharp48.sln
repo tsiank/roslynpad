@@ -45,7 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Themes", "src\RoslynPad.Themes\RoslynPad.Themes.csproj", "{2763C291-F1E6-4C22-8217-0E2032620130}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeAddIn", "src\OfficeAddIn\OfficeAddIn.csproj", "{72ECD844-6814-A3C2-912E-AFE65247CC26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeSharpAddIn", "src\OfficeSharpAddIn\OfficeSharpAddIn.csproj", "{72ECD844-6814-A3C2-912E-AFE65247CC26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeMacroExt", "src\OfficeMacroExt\OfficeMacroExt.csproj", "{961677F9-2CAB-4FEA-B3C3-626AD7A6D4D2}"
 EndProject
